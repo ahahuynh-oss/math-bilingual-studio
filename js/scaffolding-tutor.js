@@ -141,13 +141,34 @@ window.ScaffoldingTutor = {
   },
 
   currentData: null,
-  activeTier1: true,
-  activeTier2: true,
-  showSolution: false,
+  activeTierTab: 1, // 1: Gợi ý, 2: Chia nhỏ, 3: Lời giải
+
+  // Accordion expanded state: MẶC ĐỊNH CHỈ HIỆN NẤC 1 VÀ TỪ VỰNG
+  accordions: {
+    vocab: true,     // Mặc định hiện từ vựng
+    analysis: true,  // Mặc định hiện phân tích
+    tier1: true,     // Mặc định hiện Nấc 1
+    tier2: false,    // Mặc định ẩn Nấc 2
+    tier3: false,    // Mặc định ẩn Nấc 3
+    pitfall: false,  // Mặc định ẩn
+    parallel: false  // Mặc định ẩn
+  },
 
   init() {
-    // Load default preset on startup
     this.selectPreset("problem-126-asymptotes");
+  },
+
+  resetAccordionDefaults() {
+    this.activeTierTab = 1;
+    this.accordions = {
+      vocab: true,     // Hiện Từ vựng
+      analysis: true,  // Hiện Phân tích
+      tier1: true,     // Hiện Nấc 1
+      tier2: false,    // Ẩn Nấc 2
+      tier3: false,    // Ẩn Nấc 3
+      pitfall: false,  // Ẩn Cạm bẫy
+      parallel: false  // Ẩn Bài tập tương tự
+    };
   },
 
   selectPreset(presetId) {
@@ -156,7 +177,51 @@ window.ScaffoldingTutor = {
     const inputEl = document.getElementById('scaffold-problem-input');
     if (inputEl) inputEl.value = p.rawInput;
     this.currentData = p.data;
-    this.showSolution = false;
+    this.resetAccordionDefaults();
+    this.render();
+  },
+
+  /**
+   * Kích hoạt chuyển nấc từ 3 nút bấm mở rộng:
+   * [Nấc 1: Gợi ý] -> [Nấc 2: Chia nhỏ bước] -> [Nấc 3: Lời giải hoàn chỉnh]
+   */
+  activateTier(tier) {
+    this.activeTierTab = tier;
+    if (tier === 1) {
+      this.accordions.tier1 = true;
+    } else if (tier === 2) {
+      this.accordions.tier2 = true;
+    } else if (tier === 3) {
+      this.accordions.tier3 = true;
+    }
+    this.render();
+
+    setTimeout(() => {
+      const targetEl = document.getElementById(`scaffold-card-tier-${tier}`);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  },
+
+  toggleAccordion(key) {
+    this.accordions[key] = !this.accordions[key];
+    if (key === 'tier1' && this.accordions[key]) this.activeTierTab = 1;
+    if (key === 'tier2' && this.accordions[key]) this.activeTierTab = 2;
+    if (key === 'tier3' && this.accordions[key]) this.activeTierTab = 3;
+    this.render();
+  },
+
+  expandAll() {
+    this.activeTierTab = 3;
+    Object.keys(this.accordions).forEach(k => {
+      this.accordions[k] = true;
+    });
+    this.render();
+  },
+
+  collapseToDefault() {
+    this.resetAccordionDefaults();
     this.render();
   },
 
@@ -168,42 +233,39 @@ window.ScaffoldingTutor = {
       return;
     }
 
+    this.resetAccordionDefaults();
+
     // Check if matches known presets
     const lower = problemText.toLowerCase();
     if (lower.includes('tiệm cận') || lower.includes('tích khoảng cách') || lower.includes('x + 1') || lower.includes('asymptote')) {
       this.currentData = this.presets["problem-126-asymptotes"].data;
-      this.showSolution = false;
       this.render();
       if (window.App && window.App.showToast) {
-        window.App.showToast('✅ Đã kích hoạt Giàn giáo nhận thức cho Bài 1.26!');
+        window.App.showToast('✅ Đã dựng giàn giáo nhận thức cho Bài 1.26!');
       }
       return;
     } else if (lower.includes('cực trị') || lower.includes('x^3') || lower.includes('extrema')) {
       this.currentData = this.presets["problem-derivatives-extrema"].data;
-      this.showSolution = false;
       this.render();
       if (window.App && window.App.showToast) {
-        window.App.showToast('✅ Đã kích hoạt Giàn giáo nhận thức cực trị hàm số!');
+        window.App.showToast('✅ Đã dựng giàn giáo nhận thức cực trị hàm số!');
       }
       return;
     } else if (lower.includes('vecto') || lower.includes('oxyz') || lower.includes('cosin')) {
       this.currentData = this.presets["problem-vectors-3d"].data;
-      this.showSolution = false;
       this.render();
       if (window.App && window.App.showToast) {
-        window.App.showToast('✅ Đã kích hoạt Giàn giáo nhận thức Vectơ 3D!');
+        window.App.showToast('✅ Đã dựng giàn giáo nhận thức Vectơ 3D!');
       }
       return;
     }
 
-    // If Gemini API Key exists in localStorage, call Gemini online with strict prompt!
+    // Call Gemini API if Key available
     const apiKey = localStorage.getItem('math_studio_gemini_api_key') || '';
     if (apiKey) {
       await this.callGeminiScaffolding(problemText, apiKey);
     } else {
-      // Fallback: Use standard pedagogical scaffolding structure
       this.currentData = this.presets["problem-126-asymptotes"].data;
-      this.showSolution = false;
       this.render();
       if (window.App && window.App.showToast) {
         window.App.showToast('💡 Đã kích hoạt Giàn giáo nhận thức chuẩn sư phạm!');
@@ -262,7 +324,6 @@ NGUYÊN TẮC BẮT BUỘC:
 - Luôn giữ phản hồi chuẩn JSON hợp lệ.`;
 
     const userQuery = `Hãy phân tích giàn giáo nhận thức cho bài toán sau:\n${problemText}`;
-
     const modelsToTry = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
     let parsedData = null;
 
@@ -310,39 +371,20 @@ NGUYÊN TẮC BẮT BUỘC:
 
     if (parsedData && parsedData.tier_1_hint) {
       this.currentData = parsedData;
-      this.showSolution = false;
+      this.resetAccordionDefaults();
       this.render();
       if (statusEl) {
         statusEl.className = 'text-xs text-emerald-400 font-semibold';
         statusEl.innerText = '✅ Phân tích giàn giáo nhận thức thành công!';
       }
     } else {
-      // Fallback
       this.currentData = this.presets["problem-126-asymptotes"].data;
-      this.showSolution = false;
+      this.resetAccordionDefaults();
       this.render();
       if (statusEl) {
         statusEl.className = 'text-xs text-amber-400 font-semibold';
         statusEl.innerText = '⚠️ Đã sử dụng bộ dữ liệu giàn giáo chuẩn sư phạm.';
       }
-    }
-  },
-
-  toggleSolution() {
-    this.showSolution = !this.showSolution;
-    const solEl = document.getElementById('scaffold-full-solution-box');
-    const btn = document.getElementById('btn-toggle-solution');
-    if (solEl && btn) {
-      if (this.showSolution) {
-        solEl.classList.remove('hidden');
-        btn.innerHTML = '<span>🙈 Ẩn Lời Giải Đối Chiếu</span>';
-      } else {
-        solEl.classList.add('hidden');
-        btn.innerHTML = '<span>👁️ Mở Lời Giải Chi Tiết Đối Chiếu (Sau Khi Tự Tư Duy)</span>';
-      }
-    }
-    if (window.App && window.App.triggerMathJax) {
-      window.App.triggerMathJax();
     }
   },
 
@@ -355,8 +397,7 @@ NGUYÊN TẮC BẮT BUỘC:
     const userAns = input.value.trim().toLowerCase();
     const correctAns = (this.currentData.parallel_exercise.short_answer || '').trim().toLowerCase();
 
-    // Standardize comparison
-    const norm = (str) => str.replace(/\s+/g, '').replace('$', '').replace('$', '');
+    const norm = (str) => str.replace(/\s+/g, '').replace(/\$/g, '');
     const isCorrect = norm(userAns) === norm(correctAns);
 
     resultBox.classList.remove('hidden');
@@ -396,9 +437,11 @@ NGUYÊN TẮC BẮT BUỘC:
     }
 
     const d = this.currentData;
+    const acc = this.accordions;
+    const activeTier = this.activeTierTab;
 
-    // 1. Vocabulary list
-    const vocabHtml = (d.bilingual_vocabulary || []).map((v, idx) => `
+    // 1. Vocabulary Grid Items
+    const vocabHtml = (d.bilingual_vocabulary || []).map((v) => `
       <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-indigo-500/20 hover:border-indigo-500/50 transition-all flex flex-col justify-between group">
         <div>
           <div class="flex items-start justify-between gap-2">
@@ -418,176 +461,363 @@ NGUYÊN TẮC BẮT BUỘC:
       </div>
     `).join('');
 
-    // 2. Breakdown steps
+    // 2. Breakdown steps with interactive checkboxes
     const stepsHtml = (d.tier_2_breakdown || []).map((st, i) => `
-      <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-colors">
+      <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-teal-500/40 transition-colors">
         <label class="flex items-center gap-2.5 cursor-pointer mt-0.5">
-          <input type="checkbox" class="w-4 h-4 rounded text-indigo-600 bg-slate-800 border-slate-700 focus:ring-indigo-500 cursor-pointer">
+          <input type="checkbox" class="w-4 h-4 rounded text-teal-500 bg-slate-800 border-slate-700 focus:ring-teal-500 cursor-pointer">
         </label>
-        <div class="text-xs text-slate-200 leading-relaxed font-medium">
+        <div class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
           ${st}
         </div>
       </div>
     `).join('');
 
-    // 3. Render complete Scaffolding Board
+    // Helper for Accordion Chevron icon
+    const chevronIcon = (isOpen) => `
+      <span class="w-6 h-6 rounded-lg bg-slate-800/80 flex items-center justify-center text-xs text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180 text-white' : ''}">
+        ▼
+      </span>
+    `;
+
+    // Active state classes for Stepper buttons
+    const btn1Class = activeTier === 1 
+      ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/30 ring-2 ring-indigo-400' 
+      : (acc.tier1 ? 'bg-indigo-950/60 text-indigo-300 border border-indigo-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white');
+
+    const btn2Class = activeTier === 2 
+      ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg shadow-teal-600/30 ring-2 ring-teal-400' 
+      : (acc.tier2 ? 'bg-teal-950/60 text-teal-300 border border-teal-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white');
+
+    const btn3Class = activeTier === 3 
+      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/30 ring-2 ring-purple-400' 
+      : (acc.tier3 ? 'bg-purple-950/60 text-purple-300 border border-purple-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white');
+
     container.innerHTML = `
-      <!-- TOP OVERVIEW BANNER -->
-      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 p-6 sm:p-7 border border-indigo-500/30 shadow-2xl">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 uppercase tracking-wider">
-              Zone of Proximal Development (ZPD)
+      <!-- ========================================================= -->
+      <!-- 3 NÚT BẤM MỞ RỘNG THEO NẤC (STEPPER NAVIGATION) -->
+      <!-- ========================================================= -->
+      <div class="sticky top-[140px] z-30 glass-card p-3 sm:p-4 rounded-2xl border-2 border-indigo-500/30 shadow-2xl bg-slate-950/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- Left label -->
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🪜</span>
+          <span class="text-xs font-black uppercase tracking-wider text-slate-300 hidden md:inline">
+            Tiến Trình Giàn Giáo:
+          </span>
+        </div>
+
+        <!-- 3 Stepper Buttons -->
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 flex-1 justify-center">
+          
+          <!-- Nấc 1 -->
+          <button onclick="ScaffoldingTutor.activateTier(1)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${btn1Class}">
+            <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black">1</span>
+            <span>Nấc 1: Gợi ý cốt lõi</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-normal ${acc.tier1 ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">
+              ${acc.tier1 ? 'Đang mở' : 'Thu gọn'}
             </span>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30">
-              CT GDPT 2018
+          </button>
+
+          <span class="text-slate-600 font-bold hidden sm:inline">➔</span>
+
+          <!-- Nấc 2 -->
+          <button onclick="ScaffoldingTutor.activateTier(2)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${btn2Class}">
+            <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black">2</span>
+            <span>Nấc 2: Chia nhỏ bước</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-normal ${acc.tier2 ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">
+              ${acc.tier2 ? 'Đang mở' : 'Đang ẩn'}
             </span>
-          </div>
-          <button onclick="ScaffoldingTutor.exportWorksheet()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 transition-all flex items-center gap-1.5 shadow">
-            🖨️ <span>In Phiếu Học Tập Giàn Giáo</span>
+          </button>
+
+          <span class="text-slate-600 font-bold hidden sm:inline">➔</span>
+
+          <!-- Nấc 3 -->
+          <button onclick="ScaffoldingTutor.activateTier(3)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${btn3Class}">
+            <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black">3</span>
+            <span>Nấc 3: Lời giải hoàn chỉnh</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded font-normal ${acc.tier3 ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">
+              ${acc.tier3 ? 'Đang mở' : 'Đang ẩn'}
+            </span>
+          </button>
+
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center gap-2">
+          <button onclick="ScaffoldingTutor.expandAll()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors" title="Mở rộng tất cả các tầng">
+            Mở tất cả
+          </button>
+          <button onclick="ScaffoldingTutor.collapseToDefault()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 transition-colors" title="Chỉ hiện Nấc 1 và Từ vựng theo mặc định">
+            🔄 Mặc định (Nấc 1)
           </button>
         </div>
 
-        <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
-          <span>🎯</span> Bóc Tách & Phân Tích Bài Toán (Problem Analysis)
-        </h3>
-        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2 p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800/80">
-          ${d.problem_analysis}
-        </p>
       </div>
 
-      <!-- TẦNG 1: CẦU NỐI TỪ VỰNG SONG NGỮ -->
-      <div class="glass-card p-6 rounded-3xl border border-slate-800 shadow-xl space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div class="flex items-center gap-2.5">
+      <!-- ========================================================= -->
+      <!-- ACCORDION 1: BÓC TÁCH ĐỀ BÀI (PROBLEM ANALYSIS) -->
+      <!-- ========================================================= -->
+      <div class="glass-card rounded-3xl border border-slate-800 overflow-hidden shadow-xl transition-all">
+        <button onclick="ScaffoldingTutor.toggleAccordion('analysis')" class="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-slate-900/40 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">🎯</span>
+            <div>
+              <h4 class="text-sm sm:text-base font-extrabold text-white">Bóc Tách & Phân Tích Bài Toán (Problem Analysis)</h4>
+              <p class="text-[11px] text-slate-400">Tóm tắt giả thiết, kết luận và dạng toán trọng tâm</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-purple-400 font-semibold px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 hidden sm:inline">Phân tích</span>
+            ${chevronIcon(acc.analysis)}
+          </div>
+        </button>
+
+        ${acc.analysis ? `
+          <div class="px-6 pb-6 pt-1 border-t border-slate-800/60">
+            <div class="p-4 rounded-2xl bg-slate-950/70 border border-purple-500/20 text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+              ${d.problem_analysis}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- ACCORDION 2: TỪ VỰNG SONG NGỮ (BILINGUAL VOCABULARY) -->
+      <!-- MẶC ĐỊNH HIỆN -->
+      <!-- ========================================================= -->
+      <div id="scaffold-card-vocab" class="glass-card rounded-3xl border-2 border-teal-500/30 overflow-hidden shadow-xl transition-all">
+        <button onclick="ScaffoldingTutor.toggleAccordion('vocab')" class="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-slate-900/40 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
             <span class="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">📚</span>
             <div>
-              <h4 class="text-sm font-extrabold text-white">Tầng 1: Cầu Nối Từ Vựng Toán Học Song Ngữ (Bilingual Vocabulary)</h4>
-              <p class="text-[11px] text-slate-400">Giúp học sinh vượt qua rào cản thuật ngữ chuyên ngành tiếng Anh chuẩn chương trình 2018</p>
+              <div class="flex items-center gap-2">
+                <h4 class="text-sm sm:text-base font-extrabold text-white">Cầu Nối Thuật Ngữ Toán Học Song Ngữ (Bilingual Vocabulary)</h4>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">Mặc định mở</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Chuẩn hóa theo CT GDPT 2018 kèm ví dụ toán học và phát âm bản xứ</p>
             </div>
           </div>
-          <span class="text-xs text-teal-400 font-semibold">${d.bilingual_vocabulary?.length || 0} Thuật ngữ then chốt</span>
-        </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-teal-400 font-semibold px-2.5 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">
+              ${d.bilingual_vocabulary?.length || 0} Thuật ngữ
+            </span>
+            ${chevronIcon(acc.vocab)}
+          </div>
+        </button>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          ${vocabHtml}
-        </div>
+        ${acc.vocab ? `
+          <div class="px-6 pb-6 pt-1 border-t border-teal-500/20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              ${vocabHtml}
+            </div>
+          </div>
+        ` : ''}
       </div>
 
-      <!-- TẦNG 2 & 3: GIÀN GIÁO NẤC 1 VÀ NẤC 2 -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        <!-- NẤC 1: GỢI Ý CỐT LÕI (TIER 1 HINT) -->
-        <div class="glass-card p-6 rounded-3xl border-2 border-indigo-500/30 bg-gradient-to-br from-slate-900 to-indigo-950/30 shadow-xl space-y-4 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center gap-2.5 pb-3 border-b border-indigo-500/20">
-              <span class="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">🪜</span>
-              <div>
-                <h4 class="text-sm font-black text-indigo-300 uppercase tracking-wide">Nấc 1: Gợi Mở Tư Duy (Tier 1 Core Hint)</h4>
-                <p class="text-[11px] text-slate-400">Kích hoạt kiến thức nền tảng - Chưa tính toán trực tiếp</p>
+      <!-- ========================================================= -->
+      <!-- ACCORDION 3: NẤC 1 - GỢI Ý CỐT LÕI (TIER 1 HINT) -->
+      <!-- MẶC ĐỊNH HIỆN -->
+      <!-- ========================================================= -->
+      <div id="scaffold-card-tier-1" class="glass-card rounded-3xl border-2 border-indigo-500/50 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/30 overflow-hidden shadow-2xl transition-all">
+        <button onclick="ScaffoldingTutor.toggleAccordion('tier1')" class="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-indigo-950/20 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-indigo-500/25 text-indigo-300 flex items-center justify-center font-bold text-sm ring-2 ring-indigo-500/40">🪜</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="text-sm sm:text-base font-black text-indigo-300 uppercase tracking-wide">Nấc 1: Gợi Mở Tư Duy (Tier 1 Core Hint)</h4>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Mặc định mở</span>
               </div>
+              <p class="text-[11px] text-slate-400">Kích hoạt kiến thức nền tảng & công thức then chốt (chưa tính toán)</p>
             </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-indigo-300 font-semibold px-2.5 py-0.5 rounded bg-indigo-500/20 border border-indigo-500/30">
+              ${acc.tier1 ? 'Đang hiển thị' : 'Bấm để mở'}
+            </span>
+            ${chevronIcon(acc.tier1)}
+          </div>
+        </button>
 
-            <div class="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 text-xs sm:text-sm text-indigo-100 leading-relaxed mt-4 font-medium">
+        ${acc.tier1 ? `
+          <div class="px-6 pb-6 pt-2 border-t border-indigo-500/20 space-y-4">
+            <div class="p-5 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 text-xs sm:text-base text-indigo-100 leading-relaxed font-medium">
               💡 ${d.tier_1_hint}
             </div>
-          </div>
 
-          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2 mt-4">
-            <span>🤔</span>
-            <span>Học sinh hãy suy ngẫm câu hỏi trên ít nhất 1 phút trước khi xem nấc chia nhỏ!</span>
-          </div>
-        </div>
-
-        <!-- NẤC 2: CHIA NHỎ BÀI TOÁN (TIER 2 BREAKDOWN) -->
-        <div class="glass-card p-6 rounded-3xl border-2 border-teal-500/30 bg-gradient-to-br from-slate-900 to-teal-950/30 shadow-xl space-y-4">
-          <div class="flex items-center gap-2.5 pb-3 border-b border-teal-500/20">
-            <span class="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">🧩</span>
-            <div>
-              <h4 class="text-sm font-black text-teal-300 uppercase tracking-wide">Nấc 2: Chia Nhỏ Nhiệm Vụ (Tier 2 Step-by-Step)</h4>
-              <p class="text-[11px] text-slate-400">Tách nhỏ bài toán thành các chặng vừa sức</p>
+            <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-950/60 rounded-xl border border-slate-800 text-xs text-slate-300">
+              <div class="flex items-center gap-2">
+                <span>🤔</span>
+                <span>Em đã hình dung được hướng đi chưa? Hãy thử viết công thức ra nháp nhé!</span>
+              </div>
+              <button onclick="ScaffoldingTutor.activateTier(2)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white transition-all flex items-center gap-1.5 shadow">
+                <span>Xem Nấc 2: Chia nhỏ bước ➔</span>
+              </button>
             </div>
           </div>
+        ` : ''}
+      </div>
 
-          <div class="space-y-2.5 mt-2">
-            ${stepsHtml}
+      <!-- ========================================================= -->
+      <!-- ACCORDION 4: NẤC 2 - CHIA NHỎ BÀI TOÁN (TIER 2 BREAKDOWN) -->
+      <!-- MẶC ĐỊNH ẨN / THU GỌN -->
+      <!-- ========================================================= -->
+      <div id="scaffold-card-tier-2" class="glass-card rounded-3xl border-2 ${acc.tier2 ? 'border-teal-500/50 bg-gradient-to-br from-slate-900 to-teal-950/30' : 'border-slate-800 opacity-90'} overflow-hidden shadow-xl transition-all">
+        <button onclick="ScaffoldingTutor.toggleAccordion('tier2')" class="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-slate-900/40 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl ${acc.tier2 ? 'bg-teal-500/25 text-teal-300 ring-2 ring-teal-500/40' : 'bg-slate-800 text-slate-400'} flex items-center justify-center font-bold text-sm">🧩</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="text-sm sm:text-base font-black ${acc.tier2 ? 'text-teal-300' : 'text-slate-300'} uppercase tracking-wide">
+                  Nấc 2: Chia Nhỏ Nhiệm Vụ (Tier 2 Step-by-Step Breakdown)
+                </h4>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${acc.tier2 ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30' : 'bg-slate-800 text-slate-400'}">
+                  ${acc.tier2 ? 'Đang mở' : 'Khóa/Ẩn mặc định'}
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-400">Phân rã bài toán thành các chặng vừa sức kèm ô tự đánh giá</p>
+            </div>
           </div>
-
-          <p class="text-[10px] text-slate-500 italic text-right">* Học sinh đánh dấu vào ô vuông khi đã hiểu từng bước</p>
-        </div>
-
-      </div>
-
-      <!-- TẦNG 4: CẢNH BÁO CẠM BẪY SAI LẦM PHỔ BIẾN -->
-      <div class="p-5 rounded-3xl bg-amber-950/40 border-2 border-amber-500/40 text-amber-200 shadow-xl space-y-2">
-        <div class="flex items-center gap-2 font-bold text-sm text-amber-300">
-          <span class="text-lg">⚠️</span>
-          <span>Cạm Bẫy Học Sinh Yếu Dễ Mắc Phải (Common Pitfalls):</span>
-        </div>
-        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed pl-7">
-          ${d.common_pitfall}
-        </p>
-      </div>
-
-      <!-- TẦNG 5: LỜI GIẢI CHI TIẾT ĐỐI CHIẾU (ẨN / HIỆN THEO YÊU CẦU) -->
-      <div class="glass-card p-6 rounded-3xl border border-slate-800 shadow-xl space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-2">
-            <span class="text-lg">📖</span>
-            <div>
-              <h4 class="text-sm font-bold text-white">Lời Giải Chi Tiết Từng Bước (Bilingual Solution)</h4>
-              <p class="text-[11px] text-slate-400">Chỉ mở đối chiếu sau khi học sinh đã hoàn thành các nấc giàn giáo</p>
+            <span class="text-xs ${acc.tier2 ? 'text-teal-300' : 'text-slate-400'} font-semibold px-2.5 py-0.5 rounded ${acc.tier2 ? 'bg-teal-500/20 border border-teal-500/30' : 'bg-slate-800'}">
+              ${acc.tier2 ? 'Thu gọn Nấc 2' : 'Bấm để mở Nấc 2'}
+            </span>
+            ${chevronIcon(acc.tier2)}
+          </div>
+        </button>
+
+        ${acc.tier2 ? `
+          <div class="px-6 pb-6 pt-2 border-t border-teal-500/20 space-y-4">
+            <div class="space-y-2.5">
+              ${stepsHtml}
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-slate-950/60 rounded-xl border border-slate-800 text-xs text-slate-300">
+              <div class="flex items-center gap-2">
+                <span>✅</span>
+                <span>Hãy tích chọn vào từng bước sau khi em đã hiểu rõ phương pháp!</span>
+              </div>
+              <button onclick="ScaffoldingTutor.activateTier(3)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white transition-all flex items-center gap-1.5 shadow">
+                <span>Xem Nấc 3: Lời giải hoàn chỉnh ➔</span>
+              </button>
             </div>
           </div>
-          
-          <button id="btn-toggle-solution" onclick="ScaffoldingTutor.toggleSolution()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-1.5">
-            <span>👁️ Mở Lời Giải Chi Tiết Đối Chiếu</span>
-          </button>
-        </div>
-
-        <div id="scaffold-full-solution-box" class="hidden pt-4 border-t border-slate-800 space-y-3">
-          <div class="p-5 rounded-2xl bg-slate-950/80 border border-indigo-500/30 text-xs sm:text-sm text-slate-200 leading-relaxed font-mono whitespace-pre-line">
-            ${d.full_solution}
-          </div>
-        </div>
+        ` : ''}
       </div>
 
-      <!-- TẦNG 6: BÀI TẬP SONG HÀNH TỰ RÈN LUYỆN (PARALLEL EXERCISE) -->
+      <!-- ========================================================= -->
+      <!-- ACCORDION 5: NẤC 3 - LỜI GIẢI HOÀN CHỈNH (TIER 3 FULL SOLUTION) -->
+      <!-- MẶC ĐỊNH ẨN / THU GỌN -->
+      <!-- ========================================================= -->
+      <div id="scaffold-card-tier-3" class="glass-card rounded-3xl border-2 ${acc.tier3 ? 'border-purple-500/50 bg-gradient-to-br from-slate-900 to-purple-950/30' : 'border-slate-800 opacity-90'} overflow-hidden shadow-xl transition-all">
+        <button onclick="ScaffoldingTutor.toggleAccordion('tier3')" class="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-slate-900/40 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl ${acc.tier3 ? 'bg-purple-500/25 text-purple-300 ring-2 ring-purple-500/40' : 'bg-slate-800 text-slate-400'} flex items-center justify-center font-bold text-sm">📖</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="text-sm sm:text-base font-black ${acc.tier3 ? 'text-purple-300' : 'text-slate-300'} uppercase tracking-wide">
+                  Nấc 3: Lời Giải Chi Tiết Hoàn Chỉnh (Tier 3 Full Solution)
+                </h4>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${acc.tier3 ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-slate-800 text-slate-400'}">
+                  ${acc.tier3 ? 'Đang mở' : 'Khóa/Ẩn mặc định'}
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-400">Trình bày toán học chặt chẽ kèm chú giải thuật ngữ tiếng Anh đối chiếu</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs ${acc.tier3 ? 'text-purple-300' : 'text-slate-400'} font-semibold px-2.5 py-0.5 rounded ${acc.tier3 ? 'bg-purple-500/20 border border-purple-500/30' : 'bg-slate-800'}">
+              ${acc.tier3 ? 'Thu gọn Lời giải' : 'Mở xem Lời giải'}
+            </span>
+            ${chevronIcon(acc.tier3)}
+          </div>
+        </button>
+
+        ${acc.tier3 ? `
+          <div class="px-6 pb-6 pt-2 border-t border-purple-500/20 space-y-4">
+            <div class="p-3 bg-purple-950/40 rounded-xl border border-purple-500/30 text-xs text-purple-200">
+              💡 <strong>Lưu ý sư phạm:</strong> Em chỉ nên đối chiếu nấc này sau khi đã tự viết lời giải của mình vào vở nháp.
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-950/90 border border-purple-500/30 text-xs sm:text-sm text-slate-200 leading-relaxed font-mono whitespace-pre-line shadow-inner">
+              ${d.full_solution}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- ACCORDION 6: CẠM BẪY SAI LẦM PHỔ BIẾN -->
+      <!-- ========================================================= -->
+      <div class="glass-card rounded-3xl border border-amber-500/30 bg-amber-950/20 overflow-hidden shadow-xl transition-all">
+        <button onclick="ScaffoldingTutor.toggleAccordion('pitfall')" class="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-amber-950/40 transition-colors cursor-pointer">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">⚠️</span>
+            <div>
+              <h4 class="text-sm sm:text-base font-extrabold text-amber-300">Cạm Bẫy Học Sinh Yếu Dễ Mắc Phải (Common Pitfalls)</h4>
+              <p class="text-[11px] text-slate-400">Các lỗi sai kinh điển về dấu, tính chất và thuật ngữ cần tránh</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-amber-400 font-semibold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">Cảnh báo</span>
+            ${chevronIcon(acc.pitfall)}
+          </div>
+        </button>
+
+        ${acc.pitfall ? `
+          <div class="px-6 pb-6 pt-1 border-t border-amber-500/20">
+            <div class="p-4 rounded-2xl bg-amber-950/50 border border-amber-500/40 text-xs sm:text-sm text-amber-100 leading-relaxed font-medium">
+              ${d.common_pitfall}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- ACCORDION 7: BÀI TẬP SONG HÀNH TỰ RÈN LUYỆN -->
+      <!-- ========================================================= -->
       ${d.parallel_exercise ? `
-        <div class="glass-card p-6 sm:p-7 rounded-3xl border-2 border-purple-500/30 bg-gradient-to-br from-slate-900 to-purple-950/30 shadow-xl space-y-4">
-          <div class="flex items-center justify-between border-b border-purple-500/20 pb-3">
-            <div class="flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">🚀</span>
+        <div class="glass-card rounded-3xl border-2 border-indigo-500/30 bg-gradient-to-br from-slate-900 to-indigo-950/30 overflow-hidden shadow-xl transition-all">
+          <button onclick="ScaffoldingTutor.toggleAccordion('parallel')" class="w-full p-5 sm:p-6 flex items-center justify-between text-left hover:bg-slate-900/40 transition-colors cursor-pointer">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">🚀</span>
               <div>
-                <h4 class="text-sm font-black text-purple-300 uppercase tracking-wide">Thử Thách Tự Lập: Bài Tập Song Hành (Parallel Practice)</h4>
+                <h4 class="text-sm sm:text-base font-black text-indigo-300 uppercase tracking-wide">Thử Thách Tự Lập: Bài Tập Song Hành (Parallel Practice)</h4>
                 <p class="text-[11px] text-slate-400">Kiểm tra ngay mức độ làm chủ kiến thức sau khi dỡ bỏ giàn giáo</p>
               </div>
             </div>
-            <span class="text-xs px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40">Self-Practice</span>
-          </div>
-
-          <div class="space-y-3">
-            <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
-              <div class="text-[11px] font-bold text-indigo-400 uppercase mb-1">🇬🇧 English:</div>
-              <div class="text-xs sm:text-sm text-white font-medium">${d.parallel_exercise.question_en}</div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs px-2.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/40">Tự luyện</span>
+              ${chevronIcon(acc.parallel)}
             </div>
+          </button>
 
-            <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
-              <div class="text-[11px] font-bold text-teal-400 uppercase mb-1">🇻🇳 Tiếng Việt:</div>
-              <div class="text-xs sm:text-sm text-slate-200">${d.parallel_exercise.question_vi}</div>
+          ${acc.parallel ? `
+            <div class="px-6 pb-6 pt-1 border-t border-indigo-500/20 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <div class="text-[11px] font-bold text-indigo-400 uppercase mb-1">🇬🇧 English:</div>
+                  <div class="text-xs sm:text-sm text-white font-medium">${d.parallel_exercise.question_en}</div>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
+                  <div class="text-[11px] font-bold text-teal-400 uppercase mb-1">🇻🇳 Tiếng Việt:</div>
+                  <div class="text-xs sm:text-sm text-slate-200">${d.parallel_exercise.question_vi}</div>
+                </div>
+              </div>
+
+              <div class="pt-2 flex flex-wrap items-center gap-3">
+                <div class="flex-1 min-w-[200px]">
+                  <input type="text" id="scaffold-parallel-input" placeholder="Nhập đáp số của em (ví dụ: 7 hoặc 4/9)..." class="w-full px-4 py-2.5 glass-input rounded-xl text-xs sm:text-sm text-white font-mono">
+                </div>
+                <button onclick="ScaffoldingTutor.checkParallelAnswer()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center gap-1.5">
+                  <span>Kiểm Tra Đáp Số</span>
+                </button>
+              </div>
+
+              <div id="scaffold-parallel-result" class="hidden"></div>
             </div>
-          </div>
-
-          <div class="pt-2 flex flex-wrap items-center gap-3">
-            <div class="flex-1 min-w-[200px]">
-              <input type="text" id="scaffold-parallel-input" placeholder="Nhập đáp số của em (ví dụ: 7 hoặc -4/9)..." class="w-full px-4 py-2.5 glass-input rounded-xl text-xs sm:text-sm text-white font-mono">
-            </div>
-            <button onclick="ScaffoldingTutor.checkParallelAnswer()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center gap-1.5">
-              <span>Kiểm Tra Đáp Số</span>
-            </button>
-          </div>
-
-          <div id="scaffold-parallel-result" class="hidden"></div>
+          ` : ''}
         </div>
       ` : ''}
     `;
@@ -614,7 +844,7 @@ NGUYÊN TẮC BẮT BUỘC:
       </tr>
     `).join('');
 
-    const stepsList = (d.tier_2_breakdown || []).map((s, idx) => `
+    const stepsList = (d.tier_2_breakdown || []).map((s) => `
       <li style="margin-bottom: 8px;"><strong>${s}</strong></li>
     `).join('');
 
