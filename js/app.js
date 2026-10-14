@@ -131,7 +131,7 @@ const App = {
     this.activeTab = tabName;
 
     // Update Tab Buttons UI
-    const tabs = ['builder-lesson', 'builder-quiz', 'interactive-preview'];
+    const tabs = ['builder-lesson', 'builder-quiz', 'interactive-preview', 'scaffolding-tutor'];
     tabs.forEach(t => {
       const btn = document.getElementById(`tab-nav-${t}`);
       const panel = document.getElementById(`panel-${t}`);
@@ -148,6 +148,10 @@ const App = {
 
     if (tabName === 'interactive-preview') {
       this.renderInteractivePreview();
+    } else if (tabName === 'scaffolding-tutor') {
+      if (window.ScaffoldingTutor && (!window.ScaffoldingTutor.currentData || !document.getElementById('scaffold-results-container')?.children.length)) {
+        window.ScaffoldingTutor.init();
+      }
     }
 
     this.triggerMathJax();
