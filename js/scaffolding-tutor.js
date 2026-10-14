@@ -7,9 +7,110 @@
 window.ScaffoldingTutor = {
   // Built-in verified pedagogical presets
   presets: {
-    "problem-126-asymptotes": {
-      id: "problem-126-asymptotes",
-      title: "Bài 1.26 - Hàm phân thức & Tích khoảng cách đến hai đường tiệm cận",
+    // ========================================================
+    // 1. MẪU KHỐI 10 (GRADE 10): TỌA ĐỘ VÀ TÍCH VÔ HƯỚNG VECTƠ
+    // ========================================================
+    "grade-10-vectors": {
+      id: "grade-10-vectors",
+      grade: "Khối 10",
+      title: "Khối 10: Tọa độ, Trọng tâm & Tích vô hướng của hai vectơ trong Oxy",
+      rawInput: "Trong mặt phẳng tọa độ Oxy, cho tam giác ABC với A(1; 2), B(-2; 6) và C(5; 5). Tìm tọa độ trọng tâm G của tam giác ABC và tính tích vô hướng của hai vectơ AB và AC.",
+      data: {
+        bilingual_vocabulary: [
+          {
+            english_term: "Cartesian coordinate plane (Oxy)",
+            vietnamese_term: "Mặt phẳng tọa độ Oxy",
+            context_note: "Hệ trục tọa độ gồm trục hoành $Ox$ và trục tung $Oy$ vuông góc nhau"
+          },
+          {
+            english_term: "Centroid of a triangle",
+            vietnamese_term: "Trọng tâm tam giác",
+            context_note: "Giao điểm 3 đường trung tuyến: $x_G = \\frac{x_A+x_B+x_C}{3}, y_G = \\frac{y_A+y_B+y_C}{3}$"
+          },
+          {
+            english_term: "Dot product / Scalar product",
+            vietnamese_term: "Tích vô hướng",
+            context_note: "Công thức biểu thức tọa độ: $\\vec{u} \\cdot \\vec{v} = u_1 v_1 + u_2 v_2$"
+          },
+          {
+            english_term: "Perpendicular vectors",
+            vietnamese_term: "Hai vectơ vuông góc",
+            context_note: "Hai vectơ vuông góc khi và chỉ khi tích vô hướng bằng 0: $\\vec{u} \\cdot \\vec{v} = 0$"
+          }
+        ],
+        problem_analysis: "Đề bài cho tọa độ 3 đỉnh của tam giác $ABC$ trong mặt phẳng $Oxy$. Yêu cầu tìm tọa độ trọng tâm $G$ và tính tích vô hướng $\\vec{AB} \\cdot \\vec{AC}$. Dạng toán trọng tâm là ứng dụng tọa độ của vectơ trong chương trình Hình học Toán 10 (CT GDPT 2018).",
+        tier_1_hint: "Em hãy nhớ lại: Tọa độ trọng tâm $G$ của tam giác $ABC$ được tính bằng trung bình cộng tọa độ các đỉnh như thế nào? Để tính tích vô hướng $\\vec{AB} \\cdot \\vec{AC}$, trước tiên em cần tìm tọa độ của từng vectơ bằng cách lấy tọa độ điểm ngọn trừ tọa độ điểm gốc.",
+        tier_2_breakdown: [
+          "Bước 1: Áp dụng công thức tọa độ trọng tâm tam giác: $x_G = \\frac{x_A + x_B + x_C}{3}$ và $y_G = \\frac{y_A + y_B + y_C}{3}$.",
+          "Bước 2: Tìm tọa độ hai vectơ: $\\vec{AB} = (x_B - x_A; y_B - y_A)$ và $\\vec{AC} = (x_C - x_A; y_C - y_A)$.",
+          "Bước 3: Áp dụng công thức biểu thức tọa độ của tích vô hướng: $\\vec{AB} \\cdot \\vec{AC} = x_1 x_2 + y_1 y_2$ để tính và nhận xét góc $\\widehat{BAC}$."
+        ],
+        common_pitfall: "Học sinh thường nhầm lẫn khi tìm tọa độ vectơ (lấy gốc trừ ngọn thay vì ngọn trừ gốc), hoặc quên chia cho 3 khi tính tọa độ trọng tâm (chỉ cộng dồn tọa độ 3 đỉnh).",
+        full_solution: "1. **Tìm tọa độ trọng tâm $G$ (*Centroid of triangle ABC*):**\n- Áp dụng công thức tọa độ trọng tâm:\n$$x_G = \\frac{x_A + x_B + x_C}{3} = \\frac{1 + (-2) + 5}{3} = \\frac{4}{3}$$\n$$y_G = \\frac{y_A + y_B + y_C}{3} = \\frac{2 + 6 + 5}{3} = \\frac{13}{3}$$\nVậy tọa độ trọng tâm là $G\\left(\\frac{4}{3}; \\frac{13}{3}\\right)$.\n\n2. **Xác định tọa độ hai vectơ $\\vec{AB}$ và $\\vec{AC}$:**\n- Vectơ $\\vec{AB} = (-2 - 1; 6 - 2) = (-3; 4)$.\n- Vectơ $\\vec{AC} = (5 - 1; 5 - 2) = (4; 3)$.\n\n3. **Tính tích vô hướng (*Dot Product*):**\n$$\\vec{AB} \\cdot \\vec{AC} = (-3) \\cdot 4 + 4 \\cdot 3 = -12 + 12 = 0$$\n\n**Kết luận:** Trọng tâm là $G\\left(\\frac{4}{3}; \\frac{13}{3}\\right)$ và tích vô hướng $\\vec{AB} \\cdot \\vec{AC} = 0$. (Đặc biệt: Vì $\\vec{AB} \\cdot \\vec{AC} = 0$ nên $\\vec{AB} \\perp \\vec{AC}$, suy ra tam giác $ABC$ vuông tại $A$).",
+        parallel_exercise: {
+          question_en: "In the Cartesian plane Oxy, given triangle MNP with M(2; 1), N(5; 5) and P(-2; 4). Calculate the dot product of vector MN and vector MP.",
+          question_vi: "Trong mặt phẳng tọa độ Oxy, cho tam giác MNP với M(2; 1), N(5; 5) và P(-2; 4). Tính tích vô hướng của hai vectơ MN và MP.",
+          short_answer: "0"
+        }
+      }
+    },
+
+    // ========================================================
+    // 2. MẪU KHỐI 11 (GRADE 11): GIỚI HẠN HÀM SỐ DẠNG VÔ ĐỊNH 0/0
+    // ========================================================
+    "grade-11-limits": {
+      id: "grade-11-limits",
+      grade: "Khối 11",
+      title: "Khối 11: Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)",
+      rawInput: "Tính giới hạn của hàm số: L = lim_{x -> 2} (x^2 - 5x + 6) / (x - 2).",
+      data: {
+        bilingual_vocabulary: [
+          {
+            english_term: "Limit of a function",
+            vietnamese_term: "Giới hạn của hàm số",
+            context_note: "Ký hiệu $\\lim_{x \\to x_0} f(x)$, giá trị mà hàm số tiến tới khi biến số tiến dần đến $x_0$"
+          },
+          {
+            english_term: "Indeterminate form 0/0",
+            vietnamese_term: "Dạng vô định 0/0",
+            context_note: "Dạng giới hạn khi cả tử số và mẫu số cùng tiến về 0, không thể kết luận trực tiếp"
+          },
+          {
+            english_term: "Factoring polynomials",
+            vietnamese_term: "Phân tích đa thức thành nhân tử",
+            context_note: "Biến đổi $ax^2 + bx + c = a(x - x_1)(x - x_2)$ để làm xuất hiện nhân tử triệt tiêu"
+          },
+          {
+            english_term: "Cancel common factors",
+            vietnamese_term: "Khử / Triệt tiêu nhân tử chung",
+            context_note: "Rút gọn đại lượng $(x - x_0)$ gây ra dạng vô định khi $x \\neq x_0$"
+          }
+        ],
+        problem_analysis: "Đề bài yêu cầu tính giới hạn của hàm phân thức hữu tỉ tại điểm $x = 2$. Khi thay trực tiếp $x = 2$, biểu thức có dạng vô định $\\left[\\frac{0}{0}\\right]$. Dạng toán trọng tâm là phương pháp khử dạng vô định bằng cách phân tích đa thức thành nhân tử trong Giải tích Toán 11.",
+        tier_1_hint: "Khi thay trực tiếp $x = 2$ vào tử và mẫu, em nhận được dạng gì? Khi gặp dạng vô định $\\left[\\frac{0}{0}\\right]$ của phân thức hữu tỉ, đa thức tử số $x^2 - 5x + 6$ chắc chắn chia hết cho $(x - 2)$. Em hãy phân tích tử số thành nhân tử để triệt tiêu đại lượng làm mẫu số bằng 0!",
+        tier_2_breakdown: [
+          "Bước 1: Kiểm tra dạng giới hạn khi thay $x = 2$: tử số bằng 0 và mẫu số bằng 0 $\\implies$ dạng vô định $\\left[\\frac{0}{0}\\right]$.",
+          "Bước 2: Phân tích tam thức bậc hai ở tử số $x^2 - 5x + 6$ thành tích của hai nhị thức bậc nhất: $(x - 2)(x - 3)$.",
+          "Bước 3: Rút gọn nhân tử chung $(x - 2)$ khi xét $x \\neq 2$: $\\frac{x^2 - 5x + 6}{x - 2} = x - 3$.",
+          "Bước 4: Áp dụng định lý giới hạn hàm số liên tục, thay $x = 2$ vào biểu thức rút gọn để tính giá trị giới hạn $L$."
+        ],
+        common_pitfall: "Học sinh thường quên kiểm tra dạng giới hạn ban đầu dẫn tới việc vội vàng kết luận giới hạn bằng 0 hoặc không xác định. Một lỗi khác là tính nhầm nghiệm của tam thức bậc hai dẫn tới phân tích sai nhân tử.",
+        full_solution: "1. **Nhận dạng giới hạn (*Identify Indeterminate Form*):**\n- Khi $x \\to 2$:\n  + Tử số: $2^2 - 5(2) + 6 = 4 - 10 + 6 = 0$.\n  + Mẫu số: $2 - 2 = 0$.\n- Do đó, giới hạn có dạng vô định $\\left[\\frac{0}{0}\\right]$.\n\n2. **Phân tích nhân tử và khử dạng vô định (*Factoring & Canceling*):**\n- Tam thức bậc hai $x^2 - 5x + 6$ có hai nghiệm là $x = 2$ và $x = 3$.\n- Do đó: $x^2 - 5x + 6 = (x - 2)(x - 3)$.\n- Với mọi $x \\neq 2$, ta có:\n$$\\frac{x^2 - 5x + 6}{x - 2} = \\frac{(x - 2)(x - 3)}{x - 2} = x - 3$$\n\n3. **Tính giới hạn (*Compute Limit*):**\n$$L = \\lim_{x \\to 2} \\frac{x^2 - 5x + 6}{x - 2} = \\lim_{x \\to 2} (x - 3) = 2 - 3 = -1$$\n\n**Kết luận:** Giá trị của giới hạn là $L = -1$.",
+        parallel_exercise: {
+          question_en: "Evaluate the limit of the function: L = lim_{x -> 3} (x^2 - 4x + 3) / (x - 3).",
+          question_vi: "Tính giới hạn của hàm số: L = lim_{x -> 3} (x^2 - 4x + 3) / (x - 3).",
+          short_answer: "2"
+        }
+      }
+    },
+
+    // ========================================================
+    // 3. MẪU KHỐI 12 (GRADE 12): HÀM PHÂN THỨC & TIỆM CẬN (BÀI 1.26)
+    // ========================================================
+    "grade-12-asymptotes": {
+      id: "grade-12-asymptotes",
+      grade: "Khối 12",
+      title: "Khối 12: Hàm phân thức & Tích khoảng cách đến hai đường tiệm cận (Bài 1.26)",
       rawInput: "Cho hàm số y = (x + 1)/(x - 1) có đồ thị (C). Tính tích khoảng cách từ một điểm tuỳ ý thuộc (C) đến hai đường tiệm cận của nó.",
       data: {
         bilingual_vocabulary: [
@@ -61,82 +162,10 @@ window.ScaffoldingTutor = {
         }
       }
     },
-    "problem-derivatives-extrema": {
-      id: "problem-derivatives-extrema",
-      title: "Tìm giá trị cực trị của hàm bậc ba $y = x^3 - 3x + 2$",
-      rawInput: "Cho hàm số y = x^3 - 3x + 2. Tìm các điểm cực đại, cực tiểu và giá trị cực trị tương ứng của hàm số.",
-      data: {
-        bilingual_vocabulary: [
-          {
-            english_term: "Local Extrema (Plural) / Extremum (Singular)",
-            vietnamese_term: "Cực trị của hàm số",
-            context_note: "Bao gồm điểm cực đại (local maximum) và điểm cực tiểu (local minimum)"
-          },
-          {
-            english_term: "Critical point / Stationary point",
-            vietnamese_term: "Điểm tới hạn / Điểm dừng",
-            context_note: "Điểm mà tại đó $f'(x) = 0$ hoặc đạo hàm không xác định"
-          },
-          {
-            english_term: "First Derivative Test",
-            vietnamese_term: "Quy tắc 1 (xét dấu đạo hàm cấp 1)",
-            context_note: "Đạo hàm đổi dấu từ dương sang âm qua $x_0$ thì $x_0$ là điểm cực đại"
-          }
-        ],
-        problem_analysis: "Đề bài cho hàm đa thức bậc ba $y = x^3 - 3x + 2$. Yêu cầu tìm các điểm cực trị và giá trị cực trị tương ứng. Dạng toán trọng tâm là ứng dụng đạo hàm cấp 1 khảo sát tính biến thiên của hàm số lớp 12.",
-        tier_1_hint: "Để tìm điểm cực trị của hàm số đa thức xác định trên $\\mathbb{R}$, bước đầu tiên em cần tính đại lượng nào? Phương trình $y' = 0$ có bao nhiêu nghiệm và dấu của $y'$ biến đổi ra sao khi qua các nghiệm đó?",
-        tier_2_breakdown: [
-          "Bước 1: Tính đạo hàm $y' = 3x^2 - 3$.",
-          "Bước 2: Giải phương trình đạo hàm bằng 0: $3x^2 - 3 = 0 \\iff x = \\pm 1$.",
-          "Bước 3: Lập bảng biến thiên hoặc xét dấu của tam thức bậc hai $y'$ qua các điểm $x = -1$ và $x = 1$.",
-          "Bước 4: Tính giá trị cực trị tương ứng $y(-1)$ và $y(1)$ rồi đưa ra kết luận song ngữ."
-        ],
-        common_pitfall: "Học sinh hay nhầm lẫn giữa 'điểm cực trị của hàm số' (hoành độ $x$) với 'giá trị cực trị' (tung độ $y$) và 'điểm cực trị của đồ thị hàm số' (cặp tọa độ $(x, y)$).",
-        full_solution: "1. **Tập xác định:** $D = \\mathbb{R}$.\n2. **Tính đạo hàm (*Derivative*):**\n$$y' = 3x^2 - 3$$\n$$y' = 0 \\iff 3(x^2 - 1) = 0 \\iff x = 1 \\text{ hoặc } x = -1$$\n3. **Bảng xét dấu $y'$:**\n- Với $x < -1$: $y' > 0$ (hàm số đồng biến).\n- Với $-1 < x < 1$: $y' < 0$ (hàm số nghịch biến).\n- Với $x > 1$: $y' > 0$ (hàm số đồng biến).\n\nQua điểm $x = -1$, đạo hàm đổi dấu từ $(+)$ sang $(-)$ nên $x = -1$ là **điểm cực đại** (*Local Maximum point*), giá trị cực đại là $y_{\\text{CĐ}} = (-1)^3 - 3(-1) + 2 = 4$.\nQua điểm $x = 1$, đạo hàm đổi dấu từ $(-)$ sang $(+)$ nên $x = 1$ là **điểm cực tiểu** (*Local Minimum point*), giá trị cực tiểu là $y_{\\text{CT}} = (1)^3 - 3(1) + 2 = 0$.",
-        parallel_exercise: {
-          question_en: "Find the local maximum value of the function $y = -x^3 + 3x^2 + 1$.",
-          question_vi: "Tìm giá trị cực đại của hàm số $y = -x^3 + 3x^2 + 1$.",
-          short_answer: "5"
-        }
-      }
-    },
-    "problem-vectors-3d": {
-      id: "problem-vectors-3d",
-      title: "Góc giữa hai vectơ trong không gian Oxyz",
-      rawInput: "Trong không gian Oxyz, cho hai vectơ a = (1, 2, -2) và b = (-2, 1, 2). Tính cosin góc giữa hai vectơ a và b.",
-      data: {
-        bilingual_vocabulary: [
-          {
-            english_term: "Dot product / Scalar product",
-            vietnamese_term: "Tích vô hướng",
-            context_note: "Công thức tọa độ $\\vec{a} \\cdot \\vec{b} = a_1 b_1 + a_2 b_2 + a_3 b_3$"
-          },
-          {
-            english_term: "Magnitude / Length of a vector",
-            vietnamese_term: "Độ dài vectơ (chuẩn)",
-            context_note: "|\\vec{a}| = \\sqrt{a_1^2 + a_2^2 + a_3^2}"
-          },
-          {
-            english_term: "Angle between two vectors",
-            vietnamese_term: "Góc giữa hai vectơ",
-            context_note: "\\cos(\\vec{a}, \\vec{b}) = \\frac{\\vec{a} \\cdot \\vec{b}}{|\\vec{a}| \\cdot |\\vec{b}|}"
-          }
-        ],
-        problem_analysis: "Đề bài cho tọa độ hai vectơ trong không gian $Oxyz$. Yêu cầu tính cosin góc giữa hai vectơ. Dạng toán trọng tâm là ứng dụng tích vô hướng và độ dài vectơ trong hình học giải tích không gian lớp 12.",
-        tier_1_hint: "Em hãy nhớ lại: Mối liên hệ giữa tích vô hướng của hai vectơ với tích độ dài và cosin góc giữa chúng là gì? Công thức tính $\\cos(\\vec{a}, \\vec{b})$ qua tọa độ các thành phần được viết như thế nào?",
-        tier_2_breakdown: [
-          "Bước 1: Tính tích vô hướng $\\vec{a} \\cdot \\vec{b} = a_1 b_1 + a_2 b_2 + a_3 b_3$.",
-          "Bước 2: Tính độ dài từng vectơ $|\\vec{a}| = \\sqrt{1^2 + 2^2 + (-2)^2}$ và $|\\vec{b}| = \\sqrt{(-2)^2 + 1^2 + 2^2}$.",
-          "Bước 3: Lập tỉ số $\\cos(\\vec{a}, \\vec{b}) = \\frac{\\vec{a} \\cdot \\vec{b}}{|\\vec{a}| \\cdot |\\vec{b}|}$ và rút gọn."
-        ],
-        common_pitfall: "Học sinh dễ nhầm lẫn dấu âm khi nhân các tọa độ (ví dụ $1 \\cdot (-2)$ hoặc $(-2) \\cdot 2$), hoặc quên lấy căn bậc hai khi tính độ dài vectơ.",
-        full_solution: "1. **Tính tích vô hướng (*Dot Product*):**\n$$\\vec{a} \\cdot \\vec{b} = 1 \\cdot (-2) + 2 \\cdot 1 + (-2) \\cdot 2 = -2 + 2 - 4 = -4$$\n\n2. **Tính độ dài (*Magnitudes*):**\n$$|\\vec{a}| = \\sqrt{1^2 + 2^2 + (-2)^2} = \\sqrt{1 + 4 + 4} = \\sqrt{9} = 3$$\n$$|\\vec{b}| = \\sqrt{(-2)^2 + 1^2 + 2^2} = \\sqrt{4 + 1 + 4} = \\sqrt{9} = 3$$\n\n3. **Tính cosin góc giữa hai vectơ:**\n$$\\cos(\\vec{a}, \\vec{b}) = \\frac{\\vec{a} \\cdot \\vec{b}}{|\\vec{a}| \\cdot |\\vec{b}|} = \\frac{-4}{3 \\cdot 3} = -\\frac{4}{9}$$\n\n**Kết luận:** Cosin góc giữa hai vectơ là $-\\frac{4}{9}$.",
-        parallel_exercise: {
-          question_en: "In 3D space Oxyz, given $\\vec{u} = (2, -1, 2)$ and $\\vec{v} = (1, 2, 2)$. Calculate $\\cos(\\vec{u}, \\vec{v})$.",
-          question_vi: "Trong không gian Oxyz, cho hai vectơ $\\vec{u} = (2, -1, 2)$ và $\\vec{v} = (1, 2, 2)$. Tính $\\cos(\\vec{u}, \\vec{v})$.",
-          short_answer: "4/9"
-        }
-      }
+
+    // Backward compatibility aliases
+    get "problem-126-asymptotes"() {
+      return this["grade-12-asymptotes"];
     }
   },
 
@@ -157,7 +186,7 @@ window.ScaffoldingTutor = {
   currentInputMode: 'custom', // 'custom' hoặc 'preset'
 
   init() {
-    this.selectPreset("problem-126-asymptotes");
+    this.selectPreset("grade-12-asymptotes");
   },
 
   resetAccordionDefaults() {
@@ -273,27 +302,27 @@ window.ScaffoldingTutor = {
 
     this.resetAccordionDefaults();
 
-    // Check if matches known presets
+    // Check if matches known presets (Grade 10, 11, 12)
     const lower = problemText.toLowerCase();
     if (lower.includes('tiệm cận') || lower.includes('tích khoảng cách') || lower.includes('x + 1') || lower.includes('asymptote')) {
-      this.currentData = this.presets["problem-126-asymptotes"].data;
+      this.currentData = this.presets["grade-12-asymptotes"].data;
       this.render();
       if (window.App && window.App.showToast) {
-        window.App.showToast('✅ Đã dựng giàn giáo nhận thức cho Bài 1.26!');
+        window.App.showToast('✅ Đã dựng giàn giáo nhận thức: Khối 12 (Bài 1.26 - Tiệm cận)!');
       }
       return;
-    } else if (lower.includes('cực trị') || lower.includes('x^3') || lower.includes('extrema')) {
-      this.currentData = this.presets["problem-derivatives-extrema"].data;
+    } else if (lower.includes('giới hạn') || lower.includes('lim') || lower.includes('x^2 - 5x') || lower.includes('limit')) {
+      this.currentData = this.presets["grade-11-limits"].data;
       this.render();
       if (window.App && window.App.showToast) {
-        window.App.showToast('✅ Đã dựng giàn giáo nhận thức cực trị hàm số!');
+        window.App.showToast('✅ Đã dựng giàn giáo nhận thức: Khối 11 (Giới hạn hàm số 0/0)!');
       }
       return;
-    } else if (lower.includes('vecto') || lower.includes('oxyz') || lower.includes('cosin')) {
-      this.currentData = this.presets["problem-vectors-3d"].data;
+    } else if (lower.includes('trọng tâm') || lower.includes('tam giác abc') || lower.includes('oxy') || lower.includes('centroid') || lower.includes('tọa độ')) {
+      this.currentData = this.presets["grade-10-vectors"].data;
       this.render();
       if (window.App && window.App.showToast) {
-        window.App.showToast('✅ Đã dựng giàn giáo nhận thức Vectơ 3D!');
+        window.App.showToast('✅ Đã dựng giàn giáo nhận thức: Khối 10 (Tọa độ & Vectơ Oxy)!');
       }
       return;
     }
