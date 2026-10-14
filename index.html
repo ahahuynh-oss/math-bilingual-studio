@@ -653,48 +653,116 @@
         </div>
       </section>
 
-      <!-- Input & Problem Selection Card -->
-      <section class="glass-card p-6 sm:p-7 rounded-3xl border border-slate-800 shadow-xl space-y-5">
-        <div class="flex flex-wrap items-center justify-between border-b border-slate-800 pb-3 gap-3">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm font-bold">✍️</span>
-            <h3 class="text-sm sm:text-base font-bold text-white">Nhập Bài Toán Cần Dựng Giàn Giáo Hoặc Chọn Mẫu Điển Hình:</h3>
+      <!-- Input & Problem Selection: 2 Clear Choices -->
+      <section class="glass-card p-6 sm:p-7 rounded-3xl border border-slate-800 shadow-xl space-y-6">
+        
+        <!-- Header & 2-Choice Mode Switcher -->
+        <div class="flex flex-wrap items-center justify-between border-b border-slate-800 pb-4 gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-base font-bold">⚡</span>
+            <div>
+              <h3 class="text-sm sm:text-base font-extrabold text-white">Khởi Tạo Bài Toán Với 2 Lựa Chọn Đơn Giản:</h3>
+              <p class="text-[11px] text-slate-400">Tự do nhập đề bài toán mới hoặc chọn các bài toán mẫu kinh điển để trình diễn</p>
+            </div>
           </div>
-          <span class="text-xs text-slate-400">Hỗ trợ gõ công thức Toán học chuẩn LaTeX ($...$)</span>
-        </div>
-
-        <!-- Quick Presets -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">⚡ Bài mẫu:</span>
-          <button onclick="ScaffoldingTutor.selectPreset('problem-126-asymptotes')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-900/60 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-500/40 transition-all flex items-center gap-1.5">
-            ⭐ <span>Bài 1.26: Tiệm cận & Tích khoảng cách (Lớp 12)</span>
-          </button>
-          <button onclick="ScaffoldingTutor.selectPreset('problem-derivatives-extrema')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-1.5">
-            📘 <span>Đạo hàm & Cực trị hàm bậc 3</span>
-          </button>
-          <button onclick="ScaffoldingTutor.selectPreset('problem-vectors-3d')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-1.5">
-            📐 <span>Vectơ & Góc trong không gian Oxyz</span>
-          </button>
-        </div>
-
-        <!-- Textarea -->
-        <div>
-          <textarea id="scaffold-problem-input" rows="4" placeholder="Nhập hoặc dán đề bài toán cần hỗ trợ giàn giáo vào đây (tiếng Anh hoặc tiếng Việt)..." class="w-full p-4 glass-input rounded-2xl text-xs sm:text-sm text-white font-medium leading-relaxed"></textarea>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-          <div id="scaffold-status" class="text-xs text-slate-400"></div>
-
-          <div class="flex items-center gap-3">
-            <button onclick="document.getElementById('scaffold-problem-input').value = ''" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all">
-              Xóa đề bài
+          
+          <!-- 2 Clear Choice Switcher -->
+          <div class="flex bg-slate-900 p-1 rounded-2xl border border-slate-800">
+            <button id="btn-mode-custom" onclick="ScaffoldingTutor.switchInputMode('custom')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow-md shadow-indigo-600/30">
+              <span>✍️ Lựa chọn 1: Gõ / Dán Đề Bài</span>
             </button>
-            <button id="btn-run-scaffold" onclick="ScaffoldingTutor.handleAnalyzeClick()" class="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-500 via-indigo-600 to-teal-500 hover:from-amber-400 hover:to-teal-400 text-white shadow-xl shadow-indigo-600/30 transition-all flex items-center gap-2">
-              <span>🚀 Bật Giàn Giáo Nhận Thức</span>
+            <button id="btn-mode-preset" onclick="ScaffoldingTutor.switchInputMode('preset')" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+              <span>🎯 Lựa chọn 2: Mẫu Có Sẵn (Preset Demo)</span>
             </button>
           </div>
         </div>
+
+        <!-- ======================================================= -->
+        <!-- LỰA CHỌN 1: GÕ VĂN BẢN TỰ NHIÊN / DÁN ĐỀ BÀI -->
+        <!-- ======================================================= -->
+        <div id="scaffold-mode-custom" class="space-y-4">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-indigo-300 uppercase tracking-wide flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+              <span>Gõ văn bản tự nhiên hoặc Dán đề bài (Tiếng Việt / English &amp; LaTeX):</span>
+            </label>
+            <span class="text-[11px] text-slate-400">Hỗ trợ trích xuất văn bản từ đề thi, sách giáo khoa</span>
+          </div>
+
+          <textarea id="scaffold-problem-input" rows="4" placeholder="Ví dụ gõ hoặc dán đề bài toán cần phân tích giàn giáo:
+Cho hàm số y = (x + 1)/(x - 1) có đồ thị (C). Tính tích khoảng cách từ một điểm tuỳ ý thuộc (C) đến hai đường tiệm cận của nó..." class="w-full p-4 glass-input rounded-2xl text-xs sm:text-sm text-white font-medium leading-relaxed"></textarea>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <div id="scaffold-status" class="text-xs text-slate-400"></div>
+
+            <div class="flex items-center gap-3">
+              <button onclick="document.getElementById('scaffold-problem-input').value = ''" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all">
+                Xóa văn bản
+              </button>
+              <button id="btn-run-scaffold" onclick="ScaffoldingTutor.handleAnalyzeClick()" class="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-amber-500 via-indigo-600 to-teal-500 hover:from-amber-400 hover:to-teal-400 text-white shadow-xl shadow-indigo-600/30 transition-all flex items-center gap-2">
+                <span>🚀 Bật Giàn Giáo Nhận Thức</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- LỰA CHỌN 2: CHỌN MẪU BÀI TẬP CÓ SẴN (PRESET DEMO) -->
+        <!-- ======================================================= -->
+        <div id="scaffold-mode-preset" class="space-y-4 hidden">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-teal-300 uppercase tracking-wide flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+              <span>Chọn nhanh 1 trong các bài toán mẫu chuẩn hóa sư phạm (Bấm để tải tức thì):</span>
+            </label>
+            <span class="text-[11px] text-teal-400 font-semibold">Tự động nạp giàn giáo chuẩn</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Preset 1 -->
+            <button onclick="ScaffoldingTutor.selectPresetAndRender('problem-126-asymptotes')" class="p-4 rounded-2xl border-2 border-indigo-500/50 bg-gradient-to-b from-indigo-950/40 to-slate-900 hover:border-indigo-400 hover:bg-indigo-950/60 text-left transition-all shadow-lg group cursor-pointer">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Mẫu 1 • Lớp 12</span>
+                <span class="text-[11px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30">⭐ Khuyên dùng</span>
+              </div>
+              <h4 class="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">
+                Bài 1.26: Tiệm Cận &amp; Tích Khoảng Cách
+              </h4>
+              <p class="text-[11px] text-slate-400 mt-1 line-clamp-2">
+                Hàm số $y = \frac{x+1}{x-1}$. Tính tích khoảng cách từ điểm tuỳ ý thuộc (C) đến hai tiệm cận.
+              </p>
+            </button>
+
+            <!-- Preset 2 -->
+            <button onclick="ScaffoldingTutor.selectPresetAndRender('problem-derivatives-extrema')" class="p-4 rounded-2xl border border-slate-700 bg-slate-900/80 hover:border-teal-500/60 hover:bg-slate-800 text-left transition-all shadow-lg group cursor-pointer">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Mẫu 2 • Giải Tích</span>
+                <span class="text-[11px] text-slate-400">Đạo hàm</span>
+              </div>
+              <h4 class="text-sm font-bold text-white group-hover:text-teal-300 transition-colors">
+                Cực Trị Hàm Đa Thức Bậc Ba
+              </h4>
+              <p class="text-[11px] text-slate-400 mt-1 line-clamp-2">
+                Hàm số $y = x^3 - 3x + 2$. Tìm điểm cực đại, cực tiểu và giá trị cực trị tương ứng.
+              </p>
+            </button>
+
+            <!-- Preset 3 -->
+            <button onclick="ScaffoldingTutor.selectPresetAndRender('problem-vectors-3d')" class="p-4 rounded-2xl border border-slate-700 bg-slate-900/80 hover:border-purple-500/60 hover:bg-slate-800 text-left transition-all shadow-lg group cursor-pointer">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Mẫu 3 • Hình Học Oxyz</span>
+                <span class="text-[11px] text-slate-400">Vectơ 3D</span>
+              </div>
+              <h4 class="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">
+                Góc Giữa Hai Vectơ Trong Không Gian
+              </h4>
+              <p class="text-[11px] text-slate-400 mt-1 line-clamp-2">
+                Cho $\vec{a}=(1,2,-2), \vec{b}=(-2,1,2)$. Tính tích vô hướng và cosin góc giữa hai vectơ.
+              </p>
+            </button>
+          </div>
+        </div>
+
       </section>
 
       <!-- Dynamic Scaffolding Results Container -->
@@ -939,12 +1007,12 @@ D. 0" class="w-full p-3.5 glass-input rounded-xl text-xs font-mono"></textarea>
   </div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261015_02"></script>
-  <script src="js/ai-generator.js?v=20261015_02"></script>
-  <script src="js/exporter.js?v=20261015_02"></script>
-  <script src="js/quiz.js?v=20261015_02"></script>
-  <script src="js/scaffolding-tutor.js?v=20261015_02"></script>
-  <script src="js/app.js?v=20261015_02"></script>
+  <script src="js/data.js?v=20261015_03"></script>
+  <script src="js/ai-generator.js?v=20261015_03"></script>
+  <script src="js/exporter.js?v=20261015_03"></script>
+  <script src="js/quiz.js?v=20261015_03"></script>
+  <script src="js/scaffolding-tutor.js?v=20261015_03"></script>
+  <script src="js/app.js?v=20261015_03"></script>
 </body>
 </html>
 

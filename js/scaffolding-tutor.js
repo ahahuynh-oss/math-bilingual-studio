@@ -154,6 +154,8 @@ window.ScaffoldingTutor = {
     parallel: false  // Mặc định ẩn
   },
 
+  currentInputMode: 'custom', // 'custom' hoặc 'preset'
+
   init() {
     this.selectPreset("problem-126-asymptotes");
   },
@@ -171,6 +173,34 @@ window.ScaffoldingTutor = {
     };
   },
 
+  switchInputMode(mode) {
+    this.currentInputMode = mode;
+    const customPanel = document.getElementById('scaffold-mode-custom');
+    const presetPanel = document.getElementById('scaffold-mode-preset');
+    const btnCustom = document.getElementById('btn-mode-custom');
+    const btnPreset = document.getElementById('btn-mode-preset');
+
+    if (mode === 'custom') {
+      if (customPanel) customPanel.classList.remove('hidden');
+      if (presetPanel) presetPanel.classList.add('hidden');
+      if (btnCustom) {
+        btnCustom.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow';
+      }
+      if (btnPreset) {
+        btnPreset.className = 'px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
+      }
+    } else {
+      if (customPanel) customPanel.classList.add('hidden');
+      if (presetPanel) presetPanel.classList.remove('hidden');
+      if (btnCustom) {
+        btnCustom.className = 'px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
+      }
+      if (btnPreset) {
+        btnPreset.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-teal-600 text-white shadow';
+      }
+    }
+  },
+
   selectPreset(presetId) {
     const p = this.presets[presetId];
     if (!p) return;
@@ -179,6 +209,14 @@ window.ScaffoldingTutor = {
     this.currentData = p.data;
     this.resetAccordionDefaults();
     this.render();
+  },
+
+  selectPresetAndRender(presetId) {
+    this.selectPreset(presetId);
+    if (window.App && window.App.showToast) {
+      const p = this.presets[presetId];
+      window.App.showToast(`✅ Đã tải mẫu bài tập: ${p ? p.title : presetId}`);
+    }
   },
 
   /**
