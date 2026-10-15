@@ -19,6 +19,8 @@ const App = {
     this.setupSpeechVoices();
     this.renderAll();
     this.initCanvasGrapher();
+    this.renderMyExamsTable('all');
+    this.switchTab('my-exams');
   },
 
   loadLessonFromStorage() {
@@ -127,26 +129,347 @@ const App = {
     el.dispatchEvent(new Event('input', { bubbles: true }));
   },
 
-  switchTab(tabName) {
-    this.activeTab = tabName;
+  myExamsFilter: 'all',
+  examList: [
+    {
+      id: 'derivatives-extrema',
+      code: 'P8DZW2',
+      title: 'Ôn tập Bài 4 – Chương 1 – Toán 12 – 003: Đạo hàm & Cực trị hàm số (Derivatives and Extrema)',
+      grade: 'Khối 12',
+      status: 'Đang mở',
+      schedule: 'Không đặt lịch',
+      questionCount: 22,
+      takenCount: 0,
+      presetKey: 'derivatives-extrema'
+    },
+    {
+      id: 'grade-12-asymptotes',
+      code: 'Z9AAJW',
+      title: 'Đề HSG Chuyên Đề – Hàm phân thức & Tiệm cận (Rational Functions & Asymptotes - Bài 1.26)',
+      grade: 'Khối 12',
+      status: 'Đang mở',
+      schedule: 'Theo lịch',
+      questionCount: 50,
+      takenCount: 0,
+      scaffoldKey: 'grade-12-asymptotes'
+    },
+    {
+      id: 'grade-11-limits',
+      code: '5SNKDC',
+      title: 'Ôn tập Bài 15 – Chương 5 – Toán 11 – 002: Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)',
+      grade: 'Khối 11',
+      status: 'Đang mở',
+      schedule: 'Không đặt lịch',
+      questionCount: 22,
+      takenCount: 0,
+      scaffoldKey: 'grade-11-limits'
+    },
+    {
+      id: 'grade-10-vectors',
+      code: '7ZC696',
+      title: 'Ôn tập Bài 15 – Chương 5 – Toán 10 – 001: Tọa độ Oxy, Trọng tâm & Tích vô hướng (Vectors in Oxy)',
+      grade: 'Khối 10',
+      status: 'Đang mở',
+      schedule: 'Không đặt lịch',
+      questionCount: 22,
+      takenCount: 0,
+      scaffoldKey: 'grade-10-vectors'
+    },
+    {
+      id: 'vectors-3d',
+      code: '8KNSRW',
+      title: 'Ôn tập Bài 3 – Chương 1 – Toán 12 – 001: Vectơ & Hình học Không gian Oxyz (Vectors in 3D Space)',
+      grade: 'Khối 12',
+      status: 'Đang mở',
+      schedule: 'Không đặt lịch',
+      questionCount: 22,
+      takenCount: 0,
+      presetKey: 'vectors-3d'
+    },
+    {
+      id: 'integrals-calculus',
+      code: 'F2H75Q',
+      title: 'Ôn tập Bài 4 – Chương 3 – Toán 12 – 002: Tích phân Xác định & Diện tích Hình phẳng (Calculus)',
+      grade: 'Khối 12',
+      status: 'Đang mở',
+      schedule: 'Không đặt lịch',
+      questionCount: 22,
+      takenCount: 0,
+      curriculumKey: 'integrals-calculus'
+    },
+    {
+      id: 'probability-events',
+      code: 'XP482L',
+      title: 'Đề kiểm tra 45 phút – Xác suất Cổ điển & Biến cố Độc lập (Classical Probability & Events)',
+      grade: 'Khối 11',
+      status: 'Đang mở',
+      schedule: 'Không đặt lịch',
+      questionCount: 25,
+      takenCount: 0,
+      curriculumKey: 'probability-statistics'
+    },
+    {
+      id: 'complex-numbers',
+      code: 'C912VM',
+      title: 'Chuyên đề Số phức & Biểu diễn hình học trên mặt phẳng phức (Complex Numbers & Argand)',
+      grade: 'Khối 12',
+      status: 'Đang mở',
+      schedule: 'Theo lịch',
+      questionCount: 30,
+      takenCount: 0,
+      curriculumKey: 'complex-numbers'
+    }
+  ],
 
-    // Update Tab Buttons UI
-    const tabs = ['builder-lesson', 'builder-quiz', 'interactive-preview', 'scaffolding-tutor'];
-    tabs.forEach(t => {
-      const btn = document.getElementById(`tab-nav-${t}`);
-      const panel = document.getElementById(`panel-${t}`);
-      if (btn && panel) {
-        if (t === tabName) {
-          btn.className = 'flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 transition-all';
-          panel.classList.remove('hidden');
+  toggleSidebar() {
+    const sidebar = document.getElementById('app-sidebar');
+    const overlay = document.getElementById('sidebar-backdrop');
+    if (!sidebar) return;
+    sidebar.classList.toggle('-translate-x-full');
+    if (overlay) overlay.classList.toggle('hidden');
+  },
+
+  updateBreadcrumb(tabName) {
+    const el = document.getElementById('breadcrumb-active');
+    if (!el) return;
+    const title = this.currentLesson?.meta?.titleEn || 'Bài học';
+    switch (tabName) {
+      case 'my-exams':
+        el.innerText = 'Đề của tôi';
+        break;
+      case 'builder-lesson':
+        el.innerText = `Soạn bài giảng › ${title}`;
+        break;
+      case 'builder-quiz':
+        el.innerText = `Soạn đề thi › ${this.currentLesson?.quiz?.titleEn || 'Đề kiểm tra'}`;
+        break;
+      case 'interactive-preview':
+        el.innerText = `Làm bài tương tác › ${title}`;
+        break;
+      case 'scaffolding-tutor':
+        el.innerText = 'Gia sư giàn giáo nhận thức (ZPD)';
+        break;
+      default:
+        el.innerText = 'Đề của tôi';
+    }
+  },
+
+  filterExams(grade) {
+    this.renderMyExamsTable(grade);
+  },
+
+  renderMyExamsTable(gradeFilter = 'all') {
+    this.myExamsFilter = gradeFilter;
+    const tbody = document.getElementById('my-exams-tbody');
+    const countLabel = document.getElementById('my-exams-count-label');
+    if (!tbody) return;
+
+    let filtered = this.examList;
+    if (gradeFilter !== 'all') {
+      filtered = this.examList.filter(item => item.grade === gradeFilter);
+    }
+
+    if (countLabel) {
+      countLabel.innerText = `${filtered.length} đề thi & bài giảng song ngữ`;
+    }
+
+    // Filter button active styles
+    const filters = ['all', 'Khối 12', 'Khối 11', 'Khối 10'];
+    filters.forEach(f => {
+      const btnId = 'filter-grade-' + (f === 'all' ? 'all' : f.replace(/\s+/g, ''));
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        if (f === gradeFilter) {
+          btn.className = 'w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-700 flex items-center justify-between border border-indigo-200/60 shadow-xs transition-all';
         } else {
-          btn.className = 'flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all';
-          panel.classList.add('hidden');
+          btn.className = 'w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all';
         }
       }
     });
 
-    if (tabName === 'interactive-preview') {
+    tbody.innerHTML = filtered.map(item => {
+      const gradeColor = item.grade === 'Khối 12' 
+        ? 'bg-amber-50 text-amber-700 border-amber-200' 
+        : item.grade === 'Khối 11' 
+          ? 'bg-purple-50 text-purple-700 border-purple-200' 
+          : 'bg-sky-50 text-sky-700 border-sky-200';
+
+      return `
+        <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100 group">
+          <td class="py-3.5 px-4 font-semibold text-slate-800 text-xs sm:text-sm max-w-xs sm:max-w-md">
+            <div class="line-clamp-2 hover:text-indigo-600 cursor-pointer font-bold" onclick="App.openExamFromList('${item.id}')">
+              ${item.title}
+            </div>
+            <div class="text-[11px] text-slate-400 font-normal mt-0.5 flex items-center gap-2">
+              <span class="text-teal-600 font-medium">Song ngữ Anh - Việt</span>
+              <span>•</span>
+              <span>MathJax 3</span>
+            </div>
+          </td>
+
+          <td class="py-3.5 px-3">
+            <span class="px-2 py-1 rounded bg-slate-100 text-slate-700 font-mono text-[11px] font-bold border border-slate-200">
+              ${item.code}
+            </span>
+          </td>
+
+          <td class="py-3.5 px-3 text-slate-400">
+            <div class="flex items-center gap-1.5">
+              <button onclick="App.copyExamLink('${item.code}')" class="p-1 hover:text-indigo-600 rounded hover:bg-slate-100 text-xs" title="Sao chép liên kết">
+                📋
+              </button>
+              <button onclick="App.openExamFromList('${item.id}')" class="p-1 hover:text-indigo-600 rounded hover:bg-slate-100 text-xs" title="Mở làm bài">
+                ↗
+              </button>
+            </div>
+          </td>
+
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <div class="badge-status-open">
+              ${item.status}
+            </div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${item.schedule}</div>
+          </td>
+
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <span class="px-2 py-0.5 rounded text-[11px] font-semibold border ${gradeColor}">
+              ${item.grade}
+            </span>
+          </td>
+
+          <td class="py-3.5 px-3 text-center text-xs font-semibold text-slate-700">
+            ${item.questionCount}
+          </td>
+
+          <td class="py-3.5 px-3 text-center text-xs text-slate-400">
+            ${item.takenCount}
+          </td>
+
+          <td class="py-3.5 px-4 text-right whitespace-nowrap">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="App.openExamFromList('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all" title="Làm bài / Xem trước">
+                👁️ <span>Mở</span>
+              </button>
+              <button onclick="App.editExamFromList('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all" title="Chỉnh sửa bài giảng & đề thi">
+                ✏️
+              </button>
+              <button onclick="App.openScaffoldForExam('${item.scaffoldKey || item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-all" title="Gia sư giàn giáo ZPD">
+                🪜
+              </button>
+              <button onclick="App.openExportWordModal()" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all" title="Xuất file Word (.doc)">
+                📄
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  },
+
+  openExamFromList(examId) {
+    const item = this.examList.find(e => e.id === examId);
+    if (!item) return;
+
+    if (item.presetKey) {
+      this.loadPreset(item.presetKey);
+      this.switchTab('interactive-preview');
+    } else if (item.scaffoldKey) {
+      if (window.ScaffoldingTutor) {
+        window.ScaffoldingTutor.selectPreset(item.scaffoldKey);
+      }
+      this.switchTab('scaffolding-tutor');
+    } else if (item.curriculumKey) {
+      if (window.AIGenerator && window.AIGenerator.generateFromCurriculum) {
+        window.AIGenerator.generateFromCurriculum(item.curriculumKey);
+      }
+      this.switchTab('interactive-preview');
+    } else {
+      this.switchTab('interactive-preview');
+    }
+  },
+
+  editExamFromList(examId) {
+    const item = this.examList.find(e => e.id === examId);
+    if (!item) return;
+    if (item.presetKey) {
+      this.loadPreset(item.presetKey);
+    }
+    this.switchTab('builder-lesson');
+  },
+
+  openScaffoldForExam(scaffoldKey) {
+    if (window.ScaffoldingTutor) {
+      if (window.ScaffoldingTutor.presets[scaffoldKey]) {
+        window.ScaffoldingTutor.selectPreset(scaffoldKey);
+      } else {
+        window.ScaffoldingTutor.init();
+      }
+    }
+    this.switchTab('scaffolding-tutor');
+  },
+
+  copyExamLink(code) {
+    const dummyUrl = window.location.origin + window.location.pathname + '#exam=' + code;
+    navigator.clipboard?.writeText(dummyUrl).then(() => {
+      this.showToast(`Đã sao chép liên kết đề thi ${code}!`);
+    }).catch(() => {
+      this.showToast(`Mã đề: ${code}`);
+    });
+  },
+
+  loadPreset(presetId) {
+    const match = SAMPLE_LESSONS.find(l => l.id === presetId);
+    if (match) {
+      this.currentLesson = JSON.parse(JSON.stringify(match));
+      this.saveLessonToStorage(true);
+      this.renderAll();
+      const select = document.getElementById('lesson-preset-selector');
+      if (select) select.value = presetId;
+    }
+  },
+
+  loadScaffoldPreset(scaffoldKey) {
+    if (window.ScaffoldingTutor) {
+      window.ScaffoldingTutor.selectPreset(scaffoldKey);
+    }
+    this.switchTab('scaffolding-tutor');
+  },
+
+  switchTab(tabName) {
+    this.activeTab = tabName;
+
+    // Update panels
+    const tabs = ['my-exams', 'builder-lesson', 'builder-quiz', 'interactive-preview', 'scaffolding-tutor'];
+    tabs.forEach(t => {
+      const panel = document.getElementById(`panel-${t}`);
+      if (panel) {
+        if (t === tabName) {
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
+      }
+
+      // Sidebar links
+      const sideLink = document.getElementById(`side-nav-${t}`);
+      if (sideLink) {
+        if (t === tabName || (t === 'my-exams' && tabName === 'my-exams')) {
+          sideLink.classList.add('active');
+        } else {
+          sideLink.classList.remove('active');
+        }
+      }
+    });
+
+    // Update Breadcrumb text
+    this.updateBreadcrumb(tabName);
+
+    // Scroll to top of workspace
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (tabName === 'my-exams') {
+      this.renderMyExamsTable(this.myExamsFilter || 'all');
+    } else if (tabName === 'interactive-preview') {
       this.renderInteractivePreview();
     } else if (tabName === 'scaffolding-tutor') {
       if (window.ScaffoldingTutor && (!window.ScaffoldingTutor.currentData || !document.getElementById('scaffold-results-container')?.children.length)) {

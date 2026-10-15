@@ -1,63 +1,143 @@
-/* Math Bilingual Studio - Custom Styles */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Math Bilingual Studio - Modern Light & Comfortable Educational SaaS Design System */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --primary-accent: #6366f1;
-  --primary-glow: rgba(99, 102, 241, 0.25);
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --primary-border: #c7d2fe;
+  --bg-app: #f8fafc;
+  --bg-card: #ffffff;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --sidebar-w: 260px;
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
-  color: #f1f5f9;
-  background-color: #030712;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-app);
   overflow-x: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 code, .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Glassmorphism */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
+/* Modern Card Design & Light Mode Harmonization */
+.glass-panel,
 .glass-card {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 1rem !important;
+  color: #1e293b !important;
 }
 
+.glass-card:hover {
+  border-color: #cbd5e1 !important;
+}
+
+/* Text Overrides for High Contrast & Comfort */
+.glass-card .text-white,
+header .text-white,
+#app-main-content .text-white {
+  color: #0f172a !important;
+}
+
+.glass-card .text-slate-100,
+#app-main-content .text-slate-100 {
+  color: #1e293b !important;
+}
+
+.glass-card .text-slate-200,
+#app-main-content .text-slate-200 {
+  color: #334155 !important;
+}
+
+.glass-card .text-slate-300,
+#app-main-content .text-slate-300 {
+  color: #475569 !important;
+}
+
+.glass-card .text-slate-400,
+#app-main-content .text-slate-400 {
+  color: #64748b !important;
+}
+
+/* Convert Dark Inner Boxes into Crisp Light Containers */
+.glass-card .bg-slate-900,
+.glass-card .bg-slate-950,
+.glass-card .bg-slate-900\/90,
+.glass-card .bg-slate-900\/80,
+.glass-card .bg-slate-900\/60,
+.glass-card .bg-slate-900\/50,
+.glass-card .bg-slate-900\/40,
+.glass-card .bg-slate-950\/80,
+.glass-card .bg-slate-950\/70,
+.glass-card .bg-slate-950\/40,
+.glass-card .bg-slate-950\/90 {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.glass-card .border-slate-800,
+.glass-card .border-slate-850,
+.glass-card .border-slate-800\/80,
+.glass-card .border-slate-800\/50,
+.glass-card .border-slate-800\/90,
+.glass-card .border-slate-700,
+.glass-card .border-slate-700\/80 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Crisp & Friendly Inputs */
 .glass-input {
-  background: rgba(10, 15, 30, 0.8) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #f8fafc !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  border-radius: 0.75rem !important;
   transition: all 0.2s ease;
 }
 
 .glass-input:focus {
-  border-color: #6366f1 !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+  background: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
   outline: none;
+}
+
+.glass-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Clean Math Preview Boxes */
+.latex-box {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem;
+  color: #0f172a !important;
 }
 
 /* MathJax custom adjustments */
 mjx-container {
   display: inline-block !important;
   outline: none !important;
-  margin: 2px 0 !important;
+  margin: 1px 0 !important;
+  color: #0f172a !important;
 }
 
 mjx-container[jax="CHTML"][display="true"] {
   display: block !important;
   text-align: center !important;
-  margin: 0.8em 0 !important;
+  margin: 0.75em 0 !important;
+  color: #0f172a !important;
 }
 
 /* Audio wave speaking animation */
@@ -76,20 +156,95 @@ mjx-container[jax="CHTML"][display="true"] {
   animation-delay: 0.3s;
 }
 
-/* Custom scrollbars */
+/* Custom subtle light scrollbars */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #252e42;
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3b4866;
+  background: #94a3b8;
+}
+
+/* Sidebar navigation active / hover links */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebar-link:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.sidebar-link.active {
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+  font-weight: 700 !important;
+}
+
+.sidebar-section-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-top: 1.25rem;
+  margin-bottom: 0.4rem;
+  padding-left: 0.75rem;
+}
+
+/* Modern status badges */
+.badge-status-open {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.badge-status-open::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #10b981;
+}
+
+/* Modals Light Mode Overrides */
+#modal-ai-generator .glass-card,
+#print-options-modal .glass-card,
+#export-word-modal .glass-card {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+#modal-ai-generator,
+#print-options-modal,
+#export-word-modal {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(4px);
 }
 
 /* Print optimizations */
@@ -98,7 +253,14 @@ mjx-container[jax="CHTML"][display="true"] {
     background: white !important;
     color: black !important;
   }
-  .no-print {
+  .no-print,
+  #app-sidebar,
+  header {
     display: none !important;
+  }
+  #app-main-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
   }
 }
