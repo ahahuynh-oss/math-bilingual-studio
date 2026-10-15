@@ -849,58 +849,58 @@ var App = window.App = {
     const concepts = this.currentLesson.concepts || [];
 
     container.innerHTML = concepts.map((c, idx) => `
-      <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-4 relative group">
-        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
-          <span class="text-xs font-bold px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-400">
+      <div class="glass-card p-5 rounded-2xl border border-slate-200 bg-white space-y-4 relative group shadow-xs">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200">
             Khái niệm / Định lý #${idx + 1}
           </span>
-          <button onclick="App.deleteConcept(${idx})" class="text-slate-500 hover:text-rose-400 text-xs flex items-center gap-1 transition-colors">
+          <button onclick="App.deleteConcept(${idx})" class="text-slate-500 hover:text-rose-600 text-xs flex items-center gap-1 transition-colors cursor-pointer">
             🗑️ Xóa mục này
           </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Tên khái niệm (English):</label>
-            <input type="text" value="${c.titleEn || ''}" oninput="App.updateConcept(${idx}, 'titleEn', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm">
+            <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Tên khái niệm (English):</label>
+            <input type="text" value="${c.titleEn || ''}" oninput="App.updateConcept(${idx}, 'titleEn', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm font-semibold text-slate-900">
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Dịch nghĩa (Tiếng Việt):</label>
-            <input type="text" value="${c.titleVi || ''}" oninput="App.updateConcept(${idx}, 'titleVi', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm">
+            <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Dịch nghĩa (Tiếng Việt):</label>
+            <input type="text" value="${c.titleVi || ''}" oninput="App.updateConcept(${idx}, 'titleVi', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm font-semibold text-slate-900">
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold text-indigo-400 uppercase mb-1 flex items-center justify-between">
+          <label class="block text-[11px] font-semibold text-indigo-700 uppercase mb-1 flex items-center justify-between">
             <span>Công thức toán / Định lý (LaTeX - không cần bọc $):</span>
-            <span class="text-[10px] text-slate-400 lowercase">Xem trước tự động render bên dưới</span>
+            <span class="text-[10px] text-slate-500 lowercase">Xem trước tự động render bên dưới</span>
           </label>
-          <textarea rows="2" oninput="App.updateConcept(${idx}, 'latex', this.value)" class="w-full p-3 font-mono text-sm glass-input rounded-xl">${c.latex || ''}</textarea>
+          <textarea rows="2" oninput="App.updateConcept(${idx}, 'latex', this.value)" class="w-full p-3 font-mono text-sm glass-input rounded-xl text-slate-900">${c.latex || ''}</textarea>
           <!-- Live Math Preview -->
-          <div class="mt-2 p-3 bg-slate-900/90 rounded-xl border border-indigo-500/20 text-center latex-box">
+          <div class="mt-2 p-3 bg-slate-50 rounded-xl border border-indigo-200 text-center latex-box text-slate-900">
             $$${c.latex || '\\text{Formula Preview}'}$$
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Giải thích chi tiết (English):</label>
-            <textarea rows="2" oninput="App.updateConcept(${idx}, 'descEn', this.value)" class="w-full p-3 glass-input rounded-xl text-xs">${c.descEn || ''}</textarea>
+            <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Giải thích chi tiết (English):</label>
+            <textarea rows="2" oninput="App.updateConcept(${idx}, 'descEn', this.value)" class="w-full p-3 glass-input rounded-xl text-xs text-slate-800">${c.descEn || ''}</textarea>
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Bản dịch tiếng Việt:</label>
-            <textarea rows="2" oninput="App.updateConcept(${idx}, 'descVi', this.value)" class="w-full p-3 glass-input rounded-xl text-xs">${c.descVi || ''}</textarea>
+            <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Bản dịch tiếng Việt:</label>
+            <textarea rows="2" oninput="App.updateConcept(${idx}, 'descVi', this.value)" class="w-full p-3 glass-input rounded-xl text-xs text-slate-800">${c.descVi || ''}</textarea>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t border-slate-800/50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t border-slate-200">
           <div>
-            <label class="block text-[10px] font-semibold text-amber-400 uppercase mb-1">Ghi chú / Lưu ý (English):</label>
-            <input type="text" value="${c.notesEn || ''}" oninput="App.updateConcept(${idx}, 'notesEn', this.value)" placeholder="Lưu ý quan trọng..." class="w-full px-3 py-1.5 glass-input rounded-lg text-xs">
+            <label class="block text-[10px] font-semibold text-amber-700 uppercase mb-1">Ghi chú / Lưu ý (English):</label>
+            <input type="text" value="${c.notesEn || ''}" oninput="App.updateConcept(${idx}, 'notesEn', this.value)" placeholder="Lưu ý quan trọng..." class="w-full px-3 py-1.5 glass-input rounded-lg text-xs text-slate-800">
           </div>
           <div>
-            <label class="block text-[10px] font-semibold text-amber-400 uppercase mb-1">Ghi chú (Tiếng Việt):</label>
-            <input type="text" value="${c.notesVi || ''}" oninput="App.updateConcept(${idx}, 'notesVi', this.value)" placeholder="Lưu ý tiếng Việt..." class="w-full px-3 py-1.5 glass-input rounded-lg text-xs">
+            <label class="block text-[10px] font-semibold text-amber-700 uppercase mb-1">Ghi chú (Tiếng Việt):</label>
+            <input type="text" value="${c.notesVi || ''}" oninput="App.updateConcept(${idx}, 'notesVi', this.value)" placeholder="Lưu ý tiếng Việt..." class="w-full px-3 py-1.5 glass-input rounded-lg text-xs text-slate-800">
           </div>
         </div>
       </div>
@@ -945,45 +945,45 @@ var App = window.App = {
     const vocab = this.currentLesson.vocabulary || [];
 
     container.innerHTML = vocab.map((v, idx) => `
-      <div class="glass-card p-4 rounded-xl border border-slate-800 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+      <div class="glass-card p-4 rounded-xl border border-slate-200 bg-white space-y-3 shadow-xs">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-md bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-xs">${idx + 1}</span>
-            <button onclick="App.speakText('${v.term}')" class="px-2.5 py-1 rounded bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white transition-all text-xs font-semibold flex items-center gap-1.5">
+            <span class="w-6 h-6 rounded-md bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-bold text-xs">${idx + 1}</span>
+            <button onclick="App.speakText('${v.term}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition-all text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
               🔊 Nghe phát âm
             </button>
           </div>
-          <button onclick="App.deleteVocab(${idx})" class="text-slate-500 hover:text-rose-400 text-xs">🗑️ Xóa</button>
+          <button onclick="App.deleteVocab(${idx})" class="text-slate-500 hover:text-rose-600 text-xs cursor-pointer">🗑️ Xóa</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
           <div class="sm:col-span-2">
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Thuật ngữ (English):</label>
-            <input type="text" value="${v.term || ''}" oninput="App.updateVocab(${idx}, 'term', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-sm font-semibold text-white">
+            <label class="block text-[10px] font-semibold text-slate-600 uppercase mb-1">Thuật ngữ (English):</label>
+            <input type="text" value="${v.term || ''}" oninput="App.updateVocab(${idx}, 'term', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-sm font-semibold text-slate-900">
           </div>
           <div>
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Phiên âm IPA:</label>
-            <input type="text" value="${v.ipa || ''}" oninput="App.updateVocab(${idx}, 'ipa', this.value)" placeholder="/.../" class="w-full px-3 py-1.5 glass-input rounded-lg text-xs font-mono text-teal-400">
+            <label class="block text-[10px] font-semibold text-slate-600 uppercase mb-1">Phiên âm IPA:</label>
+            <input type="text" value="${v.ipa || ''}" oninput="App.updateVocab(${idx}, 'ipa', this.value)" placeholder="/.../" class="w-full px-3 py-1.5 glass-input rounded-lg text-xs font-mono text-teal-700 font-medium">
           </div>
           <div>
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Từ loại (pos):</label>
-            <input type="text" value="${v.pos || ''}" oninput="App.updateVocab(${idx}, 'pos', this.value)" placeholder="noun, verb..." class="w-full px-3 py-1.5 glass-input rounded-lg text-xs">
+            <label class="block text-[10px] font-semibold text-slate-600 uppercase mb-1">Từ loại (pos):</label>
+            <input type="text" value="${v.pos || ''}" oninput="App.updateVocab(${idx}, 'pos', this.value)" placeholder="noun, verb..." class="w-full px-3 py-1.5 glass-input rounded-lg text-xs text-slate-800">
           </div>
         </div>
 
         <div>
-          <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Nghĩa tiếng Việt:</label>
-          <input type="text" value="${v.meaningVi || ''}" oninput="App.updateVocab(${idx}, 'meaningVi', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-sm text-emerald-400 font-medium">
+          <label class="block text-[10px] font-semibold text-slate-600 uppercase mb-1">Nghĩa tiếng Việt:</label>
+          <input type="text" value="${v.meaningVi || ''}" oninput="App.updateVocab(${idx}, 'meaningVi', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-sm text-emerald-800 font-semibold">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
           <div>
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Ví dụ toán học (English):</label>
-            <input type="text" value="${v.exampleEn || ''}" oninput="App.updateVocab(${idx}, 'exampleEn', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-xs">
+            <label class="block text-[10px] font-semibold text-slate-600 uppercase mb-1">Ví dụ toán học (English):</label>
+            <input type="text" value="${v.exampleEn || ''}" oninput="App.updateVocab(${idx}, 'exampleEn', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-xs text-slate-800">
           </div>
           <div>
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Dịch ví dụ (Tiếng Việt):</label>
-            <input type="text" value="${v.exampleVi || ''}" oninput="App.updateVocab(${idx}, 'exampleVi', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-xs">
+            <label class="block text-[10px] font-semibold text-slate-600 uppercase mb-1">Dịch ví dụ (Tiếng Việt):</label>
+            <input type="text" value="${v.exampleVi || ''}" oninput="App.updateVocab(${idx}, 'exampleVi', this.value)" class="w-full px-3 py-1.5 glass-input rounded-lg text-xs text-slate-800">
           </div>
         </div>
       </div>
@@ -1022,60 +1022,60 @@ var App = window.App = {
     const examples = this.currentLesson.examples || [];
 
     container.innerHTML = examples.map((ex, exIdx) => `
-      <div class="glass-card p-5 rounded-2xl border border-slate-800 space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
-          <span class="text-xs font-bold px-2.5 py-1 rounded bg-purple-500/20 text-purple-300">
+      <div class="glass-card p-5 rounded-2xl border border-slate-200 bg-white space-y-4 shadow-xs">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200">
             Ví dụ mẫu #${exIdx + 1}
           </span>
-          <button onclick="App.deleteExample(${exIdx})" class="text-slate-500 hover:text-rose-400 text-xs">🗑️ Xóa ví dụ này</button>
+          <button onclick="App.deleteExample(${exIdx})" class="text-slate-500 hover:text-rose-600 text-xs cursor-pointer">🗑️ Xóa ví dụ này</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Tiêu đề ví dụ (English):</label>
-            <input type="text" value="${ex.titleEn || ''}" oninput="App.updateExample(${exIdx}, 'titleEn', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm font-semibold">
+            <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Tiêu đề ví dụ (English):</label>
+            <input type="text" value="${ex.titleEn || ''}" oninput="App.updateExample(${exIdx}, 'titleEn', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm font-semibold text-slate-900">
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Tiêu đề (Tiếng Việt):</label>
-            <input type="text" value="${ex.titleVi || ''}" oninput="App.updateExample(${exIdx}, 'titleVi', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm">
+            <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Tiêu đề (Tiếng Việt):</label>
+            <input type="text" value="${ex.titleVi || ''}" oninput="App.updateExample(${exIdx}, 'titleVi', this.value)" class="w-full px-3.5 py-2 glass-input rounded-xl text-sm font-semibold text-slate-900">
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Đề bài (English Problem Statement - hỗ trợ $LaTeX$):</label>
-          <textarea rows="2" oninput="App.updateExample(${exIdx}, 'problemEn', this.value)" class="w-full p-3 glass-input rounded-xl text-xs">${ex.problemEn || ''}</textarea>
+          <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Đề bài (English Problem Statement - hỗ trợ $LaTeX$):</label>
+          <textarea rows="2" oninput="App.updateExample(${exIdx}, 'problemEn', this.value)" class="w-full p-3 glass-input rounded-xl text-xs text-slate-800">${ex.problemEn || ''}</textarea>
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Dịch đề bài (Tiếng Việt):</label>
-          <textarea rows="2" oninput="App.updateExample(${exIdx}, 'problemVi', this.value)" class="w-full p-3 glass-input rounded-xl text-xs">${ex.problemVi || ''}</textarea>
+          <label class="block text-[11px] font-semibold text-slate-600 uppercase mb-1">Dịch đề bài (Tiếng Việt):</label>
+          <textarea rows="2" oninput="App.updateExample(${exIdx}, 'problemVi', this.value)" class="w-full p-3 glass-input rounded-xl text-xs text-slate-800">${ex.problemVi || ''}</textarea>
         </div>
 
         <!-- Steps List -->
-        <div class="space-y-3 pt-3 border-t border-slate-800">
+        <div class="space-y-3 pt-3 border-t border-slate-200">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-300 uppercase">Các bước giải (Step-by-step Solution):</span>
-            <button onclick="App.addStep(${exIdx})" class="px-2.5 py-1 rounded bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white transition-all text-xs font-semibold">
+            <span class="text-xs font-bold text-slate-700 uppercase">Các bước giải (Step-by-step Solution):</span>
+            <button onclick="App.addStep(${exIdx})" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition-all text-xs font-semibold cursor-pointer">
               ➕ Thêm bước giải
             </button>
           </div>
 
           <div class="space-y-3">
             ${(ex.steps || []).map((st, stIdx) => `
-              <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800/80 space-y-2.5">
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
                 <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-indigo-400">Bước ${stIdx + 1}</span>
-                  <button onclick="App.deleteStep(${exIdx}, ${stIdx})" class="text-slate-500 hover:text-rose-400 text-xs">Xóa bước</button>
+                  <span class="text-xs font-bold text-indigo-700">Bước ${stIdx + 1}</span>
+                  <button onclick="App.deleteStep(${exIdx}, ${stIdx})" class="text-slate-500 hover:text-rose-600 text-xs cursor-pointer">Xóa bước</button>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <input type="text" value="${st.titleEn || ''}" oninput="App.updateStep(${exIdx}, ${stIdx}, 'titleEn', this.value)" placeholder="Tiêu đề bước (En)..." class="px-3 py-1.5 glass-input rounded-lg text-xs font-semibold">
-                  <input type="text" value="${st.titleVi || ''}" oninput="App.updateStep(${exIdx}, ${stIdx}, 'titleVi', this.value)" placeholder="Tiêu đề bước (Vi)..." class="px-3 py-1.5 glass-input rounded-lg text-xs">
+                  <input type="text" value="${st.titleEn || ''}" oninput="App.updateStep(${exIdx}, ${stIdx}, 'titleEn', this.value)" placeholder="Tiêu đề bước (En)..." class="px-3 py-1.5 glass-input rounded-lg text-xs font-semibold text-slate-900">
+                  <input type="text" value="${st.titleVi || ''}" oninput="App.updateStep(${exIdx}, ${stIdx}, 'titleVi', this.value)" placeholder="Tiêu đề bước (Vi)..." class="px-3 py-1.5 glass-input rounded-lg text-xs font-semibold text-slate-900">
                 </div>
                 <div>
-                  <textarea rows="1" oninput="App.updateStep(${exIdx}, ${stIdx}, 'latex', this.value)" placeholder="Công thức LaTeX của bước..." class="w-full p-2 glass-input rounded-lg text-xs font-mono">${st.latex || ''}</textarea>
+                  <textarea rows="1" oninput="App.updateStep(${exIdx}, ${stIdx}, 'latex', this.value)" placeholder="Công thức LaTeX của bước..." class="w-full p-2 glass-input rounded-lg text-xs font-mono text-slate-900">${st.latex || ''}</textarea>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <textarea rows="2" oninput="App.updateStep(${exIdx}, ${stIdx}, 'explanationEn', this.value)" placeholder="Giải thích bước (En)..." class="p-2 glass-input rounded-lg text-xs">${st.explanationEn || ''}</textarea>
-                  <textarea rows="2" oninput="App.updateStep(${exIdx}, ${stIdx}, 'explanationVi', this.value)" placeholder="Giải thích bước (Vi)..." class="p-2 glass-input rounded-lg text-xs">${st.explanationVi || ''}</textarea>
+                  <textarea rows="2" oninput="App.updateStep(${exIdx}, ${stIdx}, 'explanationEn', this.value)" placeholder="Giải thích bước (En)..." class="p-2 glass-input rounded-lg text-xs text-slate-800">${st.explanationEn || ''}</textarea>
+                  <textarea rows="2" oninput="App.updateStep(${exIdx}, ${stIdx}, 'explanationVi', this.value)" placeholder="Giải thích bước (Vi)..." class="p-2 glass-input rounded-lg text-xs text-slate-800">${st.explanationVi || ''}</textarea>
                 </div>
               </div>
             `).join('')}
@@ -1455,8 +1455,8 @@ var App = window.App = {
         ? `👨‍🏫 <span>Chế độ:</span> <strong>Giáo viên (Hiện đáp án)</strong>`
         : `👨‍🎓 <span>Chế độ:</span> <strong>Học sinh (Làm bài trực tiếp)</strong>`;
       btn.className = (this.previewMode === 'teacher')
-        ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-600 text-white shadow flex items-center gap-1.5'
-        : 'px-3.5 py-1.5 rounded-xl text-xs font-medium bg-slate-800 text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5';
+        ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-50 text-purple-800 border border-purple-200 shadow-2xs flex items-center gap-1.5 cursor-pointer'
+        : 'px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 flex items-center gap-1.5 cursor-pointer';
     }
     if (window.QuizEngine && this.currentLesson && this.currentLesson.quiz) {
       window.QuizEngine.init(this.currentLesson.quiz, this.previewMode === 'teacher');
@@ -1977,10 +1977,10 @@ var App = window.App = {
       if (panel && btn) {
         if (t === tab) {
           panel.classList.remove('hidden');
-          btn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow transition-all';
+          btn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer';
         } else {
           panel.classList.add('hidden');
-          btn.className = 'px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all';
+          btn.className = 'px-4 py-2 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center gap-1.5 border border-transparent cursor-pointer';
         }
       }
     });
@@ -2289,7 +2289,7 @@ var App = window.App = {
           <div class="p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 space-y-2 text-left">
             <div class="text-rose-300 font-bold">⚠️ Không thể tạo bằng Gemini: ${err.message}</div>
             <div class="text-[11px] text-slate-300">Gợi ý: Bạn có thể chọn mô hình <strong>gemini-3.8-flash</strong> hoặc bấm <strong>"Quét Model Khả Dụng"</strong> ở trên, hoặc khởi tạo tức thì bài chuẩn:</div>
-            <button type="button" onclick="App.generateFromCurriculumTopic('${fallbackTopic}')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-indigo-600/30 transition-all">
+            <button type="button" onclick="App.generateFromCurriculumTopic('${fallbackTopic}')" class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold text-xs flex items-center gap-1.5 border border-indigo-200 shadow-2xs transition-all cursor-pointer">
               <span>🚀 Tạo Ngay Bài "${topicTitle}" (12 Câu Trắc Nghiệm)</span>
             </button>
           </div>

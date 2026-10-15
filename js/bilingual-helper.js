@@ -425,13 +425,13 @@ const BilingualHelper = {
 
         <!-- Speech Controls -->
         <div class="flex flex-wrap items-center justify-center gap-2.5 py-1">
-          <button onclick="BilingualHelper.speakTarget(1.0)" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer">
+          <button onclick="BilingualHelper.speakTarget(1.0)" class="px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer">
             <span>🔊</span> <span>Nghe Chuẩn (1.0x)</span>
           </button>
-          <button onclick="BilingualHelper.speakTarget(0.75)" class="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold flex items-center gap-2 shadow-xs transition-all cursor-pointer">
+          <button onclick="BilingualHelper.speakTarget(0.75)" class="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer">
             <span>🐢</span> <span>Nghe Chậm (0.75x)</span>
           </button>
-          <button id="btn-start-record" onclick="BilingualHelper.toggleSpeechRecognition()" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-2 shadow-md transition-all cursor-pointer animate-pulse">
+          <button id="btn-start-record" onclick="BilingualHelper.toggleSpeechRecognition()" class="px-5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer">
             <span id="record-icon">🎙️</span> <span id="record-label">Bấm Để Thu Âm & Luyện Đọc</span>
           </button>
         </div>

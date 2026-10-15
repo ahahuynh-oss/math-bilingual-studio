@@ -213,19 +213,19 @@ window.ScaffoldingTutor = {
       if (customPanel) customPanel.classList.remove('hidden');
       if (presetPanel) presetPanel.classList.add('hidden');
       if (btnCustom) {
-        btnCustom.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-indigo-600 text-white shadow';
+        btnCustom.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-indigo-800 border border-slate-200/80 shadow-xs cursor-pointer';
       }
       if (btnPreset) {
-        btnPreset.className = 'px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
+        btnPreset.className = 'px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5 border border-transparent cursor-pointer';
       }
     } else {
       if (customPanel) customPanel.classList.add('hidden');
       if (presetPanel) presetPanel.classList.remove('hidden');
       if (btnCustom) {
-        btnCustom.className = 'px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
+        btnCustom.className = 'px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5 border border-transparent cursor-pointer';
       }
       if (btnPreset) {
-        btnPreset.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-teal-600 text-white shadow';
+        btnPreset.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-indigo-800 border border-slate-200/80 shadow-xs cursor-pointer';
       }
     }
   },
@@ -647,7 +647,7 @@ NGUYÊN TẮC BẮT BUỘC:
                 <span>🤔</span>
                 <span class="font-medium text-slate-800">Em đã hình dung được hướng đi chưa? Hãy thử viết công thức ra nháp nhé!</span>
               </div>
-              <button onclick="ScaffoldingTutor.activateTier(2)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
+              <button onclick="ScaffoldingTutor.activateTier(2)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 hover:border-teal-300 transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
                 <span>Xem Nấc 2: Chia nhỏ bước ➔</span>
               </button>
             </div>
@@ -694,7 +694,7 @@ NGUYÊN TẮC BẮT BUỘC:
                 <span>✅</span>
                 <span class="font-medium text-slate-800">Hãy tích chọn vào từng bước sau khi em đã hiểu rõ phương pháp!</span>
               </div>
-              <button onclick="ScaffoldingTutor.activateTier(3)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
+              <button onclick="ScaffoldingTutor.activateTier(3)" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
                 <span>Xem Nấc 3: Lời giải hoàn chỉnh ➔</span>
               </button>
             </div>
@@ -810,7 +810,7 @@ NGUYÊN TẮC BẮT BUỘC:
                 <div class="flex-1 min-w-[200px]">
                   <input type="text" id="scaffold-parallel-input" placeholder="Nhập đáp số của em (ví dụ: 7 hoặc 4/9)..." class="w-full px-4 py-2.5 glass-input rounded-xl text-xs sm:text-sm text-slate-900 font-mono">
                 </div>
-                <button onclick="ScaffoldingTutor.checkParallelAnswer()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                <button onclick="ScaffoldingTutor.checkParallelAnswer()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 hover:border-teal-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
                   <span>Kiểm Tra Đáp Số</span>
                 </button>
               </div>

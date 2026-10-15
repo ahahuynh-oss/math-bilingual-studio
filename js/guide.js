@@ -638,7 +638,7 @@ const UserGuide = {
             ${currentSec.num < this.sections.length ? `
               <button 
                 onclick="UserGuide.switchSection('${this.sections[currentSec.num].id}')" 
-                class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all flex items-center gap-1.5 shadow-xs">
+                class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 font-bold transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
                 <span>Bài tiếp theo: ${this.sections[currentSec.num].title}</span>
                 <span>→</span>
               </button>

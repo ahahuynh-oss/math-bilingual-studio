@@ -237,7 +237,7 @@
         </button>
 
         <!-- Giới thiệu phương pháp sư phạm Scaffolding -->
-        <button onclick="App.openScaffoldingIntroModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 via-indigo-600 to-amber-500 hover:from-indigo-700 hover:to-amber-600 text-white shadow-xs hover:shadow-md transition-all flex items-center gap-1.5 cursor-pointer" title="Giới thiệu phương pháp sư phạm Scaffolding (Giàn giáo nhận thức)">
+        <button onclick="App.openScaffoldingIntroModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-50/90 hover:bg-amber-100 text-amber-900 border border-amber-300/80 shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5 cursor-pointer" title="Giới thiệu phương pháp sư phạm Scaffolding (Giàn giáo nhận thức)">
           <span>📖</span>
           <span class="font-bold hidden sm:inline">Giới thiệu phương pháp sư phạm Scaffolding</span>
           <span class="font-bold sm:hidden">Scaffolding</span>
@@ -302,7 +302,7 @@
             <p id="my-exams-count-label" class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Tự động đồng bộ các bài giảng & đề thi đã soạn</p>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="App.openAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs flex items-center gap-1.5 transition-all">
+            <button onclick="App.openAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer">
               ✨ <span>Soạn tự động / Tải tài liệu</span>
             </button>
             <button onclick="App.createNewLesson(); App.switchTab('builder-lesson')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs flex items-center gap-1.5 transition-all">
@@ -439,7 +439,7 @@
               </h3>
               <p class="text-xs text-slate-500">Song ngữ Anh - Việt, hỗ trợ công thức Toán LaTeX và ẩn/hiện lời dịch</p>
             </div>
-            <button onclick="App.addConcept()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all flex items-center gap-1.5">
+            <button onclick="App.addConcept()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
               ➕ Thêm Định Lý / Khái Niệm
             </button>
           </div>
@@ -460,7 +460,7 @@
               </h3>
               <p class="text-xs text-slate-500">Phát âm giọng đọc chuẩn bản xứ tiếng Anh (Web Speech API) và giải nghĩa ngữ cảnh</p>
             </div>
-            <button onclick="App.addVocab()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-all flex items-center gap-1.5">
+            <button onclick="App.addVocab()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 hover:border-teal-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
               ➕ Thêm Từ Vựng Mới
             </button>
           </div>
@@ -481,7 +481,7 @@
               </h3>
               <p class="text-xs text-slate-500">Chia nhỏ quá trình giải thành các bước rõ ràng (Step-by-step reveal)</p>
             </div>
-            <button onclick="App.addExample()" class="px-4 py-2 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-xs transition-all flex items-center gap-1.5">
+            <button onclick="App.addExample()" class="px-4 py-2 rounded-xl text-xs font-bold bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 hover:border-purple-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
               ➕ Thêm Ví Dụ Mẫu
             </button>
           </div>
@@ -643,7 +643,7 @@
               </button>
             </div>
             
-            <button onclick="App.exportStandaloneHTML()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-all flex items-center gap-1">
+            <button onclick="App.exportStandaloneHTML()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 hover:border-teal-300 shadow-2xs transition-all flex items-center gap-1 cursor-pointer">
               🚀 <span>Export HTML</span>
             </button>
           </div>
@@ -671,7 +671,7 @@
               </div>
 
               <!-- Submit Button -->
-              <button onclick="QuizEngine.submitQuiz()" class="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-sm transition-all flex items-center gap-1.5">
+              <button onclick="QuizEngine.submitQuiz()" class="px-5 py-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 hover:border-emerald-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
                 <span>✅</span> <span>Nộp Bài</span>
               </button>
             </div>
@@ -693,7 +693,7 @@
               <button onclick="QuizEngine.reset()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs transition-all">
                 🔄 Làm lại bài kiểm tra
               </button>
-              <button onclick="App.openPrintModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all">
+              <button onclick="App.openPrintModal()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all cursor-pointer">
                 🖨️ In bảng điểm & Lời giải
               </button>
             </div>
@@ -808,7 +808,7 @@
             <label class="block text-xs font-semibold text-slate-600 uppercase">Nhập hoặc dán bài toán:</label>
             <textarea id="scaffold-problem-input" rows="3" placeholder="Nhập đề bài toán (tiếng Việt hoặc tiếng Anh)..." class="w-full p-3.5 glass-input text-xs sm:text-sm font-mono"></textarea>
             <div class="flex justify-end gap-2">
-              <button onclick="ScaffoldingTutor.generateAI()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all flex items-center gap-1.5">
+              <button onclick="ScaffoldingTutor.generateAI()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
                 <span>⚡ Phân Tích & Tạo Giàn Giáo Bằng AI</span>
               </button>
             </div>
@@ -985,10 +985,10 @@
           📌 Dự án Sáng kiến Giáo dục 2026 • <strong>Tác giả: Huỳnh Thị Hà</strong>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="App.closeScaffoldingIntroModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+          <button onclick="App.closeScaffoldingIntroModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all cursor-pointer">
             Đóng
           </button>
-          <button onclick="App.closeScaffoldingIntroModal(); App.switchTab('scaffolding-tutor');" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all flex items-center gap-1.5">
+          <button onclick="App.closeScaffoldingIntroModal(); App.switchTab('scaffolding-tutor');" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
             <span>🪜</span> <span>Trải Nghiệm Gia Sư ZPD Ngay</span>
           </button>
         </div>
@@ -1106,8 +1106,8 @@
         </div>
 
         <div class="flex justify-end gap-2.5 pt-2">
-          <button onclick="App.closeAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Hủy</button>
-          <button onclick="App.generateFromCurriculumTopic()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all flex items-center gap-1.5">
+          <button onclick="App.closeAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Hủy</button>
+          <button onclick="App.generateFromCurriculumTopic()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
             <span>🚀 Tạo Bài Giảng & Đề Thi Ngay</span>
           </button>
         </div>
@@ -1128,7 +1128,7 @@
         <div>
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-xs font-semibold text-slate-700 uppercase">Hoặc Dán Nội Dung Vào Đây:</label>
-            <button onclick="App.analyzePastedDocument()" class="text-xs text-indigo-600 hover:text-indigo-700 underline font-semibold">
+            <button onclick="App.analyzePastedDocument()" class="text-xs text-indigo-600 hover:text-indigo-700 underline font-semibold cursor-pointer">
               🔍 Phân tích cấu trúc ngay
             </button>
           </div>
@@ -1147,8 +1147,8 @@
         </div>
 
         <div class="flex justify-end gap-2.5 pt-2">
-          <button onclick="App.closeAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Đóng</button>
-          <button onclick="App.generateFromParsedDocument()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all">
+          <button onclick="App.closeAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Đóng</button>
+          <button onclick="App.generateFromParsedDocument()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all cursor-pointer">
             <span>⚡ Chuyển Đổi Thành Bài Giảng & Đề Thi</span>
           </button>
         </div>
@@ -1186,8 +1186,8 @@
         <div id="ai-gemini-status" class="text-xs text-slate-500"></div>
 
         <div class="flex justify-end gap-2.5 pt-2">
-          <button onclick="App.closeAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Đóng</button>
-          <button id="btn-run-gemini-ai" onclick="App.generateWithGeminiAI()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all">
+          <button onclick="App.closeAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Đóng</button>
+          <button id="btn-run-gemini-ai" onclick="App.generateWithGeminiAI()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all cursor-pointer">
             <span>✨ Khởi Chạy Sinh Bài Giảng Với Gemini</span>
           </button>
         </div>
@@ -1239,8 +1239,8 @@
         </div>
 
         <div class="flex justify-end gap-2.5 pt-1">
-          <button type="button" onclick="App.closeFeedbackModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">Đóng</button>
-          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+          <button type="button" onclick="App.closeFeedbackModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Đóng</button>
+          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
             <span>Gửi Phản Hồi</span>
             <span>➔</span>
           </button>
@@ -1253,13 +1253,13 @@
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261015_10"></script>
-  <script src="js/ai-generator.js?v=20261015_10"></script>
-  <script src="js/exporter.js?v=20261015_10"></script>
-  <script src="js/quiz.js?v=20261015_10"></script>
-  <script src="js/scaffolding-tutor.js?v=20261015_10"></script>
-  <script src="js/bilingual-helper.js?v=20261015_10"></script>
-  <script src="js/guide.js?v=20261015_10"></script>
-  <script src="js/app.js?v=20261015_10"></script>
+  <script src="js/data.js?v=20261016_01"></script>
+  <script src="js/ai-generator.js?v=20261016_01"></script>
+  <script src="js/exporter.js?v=20261016_01"></script>
+  <script src="js/quiz.js?v=20261016_01"></script>
+  <script src="js/scaffolding-tutor.js?v=20261016_01"></script>
+  <script src="js/bilingual-helper.js?v=20261016_01"></script>
+  <script src="js/guide.js?v=20261016_01"></script>
+  <script src="js/app.js?v=20261016_01"></script>
 </body>
 </html>

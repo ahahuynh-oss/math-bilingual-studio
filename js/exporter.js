@@ -367,7 +367,7 @@ const Exporter = {
           <button onclick="selectStandalonePreset('grade-11-limits')" id="btn-pre-11" class="px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all">
             📗 Khối 11: Giới hạn vô định 0/0
           </button>
-          <button onclick="selectStandalonePreset('grade-12-asymptotes')" id="btn-pre-12" class="px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all">
+          <button onclick="selectStandalonePreset('grade-12-asymptotes')" id="btn-pre-12" class="px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all">
             📙 Khối 12: Hàm phân thức & Tiệm cận
           </button>
         </div>
@@ -428,7 +428,7 @@ const Exporter = {
         </div>
 
         <div class="flex gap-2">
-          <button onclick="gradeStandaloneQuiz()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md transition-all flex items-center gap-1.5">
+          <button onclick="gradeStandaloneQuiz()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 hover:border-emerald-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
             <span>✅</span> <span>Nộp Bài & Chấm Điểm</span>
           </button>
         </div>
@@ -501,14 +501,14 @@ const Exporter = {
 
       if (tab === 'lesson') {
         lessonView.classList.remove('hidden');
-        btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-xs';
+        btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs';
       } else if (tab === 'scaffold') {
         scaffoldView.classList.remove('hidden');
-        btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-500 text-white font-bold shadow-xs';
+        btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-50 text-amber-800 border border-amber-200 font-bold shadow-2xs';
         renderStandaloneScaffold();
       } else {
         quizView.classList.remove('hidden');
-        btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-xs';
+        btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs';
         renderStandaloneQuestions();
       }
       triggerMathJax();
@@ -578,9 +578,9 @@ const Exporter = {
           b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all';
         }
       });
-      if (presetKey === 'grade-10-vectors') document.getElementById('btn-pre-10').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all';
-      if (presetKey === 'grade-11-limits') document.getElementById('btn-pre-11').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all';
-      if (presetKey === 'grade-12-asymptotes') document.getElementById('btn-pre-12').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all';
+      if (presetKey === 'grade-10-vectors') document.getElementById('btn-pre-10').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all';
+      if (presetKey === 'grade-11-limits') document.getElementById('btn-pre-11').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all';
+      if (presetKey === 'grade-12-asymptotes') document.getElementById('btn-pre-12').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all';
 
       setStandaloneTier(1);
     }
@@ -743,7 +743,7 @@ const Exporter = {
         html += '<div class="text-xs text-slate-600 italic vi-text border-l-2 border-teal-400 pl-2.5">' + d.parallel_exercise.question_vi + '</div>';
         html += '<div class="flex flex-wrap items-center gap-3 pt-2">';
         html += '<input type="text" id="offline-parallel-input" placeholder="Nhập đáp số (Ví dụ: 0, 7, 2...)" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 font-mono w-64 focus:border-teal-500 focus:outline-none">';
-        html += '<button onclick="checkStandaloneParallelAnswer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-all">Kiểm Tra Đáp Số</button>';
+        html += '<button onclick="checkStandaloneParallelAnswer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 hover:border-teal-300 shadow-2xs transition-all cursor-pointer">Kiểm Tra Đáp Số</button>';
         html += '</div>';
         html += '<div id="offline-parallel-feedback" class="hidden text-xs p-3 rounded-xl"></div>';
         html += '</div>';
