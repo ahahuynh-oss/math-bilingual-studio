@@ -436,10 +436,9 @@ const UserGuide = {
           num: 2,
           title: 'Kênh hỗ trợ kỹ thuật trực tiếp',
           englishTitle: 'Direct Author & Tech Contacts',
-          desc: 'Liên hệ nhanh qua điện thoại hoặc Zalo khi cần hướng dẫn triển khai.',
+          desc: 'Liên hệ qua Email hoặc GitHub khi cần trao đổi chuyên môn & đóng góp sáng kiến.',
           bullets: [
             '<strong>Tác giả:</strong> Cô Huỳnh Thị Hà - Giáo viên Toán THPT.',
-            '<strong>Hotline / Zalo:</strong> <a href="tel:0974940049" class="text-indigo-600 font-bold">0974 940 049</a>.',
             '<strong>Email:</strong> <a href="mailto:ahahuynh@gmail.com" class="text-indigo-600 font-bold">ahahuynh@gmail.com</a>.',
             '<strong>Mã nguồn mở GitHub:</strong> <a href="https://github.com/ahahuynh-oss/math-bilingual-studio" target="_blank" class="text-indigo-600 font-bold underline">ahahuynh-oss/math-bilingual-studio</a>.'
           ]
@@ -538,18 +537,6 @@ const UserGuide = {
               `;
             }).join('')}
           </div>
-
-          <div class="pt-3 border-t border-slate-100 mt-2 px-1">
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-1.5">
-              <div class="text-base">💡</div>
-              <div class="text-[11px] font-bold text-slate-700">Cần hỗ trợ trực tiếp?</div>
-              <div class="text-[10px] text-slate-500">Liên hệ cô Huỳnh Thị Hà</div>
-              <a href="tel:0974940049" class="inline-block px-3 py-1 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700 transition-colors">
-                📞 0974 940 049
-              </a>
-            </div>
-          </div>
-
         </div>
 
         <!-- RIGHT COLUMN: DETAILED STEP-BY-STEP CARDS -->
