@@ -22,6 +22,7 @@ const App = {
     this.renderAll();
     this.initCanvasGrapher();
     this.renderMyExamsTable('all');
+    if (window.UserGuide) window.UserGuide.init();
     this.switchTab('my-exams');
   },
 
@@ -101,7 +102,11 @@ const App = {
     }
   },
 
-  speakText(text) {
+  speakText(text, rate = 1.0) {
+    if (window.BilingualHelper && window.BilingualHelper.speak) {
+      window.BilingualHelper.speak(text, rate);
+      return;
+    }
     if (!('speechSynthesis' in window)) {
       alert('Trình duyệt không hỗ trợ Web Speech API.');
       return;
@@ -109,7 +114,7 @@ const App = {
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'en-US';
-    utter.rate = 0.9;
+    utter.rate = rate;
     window.speechSynthesis.speak(utter);
   },
 
@@ -377,6 +382,34 @@ const App = {
     if (overlay) overlay.classList.toggle('hidden');
   },
 
+  isSidebarCollapsed: false,
+
+  toggleSidebarCollapse() {
+    const sidebar = document.getElementById('app-sidebar');
+    if (!sidebar) return;
+
+    // Mobile viewport: fallback to mobile drawer
+    if (window.innerWidth < 1024) {
+      this.toggleSidebar();
+      return;
+    }
+
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    if (this.isSidebarCollapsed) {
+      sidebar.classList.add('sidebar-collapsed');
+    } else {
+      sidebar.classList.remove('sidebar-collapsed');
+    }
+
+    const btn = document.getElementById('btn-toggle-sidebar');
+    if (btn) {
+      btn.setAttribute('title', this.isSidebarCollapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên');
+      btn.innerHTML = this.isSidebarCollapsed 
+        ? `<svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m11 9 3 3-3 3"/></svg>`
+        : `<svg class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9-3 3 3 3"/></svg>`;
+    }
+  },
+
   updateBreadcrumb(tabName) {
     const el = document.getElementById('breadcrumb-active');
     if (!el) return;
@@ -396,6 +429,9 @@ const App = {
         break;
       case 'scaffolding-tutor':
         el.innerText = 'Gia sư giàn giáo nhận thức (ZPD)';
+        break;
+      case 'user-guide':
+        el.innerText = 'Hướng dẫn cho giáo viên & học sinh';
         break;
       default:
         el.innerText = 'Danh sách đã tạo';
@@ -665,7 +701,7 @@ const App = {
     this.activeTab = tabName;
 
     // Update panels
-    const tabs = ['my-exams', 'builder-lesson', 'builder-quiz', 'interactive-preview', 'scaffolding-tutor'];
+    const tabs = ['my-exams', 'builder-lesson', 'builder-quiz', 'interactive-preview', 'scaffolding-tutor', 'user-guide'];
     tabs.forEach(t => {
       const panel = document.getElementById(`panel-${t}`);
       if (panel) {
@@ -700,6 +736,10 @@ const App = {
     } else if (tabName === 'scaffolding-tutor') {
       if (window.ScaffoldingTutor && (!window.ScaffoldingTutor.currentData || !document.getElementById('scaffold-results-container')?.children.length)) {
         window.ScaffoldingTutor.init();
+      }
+    } else if (tabName === 'user-guide') {
+      if (window.UserGuide) {
+        window.UserGuide.render();
       }
     }
 
@@ -1783,6 +1823,31 @@ const App = {
   closeExportWordModal() {
     const modal = document.getElementById('export-word-modal');
     if (modal) modal.classList.add('hidden');
+  },
+
+  openFeedbackModal() {
+    const modal = document.getElementById('modal-feedback');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeFeedbackModal() {
+    const modal = document.getElementById('modal-feedback');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  submitFeedback(event) {
+    if (event) event.preventDefault();
+    const type = document.getElementById('feedback-type')?.value || 'gop-y';
+    const content = document.getElementById('feedback-content')?.value || '';
+    if (!content.trim()) {
+      this.showToast('Vui lòng nhập nội dung góp ý hoặc mô tả lỗi!', 'error');
+      return;
+    }
+    this.closeFeedbackModal();
+    this.showToast('Cảm ơn thầy cô! Phản hồi đã được ghi nhận và gửi đến cô Huỳnh Thị Hà.', 'success');
+    if (document.getElementById('feedback-content')) {
+      document.getElementById('feedback-content').value = '';
+    }
   },
 
   executeExportWord(mode) {

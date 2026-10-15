@@ -348,14 +348,30 @@ const BilingualHelper = {
     const safeVi = (vietnameseText || '').replace(/"/g, '&quot;').replace(/'/g, "\\'");
     return `
       <span class="inline-bilingual-helper inline-flex items-center gap-1 align-middle ml-1.5 select-none" onclick="event.stopPropagation()">
-        <button onclick="BilingualHelper.speak('${safeEn}', 1.0)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-indigo-200/80" title="Nghe đọc chuẩn tiếng Anh (Web Speech)">
+        <button onclick="BilingualHelper.speak('${safeEn}', 1.0)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-indigo-200/80 cursor-pointer" title="Nghe đọc chuẩn tiếng Anh (Web Speech)">
           🔊
         </button>
-        <button onclick="BilingualHelper.speak('${safeEn}', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80" title="Nghe tốc độ chậm (0.75x) để luyện theo">
+        <button onclick="BilingualHelper.speak('${safeEn}', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe tốc độ chậm (0.75x) để luyện theo">
           🐢
         </button>
-        <button onclick="BilingualHelper.openShadowingPractice('${safeEn}', '${safeVi}')" class="px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white flex items-center gap-1 text-[11px] font-bold transition-colors shadow-2xs border border-emerald-200/80" title="Xem dịch nghĩa, phiên âm và luyện đọc theo với micro">
+        <button onclick="BilingualHelper.openShadowingPractice('${safeEn}', '${safeVi}')" class="px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white flex items-center gap-1 text-[11px] font-bold transition-colors shadow-2xs border border-emerald-200/80 cursor-pointer" title="Xem dịch nghĩa, phiên âm và luyện đọc theo với micro">
           <span>🎙️</span> <span>Luyện theo</span>
+        </button>
+      </span>
+    `;
+  },
+
+  // Title Audio Speaker Helper
+  renderTitleSpeaker(englishTitle) {
+    if (!englishTitle) return '';
+    const safeEn = (englishTitle || '').replace(/"/g, '&quot;').replace(/'/g, "\\'");
+    return `
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('${safeEn}', 1.0)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh: ${safeEn}">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('${safeEn}', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.75x)">
+          🐢
         </button>
       </span>
     `;
