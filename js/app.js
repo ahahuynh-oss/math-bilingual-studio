@@ -1163,6 +1163,33 @@ const App = {
     Exporter.printWorksheetA4(this.currentLesson, { includeSolutions });
   },
 
+  openExportWordModal() {
+    const modal = document.getElementById('export-word-modal');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeExportWordModal() {
+    const modal = document.getElementById('export-word-modal');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  executeExportWord(mode) {
+    this.closeExportWordModal();
+    if (mode === 'student') {
+      Exporter.exportWordDocument(this.currentLesson, { includeSolutions: false });
+      this.showToast('Đã tải xuống Đề thi học sinh file Word (.doc)!');
+    } else if (mode === 'teacher') {
+      Exporter.exportWordDocument(this.currentLesson, { includeSolutions: true });
+      this.showToast('Đã tải xuống Đề kèm Đáp án chi tiết file Word (.doc)!');
+    } else if (mode === 'scaffold') {
+      if (window.ScaffoldingTutor) {
+        window.ScaffoldingTutor.exportWord();
+      } else {
+        this.showToast('Chưa có dữ liệu bài toán giàn giáo để xuất Word!');
+      }
+    }
+  },
+
   exportJSON() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.currentLesson, null, 2));
     const a = document.createElement('a');

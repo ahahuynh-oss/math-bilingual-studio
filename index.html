@@ -121,8 +121,13 @@
           🖨️ <span>In Worksheet (A4)</span>
         </button>
 
+        <!-- Export Word (.docx) Button -->
+        <button onclick="App.openExportWordModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-blue-950/80 hover:bg-blue-900 text-blue-300 border border-blue-500/40 shadow transition-all flex items-center gap-1.5" title="Xuất phiếu bài tập ra Microsoft Word (.doc / .docx)">
+          📄 <span>Xuất Word (.doc)</span>
+        </button>
+
         <!-- Standalone HTML Export Button -->
-        <button onclick="App.exportStandaloneHTML()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white shadow-lg shadow-indigo-600/25 transition-all flex items-center gap-1.5" title="Đóng gói bài học và đề thi thành 1 file HTML duy nhất cho học sinh">
+        <button onclick="App.exportStandaloneHTML()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white shadow-lg shadow-indigo-600/25 transition-all flex items-center gap-1.5" title="Đóng gói bài học và đề thi thành 1 file HTML duy nhất cho học sinh (hoạt động offline)">
           🚀 <span>Export Standalone HTML</span>
         </button>
       </div>
@@ -646,8 +651,11 @@
           </div>
 
           <div class="flex flex-col sm:flex-row gap-2">
-            <button onclick="ScaffoldingTutor.exportWorksheet()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 transition-all flex items-center gap-2 shadow-lg">
+            <button onclick="ScaffoldingTutor.exportWorksheet()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 transition-all flex items-center gap-2 shadow-lg" title="In phiếu bài tập khổ A4">
               🖨️ <span>In Phiếu Học Tập Giàn Giáo</span>
+            </button>
+            <button onclick="ScaffoldingTutor.exportWord()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-blue-950/80 hover:bg-blue-900 text-blue-300 border border-blue-500/40 transition-all flex items-center gap-2 shadow-lg" title="Tải phiếu giàn giáo dạng file Word (.doc) để chỉnh sửa">
+              📄 <span>Xuất Word Giàn Giáo (.doc)</span>
             </button>
           </div>
         </div>
@@ -816,6 +824,56 @@ Cho hàm số y = (x + 1)/(x - 1) có đồ thị (C). Tính tích khoảng các
 
       <div class="flex justify-end pt-2">
         <button onclick="App.closePrintModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- EXPORT WORD MODAL -->
+  <!-- ============================================================== -->
+  <div id="export-word-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full p-6 rounded-3xl border border-blue-500/40 shadow-2xl space-y-5 animate-in fade-in duration-200">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <span>📄</span> Xuất File Microsoft Word (.doc)
+        </h3>
+        <button onclick="App.closeExportWordModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed">
+        File Word tương thích 100% với Microsoft Word, Office 365, Google Docs và LibreOffice. Tự động định dạng khổ A4, lề chuẩn 2cm, phông Times New Roman 12pt, bảng biểu sắc nét giúp thầy cô dễ dàng chỉnh sửa hoặc in ấn.
+      </p>
+
+      <div class="space-y-3">
+        <button onclick="App.executeExportWord('student')" class="w-full p-4 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-blue-500/60 hover:bg-slate-850 text-left transition-all group">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-white group-hover:text-blue-400 transition-colors">1. Phiếu Bài Tập Cho Học Sinh</span>
+            <span class="text-xs text-blue-400 font-semibold">Khuyên dùng</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Bao gồm thông tin học sinh, bảng điểm, Bảng từ vựng song ngữ, các câu hỏi và chỗ trống điền đáp án (KHÔNG có lời giải).</p>
+        </button>
+
+        <button onclick="App.executeExportWord('teacher')" class="w-full p-4 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-purple-500/60 hover:bg-slate-850 text-left transition-all group">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-white group-hover:text-purple-400 transition-colors">2. Đề Thi Kèm Đáp Án Chi Tiết</span>
+            <span class="text-xs text-purple-400 font-semibold">Giáo viên</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Đánh dấu đáp án chuẩn trắc nghiệm, bảng Đúng/Sai đầy đủ và khung hướng dẫn giải chi tiết từng câu.</p>
+        </button>
+
+        <button onclick="App.executeExportWord('scaffold')" class="w-full p-4 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-amber-500/60 hover:bg-slate-850 text-left transition-all group">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-sm text-white group-hover:text-amber-400 transition-colors">3. Phiếu Giàn Giáo Sư Phạm (Scaffolding)</span>
+            <span class="text-xs text-amber-400 font-semibold">Gia sư ZPD</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Xuất bài toán giàn giáo hiện tại: phân tích trọng tâm, từ vựng, gợi ý nấc 1, khung tư duy nấc 2, cạm bẫy và bài tập tương tự.</p>
+        </button>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button onclick="App.closeExportWordModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white">
           Đóng
         </button>
       </div>
@@ -1013,12 +1071,12 @@ D. 0" class="w-full p-3.5 glass-input rounded-xl text-xs font-mono"></textarea>
   </div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261015_04"></script>
-  <script src="js/ai-generator.js?v=20261015_04"></script>
-  <script src="js/exporter.js?v=20261015_04"></script>
-  <script src="js/quiz.js?v=20261015_04"></script>
-  <script src="js/scaffolding-tutor.js?v=20261015_04"></script>
-  <script src="js/app.js?v=20261015_04"></script>
+  <script src="js/data.js?v=20261015_05"></script>
+  <script src="js/ai-generator.js?v=20261015_05"></script>
+  <script src="js/exporter.js?v=20261015_05"></script>
+  <script src="js/quiz.js?v=20261015_05"></script>
+  <script src="js/scaffolding-tutor.js?v=20261015_05"></script>
+  <script src="js/app.js?v=20261015_05"></script>
 </body>
 </html>
 

@@ -1,22 +1,77 @@
 /**
  * Export and Print Module for Math Bilingual Studio
- * Math Bilingual Studio
+ * Hỗ trợ xuất Standalone HTML offline (kèm Scaffolding Tutor), in A4, và xuất Word (.doc/.docx)
  */
 
 const Exporter = {
   /**
+   * Helper to format LaTeX math for clean readability in Microsoft Word
+   */
+  formatMathForWord(text) {
+    if (!text) return '';
+    let res = String(text);
+    res = res
+      .replace(/\\vec\{([a-zA-Z0-9]+)\}/g, '$1⃗')
+      .replace(/\\overrightarrow\{([a-zA-Z0-9]+)\}/g, '$1⃗')
+      .replace(/\\cdot/g, ' · ')
+      .replace(/\\times/g, ' × ')
+      .replace(/\\perp/g, ' ⊥ ')
+      .replace(/\\parallel/g, ' ∥ ')
+      .replace(/\\pm/g, ' ± ')
+      .replace(/\\mp/g, ' ∓ ')
+      .replace(/\\leq/g, ' ≤ ')
+      .replace(/\\le/g, ' ≤ ')
+      .replace(/\\geq/g, ' ≥ ')
+      .replace(/\\ge/g, ' ≥ ')
+      .replace(/\\neq/g, ' ≠ ')
+      .replace(/\\approx/g, ' ≈ ')
+      .replace(/\\equiv/g, ' ≡ ')
+      .replace(/\\in/g, ' ∈ ')
+      .replace(/\\notin/g, ' ∉ ')
+      .replace(/\\to/g, ' → ')
+      .replace(/\\implies/g, ' ⇒ ')
+      .replace(/\\iff/g, ' ⇔ ')
+      .replace(/\\infty/g, '∞')
+      .replace(/\\Delta/g, 'Δ')
+      .replace(/\\alpha/g, 'α')
+      .replace(/\\beta/g, 'β')
+      .replace(/\\gamma/g, 'γ')
+      .replace(/\\theta/g, 'θ')
+      .replace(/\\pi/g, 'π')
+      .replace(/\\mathbb\{R\}/g, 'ℝ')
+      .replace(/\\mathbb\{Z\}/g, 'ℤ')
+      .replace(/\\mathbb\{N\}/g, 'ℕ')
+      .replace(/\\mathbb\{C\}/g, 'ℂ')
+      .replace(/\\sqrt\{([^}]+)\}/g, '√($1)')
+      .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '($1)/($2)')
+      .replace(/\\lim_\{([^}]+)\}/g, 'lim[$1]')
+      .replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, '∫[$1 → $2]')
+      .replace(/\\int/g, '∫ ')
+      .replace(/\\sum_\{([^}]+)\}\^\{([^}]+)\}/g, '∑[$1 → $2]')
+      .replace(/\\sum/g, '∑ ')
+      .replace(/\$\$/g, '')
+      .replace(/\$/g, '');
+    return res;
+  },
+
+  /**
    * Generates a fully standalone self-contained HTML document
    * that can run offline or online in any browser.
+   * Includes Lesson Builder + Interactive Quiz + Pedagogical Scaffolding Tutor!
    */
   exportStandaloneHTML(lesson) {
-    const serializedData = JSON.stringify(lesson).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+    const serializedLessonData = JSON.stringify(lesson).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+    const presets = (window.ScaffoldingTutor && window.ScaffoldingTutor.presets) ? window.ScaffoldingTutor.presets : {};
+    const serializedPresets = JSON.stringify(presets).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+    const currentScaffold = (window.ScaffoldingTutor && window.ScaffoldingTutor.currentData) ? window.ScaffoldingTutor.currentData : null;
+    const serializedCurrentScaffold = JSON.stringify(currentScaffold).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 
     const htmlContent = `<!DOCTYPE html>
 <html lang="vi" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${lesson.meta.titleEn} | Math Bilingual Lesson</title>
+  <title>${lesson.meta.titleEn} | Math Bilingual Studio Standalone</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts -->
@@ -50,7 +105,7 @@ const Exporter = {
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .latex-box mjx-container {
-      font-size: 110% !important;
+      font-size: 108% !important;
       outline: none;
     }
     @media print {
@@ -63,16 +118,16 @@ const Exporter = {
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
 
   <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur-md">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+  <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-teal-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-bold text-lg text-white">
           $\\sum$
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-xs uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Standalone Interactive Math</span>
-            <span class="text-xs text-slate-400 hidden sm:inline">• ${lesson.meta.grade || 'Toán song ngữ'}</span>
+            <span class="text-xs uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Math Bilingual Studio (Offline Standalone)</span>
+            <span class="text-xs text-slate-400 hidden sm:inline">• ${lesson.meta.grade || 'Toán song ngữ THPT'}</span>
           </div>
           <h1 class="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-2">
             <span>${lesson.meta.titleEn}</span>
@@ -82,11 +137,14 @@ const Exporter = {
 
       <!-- Navigation & Mode -->
       <div class="flex items-center gap-2">
-        <div class="flex bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
-          <button id="tab-btn-lesson" onclick="switchStandaloneTab('lesson')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow">
+        <div class="flex bg-slate-800/90 p-1 rounded-xl border border-slate-700/60">
+          <button id="tab-btn-lesson" onclick="switchStandaloneTab('lesson')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow">
             📖 Bài Giảng (Lesson)
           </button>
-          <button id="tab-btn-quiz" onclick="switchStandaloneTab('quiz')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
+          <button id="tab-btn-scaffold" onclick="switchStandaloneTab('scaffold')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50 border border-amber-500/30">
+            🪜 Gia Sư Giàn Giáo (Tutor)
+          </button>
+          <button id="tab-btn-quiz" onclick="switchStandaloneTab('quiz')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50">
             ✍️ Kiểm Tra (Quiz)
           </button>
         </div>
@@ -100,7 +158,9 @@ const Exporter = {
   <!-- Main Container -->
   <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
 
-    <!-- LESSON TAB -->
+    <!-- ========================================== -->
+    <!-- TAB 1: LESSON VIEW                         -->
+    <!-- ========================================== -->
     <div id="standalone-lesson-view" class="space-y-8">
       
       <!-- Lesson Banner -->
@@ -124,7 +184,7 @@ const Exporter = {
             <span class="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-sm">🗣️</span>
             <span>Key Mathematical Vocabulary (Từ vựng trọng tâm)</span>
           </h3>
-          <span class="text-xs text-slate-400">Click 🔊 to hear pronunciation</span>
+          <span class="text-xs text-slate-400">Click 🔊 để nghe phát âm chuẩn bản xứ</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="vocab-grid">
@@ -139,7 +199,7 @@ const Exporter = {
                       <span class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">${v.pos || 'term'}</span>
                     </div>
                   </div>
-                  <button onclick="speakTerm('${v.term}')" class="p-2 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white transition-all text-xs" title="Listen pronunciation">
+                  <button onclick="speakTerm('${v.term.replace(/'/g, "\\'")}')" class="p-2 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white transition-all text-xs" title="Listen pronunciation">
                     🔊
                   </button>
                 </div>
@@ -148,7 +208,7 @@ const Exporter = {
                 </p>
                 <div class="text-xs bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 text-slate-300">
                   <div class="latex-box mb-1">${v.exampleEn}</div>
-                  <div class="text-slate-400 italic vi-text text-[11px]">${v.exampleVi}</div>
+                  <div class="text-[11px] text-slate-400 italic vi-text">${v.exampleVi}</div>
                 </div>
               </div>
             </div>
@@ -156,89 +216,80 @@ const Exporter = {
         </div>
       </section>
 
-      <!-- CONCEPTS & THEOREMS SECTION -->
+      <!-- CONCEPTS & THEOREMS -->
       <section class="space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="border-b border-slate-800 pb-3">
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <span class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm">📐</span>
-            <span>Concepts & Theorems (Khái niệm & Định lý)</span>
+            <span>Mathematical Concepts & Theorems (Định lý & Công thức)</span>
           </h3>
         </div>
 
         <div class="space-y-4">
           ${lesson.concepts.map((c, i) => `
-            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-500">
-              <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-                <h4 class="text-base sm:text-lg font-bold text-white">
-                  ${i+1}. ${c.titleEn}
-                </h4>
-                <span class="text-sm font-medium text-indigo-300 vi-text">(${c.titleVi})</span>
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-500 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-base font-bold text-white">${i + 1}. ${c.titleEn}</h4>
+                <span class="text-xs text-indigo-300 vi-text font-medium">${c.titleVi}</span>
               </div>
-              
-              <!-- Formula Box -->
-              <div class="bg-slate-900/90 p-4 rounded-xl border border-indigo-500/20 text-center my-3 overflow-x-auto latex-box">
-                $$${c.latex}$$
+              <div class="text-sm text-slate-300 leading-relaxed">${c.contentEn}</div>
+              <div class="text-xs text-slate-400 italic leading-relaxed vi-text bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">${c.contentVi}</div>
+              <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800/90 text-center latex-box overflow-x-auto">
+                $${c.formula}$
               </div>
-
-              <div class="space-y-2 mt-4 text-sm text-slate-300">
-                <p class="leading-relaxed"><strong class="text-slate-100">En:</strong> ${c.descEn}</p>
-                <p class="leading-relaxed text-slate-400 vi-text border-l-2 border-indigo-500/30 pl-3"><strong class="text-indigo-300">Vi:</strong> ${c.descVi}</p>
-                ${c.notesEn ? `
-                  <div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200">
-                    <div>💡 <strong>Note:</strong> ${c.notesEn}</div>
-                    <div class="vi-text mt-1 text-amber-300/80">👉 ${c.notesVi}</div>
-                  </div>
-                ` : ''}
-              </div>
+              ${c.pedagogicalNote ? `
+                <div class="text-xs text-amber-300 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 flex items-start gap-2">
+                  <span>💡</span>
+                  <span><strong>Lưu ý sư phạm:</strong> ${c.pedagogicalNote}</span>
+                </div>
+              ` : ''}
             </div>
           `).join('')}
         </div>
       </section>
 
-      <!-- WORKED EXAMPLES SECTION (With Step Reveal) -->
+      <!-- WORKED EXAMPLES (STEP-BY-STEP) -->
       <section class="space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="border-b border-slate-800 pb-3">
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
             <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">💡</span>
-            <span>Worked Examples (Ví dụ Mẫu & Hướng dẫn Giải)</span>
+            <span>Worked Examples (Ví dụ mẫu từng bước)</span>
           </h3>
         </div>
 
         <div class="space-y-6">
-          ${lesson.examples.map((ex, exIdx) => `
-            <div class="glass-card p-5 sm:p-6 rounded-2xl">
-              <div class="mb-4">
-                <span class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 text-xs font-semibold">Example ${exIdx+1}</span>
-                <h4 class="text-base sm:text-lg font-bold text-white mt-1">${ex.titleEn} <span class="vi-text font-normal text-slate-400 text-sm">(${ex.titleVi})</span></h4>
-                <div class="mt-3 p-4 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200 leading-relaxed">
-                  <div class="latex-box">${ex.problemEn}</div>
-                  <div class="vi-text text-slate-400 text-xs italic mt-2 border-t border-slate-800 pt-2">${ex.problemVi}</div>
-                </div>
+          ${lesson.examples.map((ex, i) => `
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-800 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  Example ${i + 1}
+                </span>
+                <button onclick="revealAllSteps('${ex.id}')" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">
+                  Mở toàn bộ các bước giải 👁️
+                </button>
               </div>
 
-              <!-- Step-by-step Interactive Reveal -->
-              <div class="space-y-3 mt-4">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Step-by-step Solution</span>
-                  <button onclick="revealAllSteps('${ex.id}')" class="text-xs text-indigo-400 hover:text-indigo-300 underline">
-                    Mở tất cả các bước (Show all)
-                  </button>
-                </div>
-                ${ex.steps.map((st, stIdx) => `
-                  <div id="step-${ex.id}-${st.stepNum}" class="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden transition-all">
-                    <button onclick="toggleStep('${ex.id}', ${st.stepNum})" class="w-full text-left p-3.5 flex items-center justify-between hover:bg-slate-800/40 transition-colors">
-                      <span class="font-semibold text-xs sm:text-sm text-indigo-300 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs">${st.stepNum}</span>
-                        ${st.titleEn} <span class="vi-text text-slate-400 text-xs font-normal">(${st.titleVi})</span>
+              <div>
+                <p class="text-sm sm:text-base font-semibold text-slate-100 mb-1.5 latex-box">${ex.problemEn}</p>
+                <p class="text-xs text-slate-400 italic vi-text border-l-2 border-purple-400/40 pl-2.5">${ex.problemVi}</p>
+              </div>
+
+              <!-- Steps Container -->
+              <div class="space-y-3 pt-2">
+                ${ex.steps.map((st) => `
+                  <div class="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden">
+                    <button onclick="toggleStep('${ex.id}', ${st.stepNumber})" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-200 hover:bg-slate-800/60 transition-colors">
+                      <span class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-indigo-600/30 text-indigo-400 flex items-center justify-center text-[11px] font-bold">${st.stepNumber}</span>
+                        <span>Step ${st.stepNumber}: ${st.actionEn}</span>
                       </span>
-                      <span id="step-icon-${ex.id}-${st.stepNum}" class="text-xs text-slate-400">➕ Mở bước này</span>
+                      <span id="step-icon-${ex.id}-${st.stepNumber}" class="text-xs text-indigo-400 font-normal">➕ Mở bước này</span>
                     </button>
-                    <div id="step-content-${ex.id}-${st.stepNum}" class="p-4 pt-1 border-t border-slate-800 hidden bg-slate-950/40 text-sm">
-                      <div class="p-3 bg-slate-900 rounded-lg my-2 border border-slate-800/80 text-center latex-box">
-                        $$${st.latex}$$
-                      </div>
-                      <p class="text-xs sm:text-sm text-slate-300">${st.explanationEn}</p>
-                      <p class="text-xs text-slate-400 italic vi-text mt-1">${st.explanationVi}</p>
+                    <div id="step-content-${ex.id}-${st.stepNumber}" class="hidden p-4 pt-2 border-t border-slate-800 text-xs sm:text-sm text-slate-300 space-y-2 bg-slate-950/40">
+                      <div class="text-slate-400 italic vi-text text-xs">${st.actionVi}</div>
+                      <div class="p-3 bg-slate-900 rounded-lg font-mono text-center latex-box overflow-x-auto">$${st.mathExpression}$</div>
+                      ${st.explanationEn ? `<div class="text-slate-300">${st.explanationEn}</div>` : ''}
+                      ${st.explanationVi ? `<div class="text-slate-400 vi-text text-[11px] italic">${st.explanationVi}</div>` : ''}
                     </div>
                   </div>
                 `).join('')}
@@ -248,55 +299,105 @@ const Exporter = {
         </div>
       </section>
 
-      <!-- VISUALIZER / GEOGEBRA EMBED -->
-      ${lesson.visualizer ? `
-      <section class="space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">📈</span>
-            <span>Interactive Math Visualizer & Grapher</span>
-          </h3>
-          <span class="text-xs text-cyan-400 font-mono">${lesson.visualizer.formulaDisplay || 'Graph Analysis'}</span>
-        </div>
+    </div>
 
-        <div class="glass-card p-4 sm:p-6 rounded-2xl">
-          <div class="w-full h-96 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 relative flex items-center justify-center">
-            ${lesson.visualizer.geogebraId ? `
-              <iframe 
-                src="https://www.geogebra.org/material/iframe/id/${lesson.visualizer.geogebraId}/width/800/height/400/border/888888/sfsb/true/smb/false/stb/false/stbh/false/ai/false/asb/false/sri/true/rc/false/ld/false/sdz/true/ctl/false" 
-                class="w-full h-full border-0" 
-                title="GeoGebra Interactive Applet">
-              </iframe>
-            ` : `
-              <div class="text-center p-6 text-slate-400">
-                <p class="font-medium text-white mb-1">Visualizer Preview</p>
-                <p class="text-xs">Formula: ${lesson.visualizer.formulaDisplay || 'y = f(x)'}</p>
-              </div>
-            `}
+    <!-- ========================================== -->
+    <!-- TAB 2: SCAFFOLDING TUTOR (OFFLINE)         -->
+    <!-- ========================================== -->
+    <div id="standalone-scaffold-view" class="space-y-6 hidden">
+      
+      <!-- Top Scaffolding Tutor Banner -->
+      <div class="glass-card p-6 sm:p-7 rounded-3xl border-2 border-indigo-500/40 bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 shadow-2xl space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg border border-amber-500/30">🪜</span>
+            <div>
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                Gia Sư Giàn Giáo Sư Phạm (Scaffolding Offline)
+              </span>
+              <h2 class="text-xl sm:text-2xl font-black text-white">Bilingual Math Scaffolding Tutor</h2>
+            </div>
           </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
+            Mô hình Vygotsky ZPD • Hoạt động 100% Offline
+          </span>
         </div>
-      </section>
-      ` : ''}
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          Hệ thống cung cấp giàn giáo nhận thức nhiều tầng giúp bạn tự suy luận giải bài toán song ngữ: phá bỏ rào cản thuật ngữ tiếng Anh, mở gợi ý từng nấc và rèn luyện bài tập song song.
+        </p>
+
+        <!-- Presets Selection Bar -->
+        <div class="pt-2 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
+          <span class="text-xs font-bold text-slate-400">Chọn Bài Mẫu THPT:</span>
+          <button onclick="selectStandalonePreset('grade-10-vectors')" id="btn-pre-10" class="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all">
+            📘 Khối 10: Tọa độ Oxy & Tích vô hướng
+          </button>
+          <button onclick="selectStandalonePreset('grade-11-limits')" id="btn-pre-11" class="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all">
+            📗 Khối 11: Giới hạn vô định 0/0
+          </button>
+          <button onclick="selectStandalonePreset('grade-12-asymptotes')" id="btn-pre-12" class="px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all">
+            📙 Khối 12: Hàm phân thức & Tiệm cận
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Problem Card -->
+      <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-800 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Đề bài mục tiêu (Target Problem):</span>
+          <span id="scaffold-grade-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-amber-400 border border-amber-500/30">Khối 12</span>
+        </div>
+        <div id="scaffold-problem-text" class="text-sm sm:text-base font-semibold text-white leading-relaxed latex-box">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- 3-Step Progress Tier Control Buttons -->
+      <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+          <span>⚡</span> <span>Mở mức độ hỗ trợ sư phạm:</span>
+        </span>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="setStandaloneTier(1)" id="tier-btn-1" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow transition-all">
+            🟡 Chỉ mở Gợi ý Nấc 1
+          </button>
+          <button onclick="setStandaloneTier(2)" id="tier-btn-2" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition-all">
+            🔵 Mở Khung tư duy 3 bước
+          </button>
+          <button onclick="setStandaloneTier(3)" id="tier-btn-3" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition-all">
+            🟢 Mở Toàn bộ Lời giải & Cạm bẫy
+          </button>
+        </div>
+      </div>
+
+      <!-- Scaffold Dynamic Sections Container -->
+      <div id="standalone-scaffold-container" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
 
     </div>
 
-    <!-- QUIZ TAB -->
-    <div id="standalone-quiz-view" class="space-y-6 hidden">
+    <!-- ========================================== -->
+    <!-- TAB 3: QUIZ VIEW                           -->
+    <!-- ========================================== -->
+    <div id="standalone-quiz-view" class="space-y-8 hidden">
       
-      <!-- Quiz Header / Status Card -->
-      <div class="glass-card p-6 rounded-2xl flex flex-wrap items-center justify-between gap-4 border-indigo-500/30">
+      <!-- Quiz Header Card -->
+      <div class="glass-card p-6 sm:p-8 rounded-2xl border border-indigo-500/30 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-400">Interactive Quiz</span>
-          <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">${lesson.quiz.titleEn}</h2>
-          <h3 class="text-sm text-indigo-300 vi-text">${lesson.quiz.titleVi}</h3>
+          <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-2 inline-block">
+            Assessment Test
+          </span>
+          <h2 class="text-xl sm:text-2xl font-black text-white">${lesson.quiz.titleEn}</h2>
+          <h3 class="text-sm font-medium text-slate-400 vi-text mt-0.5">${lesson.quiz.titleVi}</h3>
+          <p class="text-xs text-slate-400 mt-2">
+            Thời gian: <strong>${lesson.quiz.timeMinutes || 20} phút</strong> • Tổng số câu: <strong>${lesson.quiz.questions.length}</strong>
+          </p>
         </div>
-        <div class="flex items-center gap-3">
-          <div class="text-right">
-            <span class="text-xs text-slate-400 block">Total Questions</span>
-            <span class="text-lg font-bold text-white">${lesson.quiz.questions.length} Items</span>
-          </div>
-          <button id="btn-submit-standalone-quiz" onclick="gradeStandaloneQuiz()" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg hover:from-emerald-600 hover:to-teal-700 transition-all flex items-center gap-2">
-            <span>✅ Nộp Bài & Chấm Điểm</span>
+
+        <div class="flex gap-2">
+          <button onclick="gradeStandaloneQuiz()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-1.5">
+            <span>✅</span> <span>Nộp Bài & Chấm Điểm</span>
           </button>
         </div>
       </div>
@@ -332,25 +433,50 @@ const Exporter = {
 
   <!-- Embedded JS Logic -->
   <script>
-    const LESSON_DATA = ${serializedData};
+    const LESSON_DATA = ${serializedLessonData};
+    const SCAFFOLD_PRESETS = ${serializedPresets};
+    let currentScaffoldData = ${serializedCurrentScaffold} || (SCAFFOLD_PRESETS["grade-12-asymptotes"] ? SCAFFOLD_PRESETS["grade-12-asymptotes"].data : null);
+    let activeScaffoldPresetKey = "grade-12-asymptotes";
     let showVi = true;
+
+    // Scaffolding UI State
+    let scaffoldTiers = {
+      vocab: true,
+      analysis: true,
+      tier1: true,
+      tier2: false,
+      tier3: false,
+      pitfall: false,
+      parallel: false
+    };
 
     function switchStandaloneTab(tab) {
       const lessonView = document.getElementById('standalone-lesson-view');
+      const scaffoldView = document.getElementById('standalone-scaffold-view');
       const quizView = document.getElementById('standalone-quiz-view');
       const btnLesson = document.getElementById('tab-btn-lesson');
+      const btnScaffold = document.getElementById('tab-btn-scaffold');
       const btnQuiz = document.getElementById('tab-btn-quiz');
+
+      // Hide all
+      lessonView.classList.add('hidden');
+      scaffoldView.classList.add('hidden');
+      quizView.classList.add('hidden');
+
+      btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50';
+      btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50 border border-amber-500/30';
+      btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50';
 
       if (tab === 'lesson') {
         lessonView.classList.remove('hidden');
-        quizView.classList.add('hidden');
-        btnLesson.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
-        btnQuiz.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white';
+        btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
+      } else if (tab === 'scaffold') {
+        scaffoldView.classList.remove('hidden');
+        btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-500 text-slate-950 font-bold shadow';
+        renderStandaloneScaffold();
       } else {
-        lessonView.classList.add('hidden');
         quizView.classList.remove('hidden');
-        btnQuiz.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
-        btnLesson.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white';
+        btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
         renderStandaloneQuestions();
       }
       triggerMathJax();
@@ -404,7 +530,221 @@ const Exporter = {
       }
     }
 
-    // Render Quiz Questions
+    // ==========================================
+    // STANDALONE SCAFFOLDING TUTOR LOGIC
+    // ==========================================
+    function selectStandalonePreset(presetKey) {
+      activeScaffoldPresetKey = presetKey;
+      const p = SCAFFOLD_PRESETS[presetKey];
+      if (p) {
+        currentScaffoldData = p.data;
+        document.getElementById('scaffold-grade-badge').innerText = p.grade || 'Toán THPT';
+      }
+      ['btn-pre-10', 'btn-pre-11', 'btn-pre-12'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) {
+          b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all';
+        }
+      });
+      if (presetKey === 'grade-10-vectors') document.getElementById('btn-pre-10').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all';
+      if (presetKey === 'grade-11-limits') document.getElementById('btn-pre-11').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all';
+      if (presetKey === 'grade-12-asymptotes') document.getElementById('btn-pre-12').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all';
+
+      setStandaloneTier(1);
+    }
+
+    function setStandaloneTier(tier) {
+      if (tier === 1) {
+        scaffoldTiers = { vocab: true, analysis: true, tier1: true, tier2: false, tier3: false, pitfall: false, parallel: false };
+      } else if (tier === 2) {
+        scaffoldTiers = { vocab: true, analysis: true, tier1: true, tier2: true, tier3: false, pitfall: true, parallel: true };
+      } else {
+        scaffoldTiers = { vocab: true, analysis: true, tier1: true, tier2: true, tier3: true, pitfall: true, parallel: true };
+      }
+
+      ['tier-btn-1', 'tier-btn-2', 'tier-btn-3'].forEach((id, idx) => {
+        const b = document.getElementById(id);
+        if (b) {
+          if (idx + 1 === tier) {
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow transition-all';
+          } else {
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition-all';
+          }
+        }
+      });
+
+      renderStandaloneScaffold();
+    }
+
+    function toggleScaffoldSection(secKey) {
+      scaffoldTiers[secKey] = !scaffoldTiers[secKey];
+      renderStandaloneScaffold();
+    }
+
+    function renderStandaloneScaffold() {
+      const container = document.getElementById('standalone-scaffold-container');
+      const textEl = document.getElementById('scaffold-problem-text');
+      const d = currentScaffoldData;
+      if (!d) return;
+
+      const pObj = SCAFFOLD_PRESETS[activeScaffoldPresetKey];
+      if (textEl && pObj) {
+        textEl.innerHTML = pObj.rawInput || '';
+      }
+
+      let html = '';
+
+      // 1. Bilingual Vocabulary Card
+      html += '<div class="glass-card rounded-2xl border border-teal-500/30 overflow-hidden">';
+      html += '<div onclick="toggleScaffoldSection(\\'vocab\\')" class="p-4 bg-teal-950/30 flex items-center justify-between cursor-pointer hover:bg-teal-950/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-teal-400 font-bold text-base">🗣️</span>';
+      html += '<span class="font-bold text-sm text-white">1. Thuật ngữ toán học then chốt (Key Mathematical Vocabulary)</span>';
+      html += '</div>';
+      html += '<span class="text-xs text-teal-400 font-bold">' + (scaffoldTiers.vocab ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+
+      if (scaffoldTiers.vocab) {
+        html += '<div class="p-4 space-y-3 bg-slate-900/60">';
+        html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+        (d.bilingual_vocabulary || []).forEach(v => {
+          html += '<div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between">';
+          html += '<div>';
+          html += '<div class="flex items-center justify-between">';
+          html += '<span class="font-bold text-white text-sm">' + v.english_term + '</span>';
+          html += '<button onclick="speakTerm(\\'' + v.english_term.replace(/'/g, "\\\\'") + '\\')" class="text-xs p-1 px-2 rounded bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300">🔊</button>';
+          html += '</div>';
+          html += '<div class="text-emerald-400 font-medium text-xs mt-1">👉 ' + v.vietnamese_term + '</div>';
+          html += '<div class="text-slate-400 text-[11px] mt-1.5 italic latex-box">' + v.context_note + '</div>';
+          html += '</div></div>';
+        });
+        html += '</div></div>';
+      }
+      html += '</div>';
+
+      // 2. Problem Analysis Card
+      html += '<div class="glass-card rounded-2xl border border-indigo-500/30 overflow-hidden">';
+      html += '<div onclick="toggleScaffoldSection(\\'analysis\\')" class="p-4 bg-indigo-950/30 flex items-center justify-between cursor-pointer hover:bg-indigo-950/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-indigo-400 font-bold text-base">🔍</span>';
+      html += '<span class="font-bold text-sm text-white">2. Bóc tách đề bài & Trọng tâm kiến thức</span>';
+      html += '</div>';
+      html += '<span class="text-xs text-indigo-400 font-bold">' + (scaffoldTiers.analysis ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.analysis) {
+        html += '<div class="p-4 bg-slate-900/60 text-xs sm:text-sm text-slate-300 leading-relaxed latex-box">' + d.problem_analysis + '</div>';
+      }
+      html += '</div>';
+
+      // 3. Tier 1 Hint Card
+      html += '<div class="glass-card rounded-2xl border border-amber-500/30 overflow-hidden">';
+      html += '<div onclick="toggleScaffoldSection(\\'tier1\\')" class="p-4 bg-amber-950/30 flex items-center justify-between cursor-pointer hover:bg-amber-950/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-amber-400 font-bold text-base">💡</span>';
+      html += '<span class="font-bold text-sm text-white">3. Giàn giáo Nấc 1: Câu hỏi gợi mở định hướng tư duy (Tier 1 Hint)</span>';
+      html += '</div>';
+      html += '<span class="text-xs text-amber-400 font-bold">' + (scaffoldTiers.tier1 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.tier1) {
+        html += '<div class="p-4 bg-slate-900/60 text-xs sm:text-sm text-amber-200/90 leading-relaxed latex-box border-l-4 border-amber-400">' + d.tier_1_hint + '</div>';
+      }
+      html += '</div>';
+
+      // 4. Tier 2 Breakdown Card
+      html += '<div class="glass-card rounded-2xl border border-blue-500/30 overflow-hidden">';
+      html += '<div onclick="toggleScaffoldSection(\\'tier2\\')" class="p-4 bg-blue-950/30 flex items-center justify-between cursor-pointer hover:bg-blue-950/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-blue-400 font-bold text-base">🪜</span>';
+      html += '<span class="font-bold text-sm text-white">4. Giàn giáo Nấc 2: Khung tư duy chia nhỏ các bước (Tier 2 Breakdown)</span>';
+      html += '</div>';
+      html += '<span class="text-xs text-blue-400 font-bold">' + (scaffoldTiers.tier2 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.tier2) {
+        html += '<div class="p-4 bg-slate-900/60 space-y-2">';
+        (d.tier_2_breakdown || []).forEach((st, idx) => {
+          html += '<div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-xs sm:text-sm text-slate-200 latex-box flex items-start gap-2.5">';
+          html += '<span class="w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">' + (idx+1) + '</span>';
+          html += '<span>' + st + '</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      html += '</div>';
+
+      // 5. Common Pitfalls
+      html += '<div class="glass-card rounded-2xl border border-rose-500/30 overflow-hidden">';
+      html += '<div onclick="toggleScaffoldSection(\\'pitfall\\')" class="p-4 bg-rose-950/30 flex items-center justify-between cursor-pointer hover:bg-rose-950/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-rose-400 font-bold text-base">⚠️</span>';
+      html += '<span class="font-bold text-sm text-white">5. Cảnh báo lỗi sai & Cạm bẫy thường gặp (Common Pitfalls)</span>';
+      html += '</div>';
+      html += '<span class="text-xs text-rose-400 font-bold">' + (scaffoldTiers.pitfall ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.pitfall) {
+        html += '<div class="p-4 bg-slate-900/60 text-xs sm:text-sm text-rose-200/90 leading-relaxed latex-box">' + d.common_pitfall + '</div>';
+      }
+      html += '</div>';
+
+      // 6. Full Solution Card
+      html += '<div class="glass-card rounded-2xl border border-emerald-500/30 overflow-hidden">';
+      html += '<div onclick="toggleScaffoldSection(\\'tier3\\')" class="p-4 bg-emerald-950/30 flex items-center justify-between cursor-pointer hover:bg-emerald-950/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-emerald-400 font-bold text-base">📝</span>';
+      html += '<span class="font-bold text-sm text-white">6. Lời giải mẫu hoàn chỉnh từng bước (Full Solution)</span>';
+      html += '</div>';
+      html += '<span class="text-xs text-emerald-400 font-bold">' + (scaffoldTiers.tier3 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.tier3) {
+        const solFormatted = (d.full_solution || '').replace(/\\n/g, '<br>');
+        html += '<div class="p-5 bg-slate-900/60 text-xs sm:text-sm text-slate-200 leading-relaxed latex-box">' + solFormatted + '</div>';
+      }
+      html += '</div>';
+
+      // 7. Parallel Exercise
+      if (d.parallel_exercise) {
+        html += '<div class="glass-card rounded-2xl border-2 border-teal-500/40 p-5 space-y-3 bg-gradient-to-r from-teal-950/30 via-slate-900 to-indigo-950/30">';
+        html += '<div class="flex items-center gap-2">';
+        html += '<span class="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">🎯</span>';
+        html += '<span class="font-bold text-sm text-white">7. Bài tập tương tự tự rèn luyện (Parallel Exercise)</span>';
+        html += '</div>';
+        html += '<div class="text-xs sm:text-sm text-slate-100 font-semibold latex-box">' + d.parallel_exercise.question_en + '</div>';
+        html += '<div class="text-xs text-slate-400 italic vi-text border-l-2 border-teal-500/40 pl-2.5">' + d.parallel_exercise.question_vi + '</div>';
+        html += '<div class="flex flex-wrap items-center gap-3 pt-2">';
+        html += '<input type="text" id="offline-parallel-input" placeholder="Nhập đáp số (Ví dụ: 0, 7, 2...)" class="px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm text-white font-mono w-64 focus:border-teal-400 focus:outline-none">';
+        html += '<button onclick="checkStandaloneParallelAnswer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow transition-all">Kiểm Tra Đáp Số</button>';
+        html += '</div>';
+        html += '<div id="offline-parallel-feedback" class="hidden text-xs p-3 rounded-xl"></div>';
+        html += '</div>';
+      }
+
+      container.innerHTML = html;
+      triggerMathJax();
+    }
+
+    function checkStandaloneParallelAnswer() {
+      const input = document.getElementById('offline-parallel-input');
+      const fb = document.getElementById('offline-parallel-feedback');
+      const d = currentScaffoldData;
+      if (!input || !fb || !d || !d.parallel_exercise) return;
+
+      const userVal = input.value.trim().toLowerCase();
+      const correctVal = String(d.parallel_exercise.short_answer).trim().toLowerCase();
+
+      fb.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'text-emerald-300', 'bg-rose-950/40', 'border-rose-500/40', 'text-rose-300');
+      fb.classList.add('border');
+
+      if (userVal === correctVal) {
+        fb.classList.add('bg-emerald-950/40', 'border-emerald-500/40', 'text-emerald-300');
+        fb.innerHTML = '🎉 <strong>Chính xác tuyệt đối!</strong> Em đã vận dụng rất tốt phương pháp giàn giáo để tự giải quyết trọn vẹn bài toán.';
+      } else {
+        fb.classList.add('bg-rose-950/40', 'border-rose-500/40', 'text-rose-300');
+        fb.innerHTML = '⚠️ <strong>Chưa chính xác!</strong> Hãy xem lại Nấc 2 (Khung tư duy) và Nấc 5 (Cạm bẫy thường gặp) phía trên để điều chỉnh phép tính.';
+      }
+    }
+
+    // ==========================================
+    // STANDALONE QUIZ RENDERING
+    // ==========================================
     function renderStandaloneQuestions() {
       const container = document.getElementById('standalone-questions-container');
       if (container.children.length > 0) return; // already rendered
@@ -505,8 +845,6 @@ const Exporter = {
               correctCount++;
             }
           });
-          // Official Ministry Scoring Scale for 4 sub-questions:
-          // 1 correct = 10%, 2 correct = 25%, 3 correct = 50%, 4 correct = 100% of points
           let multiplier = 0;
           if (correctCount === 1) multiplier = 0.1;
           else if (correctCount === 2) multiplier = 0.25;
@@ -528,7 +866,6 @@ const Exporter = {
           const acceptable = (q.acceptableAnswers || []).map(a => String(a).trim().toLowerCase());
           
           let isRight = (val === correct) || acceptable.includes(val);
-          // Numerical tolerance check
           if (!isRight && !isNaN(parseFloat(val)) && !isNaN(parseFloat(correct))) {
             const tol = q.tolerance || 0.01;
             if (Math.abs(parseFloat(val) - parseFloat(correct)) <= tol) {
@@ -545,7 +882,6 @@ const Exporter = {
         }
       });
 
-      // Calculate final score scaled to 10
       const scaledScore = totalMaxPoints > 0 ? (earnedPoints / totalMaxPoints) * 10 : 0;
       const resultBanner = document.getElementById('standalone-quiz-result');
       const scoreNum = document.getElementById('result-score-num');
@@ -584,6 +920,386 @@ const Exporter = {
     const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
     const safeTitle = (lesson.meta.titleEn || 'Math_Lesson').replace(/[^a-zA-Z0-9_-]/g, '_');
     const filename = `${safeTitle}_Bilingual_Standalone.html`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  /**
+   * Generates and downloads an editable Microsoft Word document (.doc)
+   * Options: includeSolutions (boolean), mode: 'student' | 'teacher'
+   */
+  exportWordDocument(lesson, options = { includeSolutions: false }) {
+    const { includeSolutions } = options;
+    const safeTitle = (lesson.meta.titleEn || 'Math_Lesson').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = includeSolutions 
+      ? `[Giao_Vien_Dap_An]_${safeTitle}.doc` 
+      : `[Hoc_Sinh_De_Thi]_${safeTitle}.doc`;
+
+    const vocabRows = (lesson.vocabulary || []).map((v, i) => `
+      <tr>
+        <td style="border: 1px solid #555; padding: 5px; text-align: center; width: 30px;">${i + 1}</td>
+        <td style="border: 1px solid #555; padding: 5px; font-weight: bold; width: 180px;">${v.term}</td>
+        <td style="border: 1px solid #555; padding: 5px; font-style: italic; color: #2563eb; width: 110px;">${v.ipa || ''}</td>
+        <td style="border: 1px solid #555; padding: 5px; font-weight: bold; width: 160px;">${v.meaningVi}</td>
+        <td style="border: 1px solid #555; padding: 5px; font-size: 10pt;">${this.formatMathForWord(v.exampleEn)}<br><span style="color: #555; font-style: italic;">${v.exampleVi}</span></td>
+      </tr>
+    `).join('');
+
+    const questionItems = (lesson.quiz.questions || []).map((q, qIndex) => {
+      let qHtml = `
+        <div style="margin-bottom: 16pt; page-break-inside: avoid;">
+          <div style="font-weight: bold; margin-bottom: 3pt;">
+            Câu ${qIndex + 1} (${q.points} điểm): ${this.formatMathForWord(q.stemEn)}
+          </div>
+          <div style="font-style: italic; color: #444; margin-bottom: 6pt; font-size: 11pt;">
+            Dịch nghĩa: ${q.stemVi}
+          </div>
+      `;
+
+      if (q.type === 'multiple-choice') {
+        qHtml += `<table style="width: 100%; border-collapse: collapse; margin-left: 10px; margin-bottom: 6pt;">`;
+        for (let i = 0; i < q.options.length; i += 2) {
+          const opt1 = q.options[i];
+          const opt2 = q.options[i + 1];
+          qHtml += `<tr>`;
+          if (opt1) {
+            const isCor = includeSolutions && opt1.isCorrect;
+            qHtml += `<td style="padding: 4px; width: 50%; font-size: 11pt; ${isCor ? 'font-weight: bold; color: #b91c1c; text-decoration: underline;' : ''}">
+              <strong>${opt1.id}.</strong> ${this.formatMathForWord(opt1.text)} ${isCor ? ' [✓ Đáp án]' : ''}
+            </td>`;
+          }
+          if (opt2) {
+            const isCor = includeSolutions && opt2.isCorrect;
+            qHtml += `<td style="padding: 4px; width: 50%; font-size: 11pt; ${isCor ? 'font-weight: bold; color: #b91c1c; text-decoration: underline;' : ''}">
+              <strong>${opt2.id}.</strong> ${this.formatMathForWord(opt2.text)} ${isCor ? ' [✓ Đáp án]' : ''}
+            </td>`;
+          }
+          qHtml += `</tr>`;
+        }
+        qHtml += `</table>`;
+      } else if (q.type === 'true-false-4') {
+        qHtml += `
+          <table style="width: 100%; border-collapse: collapse; margin: 6pt 0;">
+            <thead>
+              <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #777; padding: 4px 6px; text-align: left;">Các mệnh đề (Propositions)</th>
+                <th style="border: 1px solid #777; padding: 4px; width: 80px; text-align: center;">Đúng</th>
+                <th style="border: 1px solid #777; padding: 4px; width: 80px; text-align: center;">Sai</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${(q.propositions || []).map(p => `
+                <tr>
+                  <td style="border: 1px solid #777; padding: 4px 6px;">
+                    <strong>${p.id})</strong> ${this.formatMathForWord(p.textEn)}
+                    <div style="font-size: 10pt; color: #444; font-style: italic;">${p.textVi}</div>
+                  </td>
+                  <td style="border: 1px solid #777; text-align: center; font-weight: bold; font-size: 13pt;">
+                    ${includeSolutions && p.isCorrect ? '✓' : ''}
+                  </td>
+                  <td style="border: 1px solid #777; text-align: center; font-weight: bold; font-size: 13pt;">
+                    ${includeSolutions && !p.isCorrect ? '✓' : ''}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      } else if (q.type === 'short-answer') {
+        qHtml += `
+          <div style="margin: 6pt 0; font-size: 11.5pt;">
+            <strong>Đáp số của học sinh (Your answer):</strong>
+            <span style="display: inline-block; width: 160px; border-bottom: 1.5px dotted #000; margin-left: 10px;">&nbsp;</span>
+            ${includeSolutions ? `<span style="color: #b91c1c; font-weight: bold; margin-left: 14pt;">Đáp án chuẩn: ${q.correctAnswer}</span>` : ''}
+          </div>
+        `;
+      }
+
+      if (includeSolutions) {
+        qHtml += `
+          <div style="background-color: #f8fafc; border-left: 3.5px solid #2563eb; padding: 6px 10px; margin-top: 6pt; font-size: 10.5pt;">
+            <strong style="color: #1e40af;">[Hướng dẫn giải chi tiết]:</strong><br>
+            ${this.formatMathForWord(q.explanationEn)}<br>
+            <em style="color: #4b5563;">${q.explanationVi}</em>
+          </div>
+        `;
+      }
+
+      qHtml += `</div>`;
+      return qHtml;
+    }).join('');
+
+    const wordHtml = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <!--[if gte mso 9]>
+  <xml>
+    <w:WordDocument>
+      <w:View>Print</w:View>
+      <w:Zoom>100</w:Zoom>
+      <w:DoNotOptimizeForBrowser/>
+    </w:WordDocument>
+  </xml>
+  <![endif]-->
+  <style>
+    @page Section1 {
+      size: 21.0cm 29.7cm;
+      margin: 2.0cm 2.0cm 2.0cm 2.0cm;
+      mso-header-margin: 36.0pt;
+      mso-footer-margin: 36.0pt;
+      mso-paper-source: 0;
+    }
+    div.Section1 {
+      page: Section1;
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.35;
+      color: #000;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .section-title {
+      font-size: 12pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      background-color: #ebebeb;
+      padding: 5px 8px;
+      margin: 14pt 0 8pt 0;
+      border-left: 4px solid #111;
+    }
+  </style>
+</head>
+<body>
+  <div class="Section1">
+    
+    <!-- Top Exam Header Table -->
+    <table style="width: 100%; margin-bottom: 12pt;">
+      <tr>
+        <td style="width: 60%; vertical-align: top;">
+          <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase;">MATH BILINGUAL ACADEMY / PHÒNG ĐÀO TẠO</div>
+          <div style="font-size: 13.5pt; font-weight: bold; text-transform: uppercase; margin-top: 3pt;">${lesson.quiz.titleEn}</div>
+          <div style="font-size: 11pt; font-style: italic;">${lesson.quiz.titleVi}</div>
+          <div style="font-size: 11pt; margin-top: 8pt; line-height: 1.5;">
+            Họ và tên học sinh (Student Name): ....................................................<br>
+            Lớp (Class): ......................... &nbsp;&nbsp;&nbsp; Ngày (Date): ............................<br>
+            Thời gian làm bài: <strong>${lesson.quiz.timeMinutes || 20} phút</strong> (Không kể thời gian phát đề)
+          </div>
+        </td>
+        <td style="width: 40%; vertical-align: top; text-align: right;">
+          <div style="display: inline-block; text-align: center;">
+            <table style="border: 1.5px solid #000; width: 180px; text-align: center;">
+              <tr>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; font-size: 9.5pt;">ĐIỂM (SCORE)</td>
+                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; font-size: 9.5pt;">LỜI PHÊ GIÁO VIÊN</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #000; height: 60px;"></td>
+                <td style="border: 1px solid #000; height: 60px;"></td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div style="border-top: 1.5px solid #000; margin: 8pt 0 14pt 0;"></div>
+
+    <!-- Key Vocabulary Section -->
+    <div class="section-title">PHẦN I: THUẬT NGỮ TOÁN HỌC TRỌNG TÂM (KEY VOCABULARY)</div>
+    <table style="width: 100%; margin-bottom: 14pt;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #555; padding: 5px;">STT</th>
+          <th style="border: 1px solid #555; padding: 5px;">Thuật ngữ tiếng Anh</th>
+          <th style="border: 1px solid #555; padding: 5px;">Phiên âm (IPA)</th>
+          <th style="border: 1px solid #555; padding: 5px;">Thuật ngữ tiếng Việt</th>
+          <th style="border: 1px solid #555; padding: 5px;">Ngữ cảnh & Ví dụ</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${vocabRows}
+      </tbody>
+    </table>
+
+    <!-- Questions Assessment Section -->
+    <div class="section-title">PHẦN II: BÀI KIỂM TRA ĐÁNH GIÁ (ASSESSMENT TEST)</div>
+    ${questionItems}
+
+    <div style="text-align: center; margin-top: 25pt; font-style: italic; font-size: 11pt;">
+      --- HẾT (END OF WORKSHEET) ---
+    </div>
+
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([wordHtml], { type: 'application/msword;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  /**
+   * Generates and downloads a Scaffolding Tutor Worksheet in Word (.doc)
+   */
+  exportScaffoldWord(scaffoldData, lessonTitle = 'Toán Song Ngữ') {
+    if (!scaffoldData) return;
+    const d = scaffoldData;
+    const safeTitle = lessonTitle.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = `[Phieu_Gian_Giao]_${safeTitle}.doc`;
+
+    const vocabRows = (d.bilingual_vocabulary || []).map((v, i) => `
+      <tr>
+        <td style="border: 1px solid #555; padding: 5px; text-align: center; width: 30px;">${i + 1}</td>
+        <td style="border: 1px solid #555; padding: 5px; font-weight: bold; width: 200px;">${v.english_term}</td>
+        <td style="border: 1px solid #555; padding: 5px; font-weight: bold; width: 180px;">${v.vietnamese_term}</td>
+        <td style="border: 1px solid #555; padding: 5px; font-size: 10.5pt;">${this.formatMathForWord(v.context_note)}</td>
+      </tr>
+    `).join('');
+
+    const stepsList = (d.tier_2_breakdown || []).map((s, idx) => `
+      <li style="margin-bottom: 6pt;"><strong>Bước ${idx + 1}:</strong> ${this.formatMathForWord(s)}</li>
+    `).join('');
+
+    const wordHtml = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <!--[if gte mso 9]>
+  <xml>
+    <w:WordDocument>
+      <w:View>Print</w:View>
+      <w:Zoom>100</w:Zoom>
+      <w:DoNotOptimizeForBrowser/>
+    </w:WordDocument>
+  </xml>
+  <![endif]-->
+  <style>
+    @page Section1 {
+      size: 21.0cm 29.7cm;
+      margin: 2.0cm 2.0cm 2.0cm 2.0cm;
+    }
+    div.Section1 { page: Section1; }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.35;
+      color: #000;
+    }
+    table { border-collapse: collapse; width: 100%; }
+    .title-box {
+      text-align: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 10pt;
+      margin-bottom: 14pt;
+    }
+    .section-title {
+      font-size: 12pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      background-color: #f0f0f0;
+      padding: 5px 8px;
+      margin: 14pt 0 6pt 0;
+      border-left: 4px solid #111;
+    }
+    .box {
+      border: 1px solid #777;
+      background-color: #fafafa;
+      padding: 8pt 10pt;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="Section1">
+    
+    <div class="title-box">
+      <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase;">MATH BILINGUAL ACADEMY • HỆ THỐNG GIÀN GIÁO SƯ PHẠM</div>
+      <div style="font-size: 14pt; font-weight: bold; text-transform: uppercase; margin-top: 4pt;">PHIẾU HỌC TẬP GIÀN GIÁO NHẬN THỨC TOÁN SONG NGỮ</div>
+      <div style="font-size: 10.5pt; font-style: italic; margin-top: 3pt;">Mô hình hỗ trợ sư phạm tích cực theo Vùng phát triển gần (ZPD) & Định hướng GDPT 2018</div>
+      <div style="font-size: 11pt; margin-top: 8pt; text-align: left;">
+        Họ và tên học sinh (Student Name): .................................................... &nbsp;&nbsp;&nbsp; Lớp: .................
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section-title">1. Bóc tách đề bài & Trọng tâm kiến thức</div>
+    <div class="box">${this.formatMathForWord(d.problem_analysis)}</div>
+
+    <!-- Section 2 -->
+    <div class="section-title">2. Thuật ngữ toán học then chốt (Key Vocabulary)</div>
+    <table>
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #555; padding: 5px;">STT</th>
+          <th style="border: 1px solid #555; padding: 5px;">Thuật ngữ tiếng Anh</th>
+          <th style="border: 1px solid #555; padding: 5px;">Thuật ngữ tiếng Việt</th>
+          <th style="border: 1px solid #555; padding: 5px;">Ý nghĩa & Ngữ cảnh toán học</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${vocabRows}
+      </tbody>
+    </table>
+
+    <!-- Section 3 -->
+    <div class="section-title">3. Giàn giáo Nấc 1: Câu hỏi gợi mở định hướng tư duy</div>
+    <div class="box" style="border-left: 4px solid #d97706; background-color: #fffbeb;">
+      <strong>💡 Gợi ý tư duy:</strong> ${this.formatMathForWord(d.tier_1_hint)}
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section-title">4. Giàn giáo Nấc 2: Khung tư duy chia nhỏ các bước giải</div>
+    <ol style="padding-left: 18pt; margin: 6pt 0;">
+      ${stepsList}
+    </ol>
+
+    <!-- Section 5 -->
+    <div class="section-title">5. Cảnh báo lỗi sai & Cạm bẫy thường gặp (Common Pitfalls)</div>
+    <div class="box" style="border-left: 4px solid #dc2626; background-color: #fef2f2;">
+      <strong>⚠️ Lưu ý cạm bẫy:</strong> ${this.formatMathForWord(d.common_pitfall)}
+    </div>
+
+    <!-- Section 6 -->
+    <div class="section-title">6. Lời giải mẫu hoàn chỉnh từng bước (Full Solution)</div>
+    <div class="box" style="line-height: 1.45;">
+      ${this.formatMathForWord(d.full_solution || '').replace(/\n/g, '<br>')}
+    </div>
+
+    <!-- Section 7 -->
+    ${d.parallel_exercise ? `
+      <div class="section-title">7. Bài tập tương tự tự rèn luyện (Parallel Exercise)</div>
+      <div class="box">
+        <p><strong>English:</strong> ${this.formatMathForWord(d.parallel_exercise.question_en)}</p>
+        <p><strong>Tiếng Việt:</strong> ${d.parallel_exercise.question_vi}</p>
+        <div style="margin-top: 14pt; font-size: 11.5pt;">
+          <strong>Đáp số của em (Your answer):</strong>
+          <span style="display: inline-block; width: 160px; border-bottom: 1.5px dotted #000; margin-left: 8pt;">&nbsp;</span>
+        </div>
+      </div>
+    ` : ''}
+
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([wordHtml], { type: 'application/msword;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -660,14 +1376,6 @@ const Exporter = {
     .student-info {
       font-size: 10pt;
       margin-top: 6px;
-    }
-    .score-box {
-      border: 1.5px solid #000;
-      width: 120px;
-      height: 65px;
-      text-align: center;
-      font-size: 9pt;
-      padding: 4px;
     }
     .divider {
       border-top: 1.5px solid #000;

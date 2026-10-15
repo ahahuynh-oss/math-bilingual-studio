@@ -230,7 +230,10 @@ window.ScaffoldingTutor = {
     }
   },
 
+  currentPresetKey: 'grade-12-asymptotes',
+
   selectPreset(presetId) {
+    this.currentPresetKey = presetId;
     const p = this.presets[presetId];
     if (!p) return;
     const inputEl = document.getElementById('scaffold-problem-input');
@@ -891,6 +894,23 @@ NGUYÊN TẮC BẮT BUỘC:
 
     if (window.App && window.App.triggerMathJax) {
       window.App.triggerMathJax();
+    }
+  },
+
+  exportWord() {
+    if (!this.currentData) {
+      if (window.App && window.App.showToast) {
+        window.App.showToast('Chưa có dữ liệu bài toán giàn giáo để xuất Word!');
+      }
+      return;
+    }
+    const preset = this.presets[this.currentPresetKey];
+    const title = preset ? (preset.title || preset.grade || 'Toan_Song_Ngu') : 'Toan_Song_Ngu_Gian_Giao';
+    if (window.Exporter && window.Exporter.exportScaffoldWord) {
+      window.Exporter.exportScaffoldWord(this.currentData, title);
+      if (window.App && window.App.showToast) {
+        window.App.showToast('Đã tải xuống Phiếu Giàn Giáo file Word (.doc)!');
+      }
     }
   },
 

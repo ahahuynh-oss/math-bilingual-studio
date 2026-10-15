@@ -44,15 +44,26 @@
     - Nộp bài & chấm điểm tự động tức thì (Auto-grading), thang điểm 10, hiển thị nhận xét và lời giải chi tiết.
   - **Chế độ Giáo viên (Teacher Mode):** Xem trước bài giảng và đề thi với đáp án hiển thị sẵn để kiểm tra chất lượng trước khi giao cho học sinh.
 
+- **Tab 4: Gia Sư Giàn Giáo (Scaffolding Tutor - Mô Hình Vygotsky ZPD):**
+  - **6 Nấc Sư Phạm Khai Phóng Năng Lực:** Bóc tách đề bài & Trọng tâm, Bảng thuật ngữ toán song ngữ (có phát âm Web Speech API), Gợi ý nấc 1 (Tier 1 Hint), Khung tư duy chia nhỏ các bước (Tier 2 Breakdown), Cạm bẫy học sinh cần tránh (Common Pitfalls), Lời giải mẫu hoàn chỉnh (Full Solution) và Bài tập song song rèn luyện (Parallel Exercise có tự động kiểm tra đáp số).
+  - Tích hợp sẵn 3 bài mẫu chuẩn THPT (Lớp 10: Tọa độ & Tích vô hướng Oxy, Lớp 11: Giới hạn vô định 0/0, Lớp 12: Hàm phân thức & Tiệm cận).
+
 ### 2. Tính Năng Xuất Nội Dung (Export Features)
+- **Nút "Xuất Word (.doc / .docx)":**
+  - Tạo tệp Word chuẩn tương thích 100% với **Microsoft Word (mọi phiên bản), Office 365, Google Docs, LibreOffice Writer**.
+  - Tự động thiết lập cấu hình trang in chuẩn A4 (lề 2cm, Times New Roman 12pt, bảng biểu có viền sắc nét, công thức toán hiển thị rõ ràng).
+  - Hỗ trợ 3 tùy chọn xuất:
+    1. *Phiếu Bài Tập Cho Học Sinh:* Khung thông tin học sinh, bảng điểm, Bảng từ vựng song ngữ, các câu hỏi và chỗ trống điền đáp án.
+    2. *Đề Thi Kèm Đáp Án Chi Tiết:* Đánh dấu đáp án chuẩn và lời giải từng bước cho giáo viên.
+    3. *Phiếu Giàn Giáo Sư Phạm (Scaffolding Worksheet):* Xuất toàn bộ 6 tầng sư phạm của bài toán giàn giáo để phát cho học sinh hoặc lưu trữ giáo án.
 - **Nút "Export Standalone HTML":**
-  - Đóng gói toàn bộ bài giảng, từ vựng, ví dụ, công cụ phát âm Web Speech API, MathJax 3 và hệ thống làm bài thi thành **1 file HTML duy nhất**.
-  - Học sinh chỉ cần click đúp chuột vào file tải về là có thể học và làm bài kiểm tra trên bất kỳ máy tính, điện thoại, máy tính bảng nào mà không cần cài đặt thêm phần mềm.
+  - Đóng gói toàn bộ bài giảng, từ vựng, ví dụ, công cụ phát âm Web Speech API, MathJax 3, hệ thống làm bài thi **và tích hợp cả Tab Gia Sư Giàn Giáo (Scaffolding Tutor) offline** thành **1 file HTML duy nhất**.
+  - Học sinh chỉ cần click đúp chuột vào file tải về là có thể:
+    + Đọc lý thuyết bài giảng & nghe phát âm từ vựng toán.
+    + Tự học với Gia sư giàn giáo (chuyển đổi giữa các khối 10, 11, 12, mở 3 nấc gợi ý, làm bài tập song song có chấm điểm ngay).
+    + Làm bài kiểm tra tính giờ tự chấm điểm mà không cần kết nối mạng Internet.
 - **Nút "Print Worksheet (A4)":**
   - Chuyển đổi định dạng chuyên nghiệp tối ưu cho máy in hoặc Lưu dưới dạng PDF chuẩn khổ giấy A4 (Times New Roman, phân chia 2 cột, công thức toán sắc nét, chống lỗi gãy trang).
-  - Tùy chọn 2 chế độ:
-    1. *Đề thi dành cho Học sinh:* Gồm khung họ tên, lớp, ngày tháng, bảng điểm, các câu hỏi và dòng kẻ điền đáp án.
-    2. *Đề kèm Đáp án chi tiết dành cho Giáo viên:* Đánh dấu đáp án chuẩn và lời giải từng bước.
 
 ### 3. Kết Xuất Toán Học (MathJax 3)
 - Tích hợp MathJax 3 CHTML/SVG hiển thị mượt mà trên mọi màn hình.
