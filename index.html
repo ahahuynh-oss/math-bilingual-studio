@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>iExam Math | Hệ Thống Soạn Bài Giảng & Đề Thi Toán Song Ngữ</title>
+  <title>Bilingual Math Scaffolding Studio - Dự án Sáng kiến Giáo dục 2026 - Tác giả: Huỳnh Thị Hà</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -79,20 +79,26 @@
   <aside id="app-sidebar" class="fixed lg:sticky top-0 h-screen w-64 bg-white border-r border-slate-200 flex flex-col z-40 shrink-0 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out shadow-xs">
     
     <!-- Top Brand Logo -->
-    <div class="p-5 flex items-center justify-between border-b border-slate-100 shrink-0">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 flex items-center justify-center shadow-md font-extrabold text-white text-xl">
-          🎓
-        </div>
-        <div>
-          <div class="flex items-center gap-1.5">
-            <span class="text-lg font-black text-indigo-600 tracking-tight">iExam</span>
-            <span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80">Math</span>
+    <div class="p-4 border-b border-slate-100 shrink-0 bg-white">
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-start gap-2.5 min-w-0">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 flex items-center justify-center shadow-md font-extrabold text-white text-base shrink-0 mt-0.5">
+            📐
           </div>
-          <p class="text-[11px] text-slate-400 font-medium">Toán Song Ngữ THPT</p>
+          <div class="min-w-0 flex-1">
+            <div class="text-[13px] font-black text-slate-900 leading-snug tracking-tight">
+              Bilingual Math <span class="text-indigo-600 block">Scaffolding Studio</span>
+            </div>
+            <div class="mt-1 text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/80 inline-block leading-tight">
+              Dự án Sáng kiến Giáo dục 2026
+            </div>
+            <div class="text-[11px] text-slate-600 font-medium mt-1">
+              Tác giả: <strong class="text-slate-900 font-bold">Huỳnh Thị Hà</strong>
+            </div>
+          </div>
         </div>
+        <button onclick="App.toggleSidebar()" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 text-sm shrink-0">✕</button>
       </div>
-      <button onclick="App.toggleSidebar()" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 text-sm">✕</button>
     </div>
 
     <!-- Navigation Links -->
@@ -196,14 +202,10 @@
           🇻🇳 <span class="hidden md:inline">Dịch:</span> <strong>Bật</strong>
         </button>
 
-        <!-- Export Word Button -->
-        <button onclick="App.openExportWordModal()" class="hidden md:flex px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-blue-700 border border-slate-200 shadow-xs transition-all items-center gap-1.5" title="Xuất Microsoft Word (.doc)">
-          📄 <span>Xuất Word</span>
-        </button>
-
-        <!-- Standalone HTML Export -->
-        <button onclick="App.exportStandaloneHTML()" class="hidden md:flex px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 shadow-xs transition-all items-center gap-1.5" title="Đóng gói bài học và đề thi thành 1 file HTML offline">
-          🚀 <span>Export HTML</span>
+        <!-- Giới thiệu phương pháp sư phạm Scaffolding -->
+        <button onclick="App.openScaffoldingIntroModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 via-indigo-600 to-amber-500 hover:from-indigo-700 hover:to-amber-600 text-white shadow-xs hover:shadow-md transition-all flex items-center gap-1.5 cursor-pointer" title="Giới thiệu phương pháp sư phạm Scaffolding (Giàn giáo nhận thức)">
+          <span>📖</span>
+          <span class="font-bold">Giới thiệu phương pháp sư phạm Scaffolding</span>
         </button>
 
       </div>
@@ -794,6 +796,129 @@
           Đóng
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: GIỚI THIỆU PHƯƠNG PHÁP SƯ PHẠM SCAFFOLDING -->
+  <!-- ============================================================== -->
+  <div id="modal-scaffolding-intro" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-slate-900/50 backdrop-blur-xs">
+    <div class="glass-card max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 my-8 animate-in fade-in duration-150 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 flex items-center justify-center text-white text-2xl font-black shadow-md shrink-0">
+            🪜
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+                Phương Pháp Sư Phạm Giàn Giáo Nhận Thức (Educational Scaffolding)
+              </h3>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                Sáng Kiến 2026
+              </span>
+            </div>
+            <p class="text-xs text-indigo-700 font-semibold mt-0.5">
+              Bilingual Math Scaffolding Studio • Tác giả: Huỳnh Thị Hà
+            </p>
+          </div>
+        </div>
+        <button onclick="App.closeScaffoldingIntroModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm transition-all shrink-0">✕</button>
+      </div>
+
+      <!-- Core Educational Philosophy -->
+      <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-xs sm:text-sm text-slate-700 leading-relaxed space-y-2">
+        <div class="flex items-center gap-2 text-indigo-900 font-bold text-sm">
+          <span>🧠</span>
+          <span>1. Bản chất khoa học & Vùng phát triển gần nhất (ZPD)</span>
+        </div>
+        <p>
+          Phương pháp <strong>Giàn giáo Sư phạm (Scaffolding)</strong> bắt nguồn từ Thuyết Kiến tạo Xã hội của nhà tâm lý học <strong>Lev Vygotsky</strong> và được phát triển ứng dụng bởi <strong>Jerome Bruner (1976)</strong>. Trong dạy học Toán song ngữ THPT, giàn giáo nhận thức đóng vai trò là cấu trúc nâng đỡ sư phạm tạm thời giúp học sinh vượt qua rào cản ngôn ngữ tiếng Anh và độ trừu tượng toán học trong <em>Vùng phát triển gần nhất (Zone of Proximal Development - ZPD)</em>.
+        </p>
+      </div>
+
+      <!-- 4 Stages of Scaffolding in Bilingual Math -->
+      <div class="space-y-3">
+        <div class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+          <span>🎯</span> <span>2. Khung 4 Nấc Thang Giàn Giáo Ứng Dụng Trong Toán Song Ngữ THPT</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Step 1 -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5 hover:border-indigo-300 transition-colors">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-indigo-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px]">1</span>
+                Mô Hình Hóa & Kích Hoạt Ngôn Ngữ
+              </span>
+              <span class="text-[10px] text-slate-400 font-medium">Modeling</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Cung cấp thuật ngữ song ngữ trọng tâm (Anh - Việt), phát âm chuẩn IPA và mô hình hóa hình học động (Canvas Grapher) giúp kết nối ngôn ngữ tự nhiên với bản chất toán học.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5 hover:border-indigo-300 transition-colors">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-blue-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[10px]">2</span>
+                Hướng Dẫn Có Cấu Trúc Phân Tầng
+              </span>
+              <span class="text-[10px] text-slate-400 font-medium">Guided Steps</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Chia nhỏ bài toán phức tạp thành các bước vi mô logic (Break-down into sub-tasks), giúp học sinh không bị ngợp và định hình sơ đồ tư duy giải quyết vấn đề.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5 hover:border-indigo-300 transition-colors">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-[10px]">3</span>
+                Gợi Mở Socratic & Cảnh Báo Cạm Bẫy
+              </span>
+              <span class="text-[10px] text-slate-400 font-medium">Prompts & Pitfalls</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Hệ thống không cung cấp đáp án có sẵn mà đưa ra các câu hỏi đánh thức tư duy (Hints), phân tích các lỗi sai kinh điển (Common Pitfalls) để học sinh tự phản tỉnh và tìm đường đi đúng.
+            </p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5 hover:border-indigo-300 transition-colors">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-600 flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px]">4</span>
+                Rút Dần Giàn Giáo & Làm Chủ Tri Thức
+              </span>
+              <span class="text-[10px] text-slate-400 font-medium">Fading & Mastery</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Rút dần sự can thiệp của gia sư (Scaffold Fading) khi học sinh tự tin giải quyết thành công các bài toán tương tự (Parallel Practice), tiến tới tự chủ hoàn toàn.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Info & Actions -->
+      <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <div class="text-slate-500 text-[11px]">
+          📌 Dự án Sáng kiến Giáo dục 2026 • <strong>Tác giả: Huỳnh Thị Hà</strong>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="App.closeScaffoldingIntroModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">
+            Đóng
+          </button>
+          <button onclick="App.closeScaffoldingIntroModal(); App.switchTab('scaffolding-tutor');" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all flex items-center gap-1.5">
+            <span>🪜</span> <span>Trải Nghiệm Gia Sư ZPD Ngay</span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 

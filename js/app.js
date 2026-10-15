@@ -1717,6 +1717,16 @@ const App = {
     Exporter.printWorksheetA4(this.currentLesson, { includeSolutions });
   },
 
+  openScaffoldingIntroModal() {
+    const modal = document.getElementById('modal-scaffolding-intro');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeScaffoldingIntroModal() {
+    const modal = document.getElementById('modal-scaffolding-intro');
+    if (modal) modal.classList.add('hidden');
+  },
+
   openExportWordModal() {
     const modal = document.getElementById('export-word-modal');
     if (modal) modal.classList.remove('hidden');
