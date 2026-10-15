@@ -79,13 +79,13 @@
   <aside id="app-sidebar" class="fixed lg:sticky top-0 h-screen w-64 bg-white border-r border-slate-200 flex flex-col z-40 shrink-0 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out shadow-xs">
     
     <!-- Top Brand Logo -->
-    <div class="p-4 border-b border-slate-100 shrink-0 bg-white">
-      <div class="flex items-start justify-between gap-2">
-        <div class="flex items-start gap-2.5 min-w-0">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 flex items-center justify-center shadow-md font-extrabold text-white text-base shrink-0 mt-0.5">
-            📐
+    <div class="sidebar-brand-box p-4 border-b border-slate-100 shrink-0 bg-white transition-all">
+      <div class="sidebar-brand-inner flex items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="sidebar-logo-icon w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 flex items-center justify-center shadow-md font-extrabold text-white text-lg shrink-0 cursor-pointer" onclick="App.switchTab('my-exams')" title="Bilingual Math Scaffolding Studio - Huỳnh Thị Hà">
+            🎓
           </div>
-          <div class="min-w-0 flex-1">
+          <div class="sidebar-text sidebar-brand-text min-w-0 flex-1">
             <div class="text-[13px] font-black text-slate-900 leading-snug tracking-tight flex items-center flex-wrap gap-1">
               <span>Bilingual Math</span>
               <button onclick="App.speakText('Bilingual Math Scaffolding Studio')" class="w-5 h-5 rounded-md bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white text-[11px] flex items-center justify-center transition-colors cursor-pointer" title="Phát âm tiếng Anh: Bilingual Math Scaffolding Studio">🔊</button>
@@ -104,98 +104,100 @@
     </div>
 
     <!-- Navigation Links -->
-    <div class="px-3 py-4 space-y-1 overflow-y-auto flex-1">
+    <div class="sidebar-nav-scroll px-3 py-4 space-y-1 overflow-y-auto flex-1">
       
       <!-- Group 0: TỔNG QUAN -->
       <div class="sidebar-section-title">TỔNG QUAN</div>
-      <button onclick="App.switchTab('my-exams')" id="side-nav-my-exams" class="sidebar-link active">
-        <span class="text-base">📊</span>
-        <span>Danh sách đã tạo</span>
+      <button onclick="App.switchTab('my-exams')" id="side-nav-my-exams" class="sidebar-link active" title="Danh sách đã tạo">
+        <span class="sidebar-icon text-lg">📊</span>
+        <span class="sidebar-text">Danh sách đã tạo</span>
       </button>
 
       <!-- Group 1: GIẢNG DẠY -->
       <div class="sidebar-section-title">GIẢNG DẠY</div>
-      <button onclick="App.switchTab('builder-lesson')" id="side-nav-builder-lesson" class="sidebar-link">
-        <span class="text-base">📝</span>
-        <span>Soạn bài giảng</span>
+      <button onclick="App.switchTab('builder-lesson')" id="side-nav-builder-lesson" class="sidebar-link" title="Soạn bài giảng">
+        <span class="sidebar-icon text-lg">📝</span>
+        <span class="sidebar-text">Soạn bài giảng</span>
       </button>
-      <button onclick="App.switchTab('builder-quiz')" id="side-nav-builder-quiz" class="sidebar-link">
-        <span class="text-base">🎯</span>
-        <span>Soạn đề thi (Quiz)</span>
+      <button onclick="App.switchTab('builder-quiz')" id="side-nav-builder-quiz" class="sidebar-link" title="Soạn đề thi (Quiz)">
+        <span class="sidebar-icon text-lg">🎯</span>
+        <span class="sidebar-text">Soạn đề thi (Quiz)</span>
       </button>
-      <button onclick="App.switchTab('interactive-preview')" id="side-nav-interactive-preview" class="sidebar-link">
-        <span class="text-base">👁️</span>
-        <span>Làm bài tương tác</span>
+      <button onclick="App.switchTab('interactive-preview')" id="side-nav-interactive-preview" class="sidebar-link" title="Làm bài tương tác">
+        <span class="sidebar-icon text-lg">👁️</span>
+        <span class="sidebar-text">Làm bài tương tác</span>
       </button>
-      <button onclick="App.switchTab('scaffolding-tutor')" id="side-nav-scaffolding-tutor" class="sidebar-link">
-        <span class="text-base text-amber-500">🪜</span>
-        <span>Gia sư giàn giáo ZPD</span>
+      <button onclick="App.switchTab('scaffolding-tutor')" id="side-nav-scaffolding-tutor" class="sidebar-link" title="Gia sư giàn giáo ZPD">
+        <span class="sidebar-icon text-lg text-amber-500">🪜</span>
+        <span class="sidebar-text">Gia sư giàn giáo ZPD</span>
       </button>
 
       <!-- Group 2: CÔNG CỤ -->
       <div class="sidebar-section-title">CÔNG CỤ HỖ TRỢ</div>
-      <button onclick="App.openAIGeneratorModal()" class="sidebar-link text-indigo-600 hover:text-indigo-700 font-semibold">
-        <span class="text-base">✨</span>
-        <span>Soạn tự động (AI Studio)</span>
+      <button onclick="App.openAIGeneratorModal()" class="sidebar-link text-indigo-600 hover:text-indigo-700 font-semibold" title="Soạn tự động (AI Studio)">
+        <span class="sidebar-icon text-lg">✨</span>
+        <span class="sidebar-text">Soạn tự động (AI Studio)</span>
       </button>
-      <button onclick="App.openExportWordModal()" class="sidebar-link">
-        <span class="text-base text-blue-600">📄</span>
-        <span>Xuất Word (.doc / .docx)</span>
+      <button onclick="App.openExportWordModal()" class="sidebar-link" title="Xuất Word (.doc / .docx)">
+        <span class="sidebar-icon text-lg text-blue-600">📄</span>
+        <span class="sidebar-text">Xuất Word (.doc / .docx)</span>
       </button>
-      <button onclick="App.exportStandaloneHTML()" class="sidebar-link">
-        <span class="text-base text-teal-600">🚀</span>
-        <span>Export Standalone HTML</span>
+      <button onclick="App.exportStandaloneHTML()" class="sidebar-link" title="Export Standalone HTML">
+        <span class="sidebar-icon text-lg text-teal-600">🚀</span>
+        <span class="sidebar-text">Export Standalone HTML</span>
       </button>
-      <button onclick="App.openPrintModal()" class="sidebar-link">
-        <span class="text-base">🖨️</span>
-        <span>In Worksheet A4</span>
+      <button onclick="App.openPrintModal()" class="sidebar-link" title="In Worksheet A4">
+        <span class="sidebar-icon text-lg">🖨️</span>
+        <span class="sidebar-text">In Worksheet A4</span>
       </button>
 
       <!-- Group 3: KHO ĐỀ / BÀI HỌC -->
       <div class="sidebar-section-title">KHO ĐỀ CHUẨN THPT</div>
-      <button onclick="App.loadPreset('derivatives-extrema'); App.switchTab('my-exams')" class="sidebar-link text-xs">
-        <span class="text-amber-500">📙</span>
-        <span class="truncate">Khối 12: Đạo hàm & Tiệm cận</span>
+      <button onclick="App.loadPreset('derivatives-extrema'); App.switchTab('my-exams')" class="sidebar-link text-xs" title="Khối 12: Đạo hàm & Tiệm cận">
+        <span class="sidebar-icon text-lg text-amber-500">📙</span>
+        <span class="sidebar-text truncate">Khối 12: Đạo hàm & Tiệm cận</span>
       </button>
-      <button onclick="App.loadScaffoldPreset('grade-11-limits')" class="sidebar-link text-xs">
-        <span class="text-purple-500">📗</span>
-        <span class="truncate">Khối 11: Giới hạn vô định 0/0</span>
+      <button onclick="App.loadScaffoldPreset('grade-11-limits')" class="sidebar-link text-xs" title="Khối 11: Giới hạn vô định 0/0">
+        <span class="sidebar-icon text-lg text-purple-500">📗</span>
+        <span class="sidebar-text truncate">Khối 11: Giới hạn vô định 0/0</span>
       </button>
-      <button onclick="App.loadScaffoldPreset('grade-10-vectors')" class="sidebar-link text-xs">
-        <span class="text-sky-500">📘</span>
-        <span class="truncate">Khối 10: Tọa độ Oxy & Vectơ</span>
+      <button onclick="App.loadScaffoldPreset('grade-10-vectors')" class="sidebar-link text-xs" title="Khối 10: Tọa độ Oxy & Vectơ">
+        <span class="sidebar-icon text-lg text-sky-500">📘</span>
+        <span class="sidebar-text truncate">Khối 10: Tọa độ Oxy & Vectơ</span>
       </button>
 
       <!-- Group 4: HỖ TRỢ (MATCHING SAMPLE SCREENSHOT) -->
       <div class="sidebar-section-title">HỖ TRỢ</div>
-      <button onclick="App.openFeedbackModal()" class="sidebar-link text-xs">
-        <span class="text-base text-slate-500">💬</span>
-        <span>Báo lỗi & góp ý</span>
+      <button onclick="App.openFeedbackModal()" class="sidebar-link text-xs" title="Báo lỗi & góp ý">
+        <span class="sidebar-icon text-lg text-slate-500">💬</span>
+        <span class="sidebar-text">Báo lỗi & góp ý</span>
       </button>
-      <button onclick="App.switchTab('user-guide')" id="side-nav-user-guide" class="sidebar-link text-xs">
-        <span class="text-base text-indigo-600 font-bold">❓</span>
-        <span class="font-bold text-indigo-700">Hướng dẫn</span>
+      <button onclick="App.switchTab('user-guide')" id="side-nav-user-guide" class="sidebar-link text-xs" title="Hướng dẫn sử dụng chi tiết">
+        <span class="sidebar-icon text-lg text-indigo-600 font-bold">❓</span>
+        <span class="sidebar-text font-bold text-indigo-700">Hướng dẫn</span>
       </button>
 
     </div>
 
     <!-- Bottom Hotline Box & Version (Matching Sample Screenshot) -->
-    <div class="p-3 border-t border-slate-100 bg-slate-50/70 shrink-0 space-y-2">
-      <div class="p-2.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shrink-0">
+    <div class="sidebar-bottom-area p-3 border-t border-slate-100 bg-slate-50/70 shrink-0 space-y-2">
+      <div onclick="App.openFeedbackModal()" class="sidebar-hotline-card p-2.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs flex items-center gap-2.5 cursor-pointer hover:border-indigo-300 transition-colors" title="Hotline hỗ trợ: 0974 940 049 (Cô Huỳnh Thị Hà)">
+        <div class="sidebar-hotline-icon w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shrink-0">
           📞
         </div>
-        <div class="min-w-0">
+        <div class="sidebar-text min-w-0">
           <div class="text-[10px] text-slate-400 font-medium leading-none">Hỗ trợ - Cô Huỳnh Thị Hà</div>
           <div class="text-xs font-bold text-slate-800 tracking-tight mt-0.5">0974 940 049</div>
           <div class="text-[9px] text-slate-400">Gọi điện hoặc nhắn Zalo</div>
         </div>
       </div>
-      <div class="flex items-center justify-between text-[10px] text-slate-400 px-1 font-medium">
-        <span>Phiên bản 2026.2.0</span>
-        <span class="text-emerald-600 font-bold flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span> Sẵn sàng
-        </span>
+      <div class="sidebar-version-row flex items-center justify-between text-[10px] text-slate-400 px-1 font-medium">
+        <span class="sidebar-text">Phiên bản 2026.2.0</span>
+        <button onclick="App.showToast('Hệ thống sẵn sàng - Phiên bản 2026.2.0')" class="sidebar-version-btn text-emerald-600 font-bold flex items-center gap-1 cursor-pointer" title="Lịch sử phiên bản: 2026.2.0">
+          <span class="sidebar-version-clock hidden text-slate-500 hover:text-indigo-600 text-sm">🕒</span>
+          <span class="sidebar-version-dot w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+          <span class="sidebar-text">Sẵn sàng</span>
+        </button>
       </div>
     </div>
   </aside>
