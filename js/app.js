@@ -1575,29 +1575,33 @@ var App = window.App = {
                 Mở tất cả các bước (Show all)
               </button>
             </div>
-            ${(ex.steps || []).map(st => {
-              const stTitlePill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(st.titleEn, st.titleVi) : '';
-              const stExpPill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(st.explanationEn, st.explanationVi) : '';
+            ${(ex.steps || []).map((st, sIdx) => {
+              const stepIndex = st.stepNum !== undefined ? st.stepNum : (sIdx + 1);
+              const exampleId = ex.id || `ex-${exIdx + 1}`;
+              const stTitlePill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(st.titleEn || '', st.titleVi || '') : '';
+              const stExpPill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(st.explanationEn || '', st.explanationVi || '') : '';
               return `
-                <div id="prev-step-${ex.id}-${st.stepNum}" class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs transition-all">
-                  <button onclick="App.toggleStepPreview('${ex.id}', ${st.stepNum})" class="w-full text-left p-3.5 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer">
-                    <span class="font-semibold text-xs sm:text-sm text-slate-800 flex items-center flex-wrap gap-1.5">
-                      <span class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold border border-indigo-200">${st.stepNum}</span>
-                      <span>${st.titleEn}</span>
-                      ${stTitlePill}
-                      <span class="vi-text text-slate-400 text-xs font-normal">(${st.titleVi})</span>
-                    </span>
-                    <span id="prev-step-icon-${ex.id}-${st.stepNum}" class="text-xs text-slate-500 font-medium">➕ Mở bước này</span>
-                  </button>
-                  <div id="prev-step-content-${ex.id}-${st.stepNum}" class="p-4 pt-1 border-t border-slate-100 hidden bg-slate-50 text-sm">
-                    <div class="p-3 bg-white rounded-lg my-2 border border-slate-200 text-center latex-box">
-                      $$${st.latex}$$
+                <div id="prev-step-${exampleId}-${stepIndex}" class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs transition-all">
+                  <div onclick="App.toggleStepPreview('${exampleId}', ${stepIndex})" class="w-full text-left p-3.5 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer select-none">
+                    <div class="font-semibold text-xs sm:text-sm text-slate-800 flex items-center flex-wrap gap-1.5 flex-1 pr-2">
+                      <span class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold border border-indigo-200 shrink-0">${stepIndex}</span>
+                      <span>${st.titleEn || `Step ${stepIndex}`}</span>
+                      <span onclick="event.stopPropagation()">${stTitlePill}</span>
+                      ${st.titleVi ? `<span class="vi-text text-slate-400 text-xs font-normal">(${st.titleVi})</span>` : ''}
                     </div>
+                    <span id="prev-step-icon-${exampleId}-${stepIndex}" class="text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs">➕ Mở bước này</span>
+                  </div>
+                  <div id="prev-step-content-${exampleId}-${stepIndex}" class="p-4 pt-1 border-t border-slate-100 hidden bg-slate-50 text-sm">
+                    ${st.latex ? `
+                      <div class="p-3 bg-white rounded-lg my-2 border border-slate-200 text-center latex-box overflow-x-auto text-slate-900">
+                        $$${st.latex}$$
+                      </div>
+                    ` : ''}
                     <div class="text-xs sm:text-sm text-slate-700 flex items-start flex-wrap gap-1.5 mt-2">
-                      <span>${st.explanationEn}</span>
-                      ${stExpPill}
+                      <span>${st.explanationEn || ''}</span>
+                      <span onclick="event.stopPropagation()">${stExpPill}</span>
                     </div>
-                    <p class="text-xs text-slate-500 italic vi-text mt-1">${st.explanationVi}</p>
+                    ${st.explanationVi ? `<p class="text-xs text-slate-500 italic vi-text mt-1">${st.explanationVi}</p>` : ''}
                   </div>
                 </div>
               `;
@@ -1681,11 +1685,17 @@ var App = window.App = {
     if (!content) return;
     if (content.classList.contains('hidden')) {
       content.classList.remove('hidden');
-      if (icon) icon.innerText = '➖ Ẩn bước';
+      if (icon) {
+        icon.innerText = '➖ Ẩn bước';
+        icon.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+      }
       this.triggerMathJax();
     } else {
       content.classList.add('hidden');
-      if (icon) icon.innerText = '➕ Mở bước này';
+      if (icon) {
+        icon.innerText = '➕ Mở bước này';
+        icon.className = 'text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+      }
     }
   },
 
@@ -1693,7 +1703,10 @@ var App = window.App = {
     const contents = document.querySelectorAll(`[id^="prev-step-content-${exId}"]`);
     const icons = document.querySelectorAll(`[id^="prev-step-icon-${exId}"]`);
     contents.forEach(c => c.classList.remove('hidden'));
-    icons.forEach(i => i.innerText = '➖ Ẩn bước');
+    icons.forEach(i => {
+      i.innerText = '➖ Ẩn bước';
+      i.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+    });
     this.triggerMathJax();
   },
 

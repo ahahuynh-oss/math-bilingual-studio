@@ -308,23 +308,30 @@ const Exporter = {
 
               <!-- Steps Container -->
               <div class="space-y-3 pt-2">
-                ${ex.steps.map((st) => `
+                ${(ex.steps || []).map((st, sIdx) => {
+                  const stepIndex = st.stepNum !== undefined ? st.stepNum : (st.stepNumber !== undefined ? st.stepNumber : (sIdx + 1));
+                  const stepTitleEn = st.titleEn || st.actionEn || `Step ${stepIndex}`;
+                  const stepTitleVi = st.titleVi || st.actionVi || '';
+                  const stepLatex = st.latex || st.mathExpression || '';
+                  const exampleId = ex.id || `ex-${sIdx + 1}`;
+                  return `
                   <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
-                    <button onclick="toggleStep('${ex.id}', ${st.stepNumber})" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors">
-                      <span class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[11px] font-bold">${st.stepNumber}</span>
-                        <span>Step ${st.stepNumber}: ${st.actionEn}</span>
+                    <div onclick="toggleStep('${exampleId}', ${stepIndex})" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer select-none">
+                      <span class="flex items-center gap-2 flex-1 pr-2">
+                        <span class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-[11px] font-bold border border-indigo-200 shrink-0">${stepIndex}</span>
+                        <span>Step ${stepIndex}: ${stepTitleEn}</span>
+                        ${stepTitleVi ? `<span class="text-slate-500 italic vi-text text-xs font-normal">(${stepTitleVi})</span>` : ''}
                       </span>
-                      <span id="step-icon-${ex.id}-${st.stepNumber}" class="text-xs text-indigo-600 font-medium">➕ Mở bước này</span>
-                    </button>
-                    <div id="step-content-${ex.id}-${st.stepNumber}" class="hidden p-4 pt-2 border-t border-slate-200 text-xs sm:text-sm text-slate-800 space-y-2 bg-slate-50">
-                      <div class="text-slate-600 italic vi-text text-xs">${st.actionVi}</div>
-                      <div class="p-3 bg-white rounded-lg border border-slate-200 font-mono text-center latex-box overflow-x-auto text-slate-900">$${st.mathExpression}$</div>
+                      <span id="step-icon-${exampleId}-${stepIndex}" class="text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs">➕ Mở bước này</span>
+                    </div>
+                    <div id="step-content-${exampleId}-${stepIndex}" class="hidden p-4 pt-2 border-t border-slate-200 text-xs sm:text-sm text-slate-800 space-y-2 bg-slate-50">
+                      ${stepLatex ? `<div class="p-3 bg-white rounded-lg border border-slate-200 font-mono text-center latex-box overflow-x-auto text-slate-900">$$${stepLatex}$$</div>` : ''}
                       ${st.explanationEn ? `<div class="text-slate-800">${st.explanationEn}</div>` : ''}
                       ${st.explanationVi ? `<div class="text-slate-600 vi-text text-[11px] italic">${st.explanationVi}</div>` : ''}
                     </div>
                   </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
             </div>
           `).join('')}
@@ -538,13 +545,20 @@ const Exporter = {
     function toggleStep(exId, stepNum) {
       const content = document.getElementById('step-content-' + exId + '-' + stepNum);
       const icon = document.getElementById('step-icon-' + exId + '-' + stepNum);
+      if (!content) return;
       if (content.classList.contains('hidden')) {
         content.classList.remove('hidden');
-        icon.innerText = '➖ Ẩn bước';
+        if (icon) {
+          icon.innerText = '➖ Ẩn bước';
+          icon.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+        }
         triggerMathJax();
       } else {
         content.classList.add('hidden');
-        icon.innerText = '➕ Mở bước này';
+        if (icon) {
+          icon.innerText = '➕ Mở bước này';
+          icon.className = 'text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+        }
       }
     }
 
@@ -552,7 +566,10 @@ const Exporter = {
       const contents = document.querySelectorAll('[id^="step-content-' + exId + '"]');
       const icons = document.querySelectorAll('[id^="step-icon-' + exId + '"]');
       contents.forEach(c => c.classList.remove('hidden'));
-      icons.forEach(i => i.innerText = '➖ Ẩn bước');
+      icons.forEach(i => {
+        i.innerText = '➖ Ẩn bước';
+        i.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+      });
       triggerMathJax();
     }
 
