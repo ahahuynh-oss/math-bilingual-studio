@@ -43,34 +43,64 @@ code, .font-mono {
   border-color: #cbd5e1 !important;
 }
 
-/* Text Overrides for High Contrast & Comfort */
+/* Text Overrides for High Contrast & Comfort (Jet-Black & Dark Slate) */
 .glass-card .text-white,
 header .text-white,
-#app-main-content .text-white {
-  color: #0f172a !important;
-}
-
+#app-main-content .text-white,
 .glass-card .text-slate-100,
-#app-main-content .text-slate-100 {
-  color: #1e293b !important;
-}
-
+#app-main-content .text-slate-100,
 .glass-card .text-slate-200,
 #app-main-content .text-slate-200 {
-  color: #334155 !important;
+  color: #0f172a !important; /* Pitch black slate for maximum readability */
 }
 
 .glass-card .text-slate-300,
 #app-main-content .text-slate-300 {
-  color: #475569 !important;
+  color: #1e293b !important; /* Dark slate */
 }
 
 .glass-card .text-slate-400,
 #app-main-content .text-slate-400 {
-  color: #64748b !important;
+  color: #475569 !important; /* Crisp medium slate */
 }
 
-/* Convert Dark Inner Boxes into Crisp Light Containers */
+.glass-card .text-indigo-100,
+.glass-card .text-indigo-200,
+.glass-card .text-indigo-300,
+#app-main-content .text-indigo-100,
+#app-main-content .text-indigo-200,
+#app-main-content .text-indigo-300 {
+  color: #3730a3 !important; /* Rich deep indigo */
+}
+
+.glass-card .text-teal-100,
+.glass-card .text-teal-200,
+.glass-card .text-teal-300,
+#app-main-content .text-teal-100,
+#app-main-content .text-teal-200,
+#app-main-content .text-teal-300 {
+  color: #0f766e !important; /* Rich deep teal */
+}
+
+.glass-card .text-purple-100,
+.glass-card .text-purple-200,
+.glass-card .text-purple-300,
+#app-main-content .text-purple-100,
+#app-main-content .text-purple-200,
+#app-main-content .text-purple-300 {
+  color: #6b21a8 !important; /* Rich deep purple */
+}
+
+.glass-card .text-amber-100,
+.glass-card .text-amber-200,
+.glass-card .text-amber-300,
+#app-main-content .text-amber-100,
+#app-main-content .text-amber-200,
+#app-main-content .text-amber-300 {
+  color: #92400e !important; /* Rich deep amber */
+}
+
+/* Convert Dark/Navy/Purple/Teal/Amber Inner Boxes into Uniform Soothing Light Containers */
 .glass-card .bg-slate-900,
 .glass-card .bg-slate-950,
 .glass-card .bg-slate-900\/90,
@@ -81,10 +111,38 @@ header .text-white,
 .glass-card .bg-slate-950\/80,
 .glass-card .bg-slate-950\/70,
 .glass-card .bg-slate-950\/40,
-.glass-card .bg-slate-950\/90 {
+.glass-card .bg-slate-950\/90,
+.glass-card .bg-indigo-950,
+.glass-card .bg-indigo-950\/40,
+.glass-card .bg-indigo-950\/60,
+.glass-card .bg-indigo-950\/30,
+.glass-card .bg-purple-950,
+.glass-card .bg-purple-950\/40,
+.glass-card .bg-purple-950\/60,
+.glass-card .bg-teal-950,
+.glass-card .bg-teal-950\/40,
+.glass-card .bg-teal-950\/30,
+.glass-card .bg-amber-950,
+.glass-card .bg-amber-950\/20,
+.glass-card .bg-amber-950\/40,
+.glass-card .bg-amber-950\/50,
+#app-main-content .bg-slate-900,
+#app-main-content .bg-slate-950,
+#app-main-content .bg-indigo-950\/40,
+#app-main-content .bg-slate-950\/60 {
   background-color: #f8fafc !important;
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
+}
+
+/* Light soothing badges and pill buttons */
+.glass-card .bg-slate-800,
+#app-main-content .bg-slate-800,
+.glass-card .bg-slate-850,
+#app-main-content .bg-slate-850 {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
 }
 
 .glass-card .border-slate-800,
@@ -93,7 +151,8 @@ header .text-white,
 .glass-card .border-slate-800\/50,
 .glass-card .border-slate-800\/90,
 .glass-card .border-slate-700,
-.glass-card .border-slate-700\/80 {
+.glass-card .border-slate-700\/80,
+#app-main-content .border-slate-800 {
   border-color: #e2e8f0 !important;
 }
 

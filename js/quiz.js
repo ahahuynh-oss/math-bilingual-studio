@@ -322,12 +322,12 @@ const QuizEngine = {
 
           <!-- Stems -->
           <div>
-            <div class="text-base sm:text-lg font-semibold text-white latex-box leading-relaxed flex items-start flex-wrap gap-1.5">
+            <div class="text-base sm:text-lg font-bold text-slate-900 latex-box leading-relaxed flex items-start flex-wrap gap-1.5">
               <span>${q.stemEn}</span>
               ${window.BilingualHelper ? window.BilingualHelper.renderInlinePill(q.stemEn, q.stemVi) : ''}
             </div>
             ${q.stemVi ? `
-              <div class="text-xs sm:text-sm text-slate-400 italic vi-text mt-1.5 border-l-2 border-indigo-500/40 pl-3">
+              <div class="text-xs sm:text-sm text-slate-600 italic vi-text mt-1.5 border-l-2 border-indigo-400 pl-3">
                 ${q.stemVi}
               </div>
             ` : ''}
@@ -340,16 +340,16 @@ const QuizEngine = {
 
           <!-- Solutions / Explanations -->
           ${(this.isSubmitted || this.isTeacherMode) ? `
-            <div class="mt-4 pt-4 border-t border-slate-800/80 bg-slate-950/60 p-4 rounded-xl text-xs sm:text-sm text-slate-300 space-y-2">
-              <div class="flex items-center gap-2 font-bold text-indigo-400">
+            <div class="mt-4 pt-4 border-t border-slate-100 bg-indigo-50/50 p-4 rounded-xl text-xs sm:text-sm text-slate-900 space-y-2 border border-indigo-100">
+              <div class="flex items-center gap-2 font-bold text-indigo-700">
                 <span>💡 Hướng dẫn giải & Đáp án:</span>
               </div>
-              <div class="latex-box leading-relaxed flex items-start justify-between gap-2">
+              <div class="latex-box leading-relaxed flex items-start justify-between gap-2 p-2 bg-white rounded-lg border border-indigo-100">
                 <span>${q.explanationEn || 'Không có giải thích.'}</span>
                 ${(q.explanationEn && window.BilingualHelper) ? window.BilingualHelper.renderInlinePill(q.explanationEn, q.explanationVi) : ''}
               </div>
               ${q.explanationVi ? `
-                <div class="text-slate-400 italic vi-text text-xs border-t border-slate-800/60 pt-1.5">${q.explanationVi}</div>
+                <div class="text-slate-700 italic vi-text text-xs border-t border-indigo-100/60 pt-1.5">${q.explanationVi}</div>
               ` : ''}
             </div>
           ` : ''}
@@ -367,16 +367,16 @@ const QuizEngine = {
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           ${q.options.map(opt => {
             const isChecked = userSelected === opt.id;
-            let optStyle = 'border-slate-800 bg-slate-900/60 hover:bg-slate-800/60 hover:border-indigo-500/40';
+            let optStyle = 'border-slate-200 bg-white hover:bg-slate-50 hover:border-indigo-400 text-slate-900';
             
             if (this.isSubmitted || this.isTeacherMode) {
               if (opt.isCorrect) {
-                optStyle = 'border-emerald-500 bg-emerald-950/20 text-emerald-300 font-medium';
+                optStyle = 'border-emerald-500 bg-emerald-50 text-emerald-950 font-semibold';
               } else if (isChecked && !opt.isCorrect) {
-                optStyle = 'border-rose-500 bg-rose-950/20 text-rose-300';
+                optStyle = 'border-rose-400 bg-rose-50 text-rose-950';
               }
             } else if (isChecked) {
-              optStyle = 'border-indigo-500 bg-indigo-950/40 text-indigo-200 ring-1 ring-indigo-500';
+              optStyle = 'border-indigo-500 bg-indigo-50/70 text-slate-900 ring-1 ring-indigo-500 font-semibold';
             }
 
             return `
@@ -389,14 +389,14 @@ const QuizEngine = {
                   ${this.isSubmitted ? 'disabled' : ''} 
                   onchange="QuizEngine.setMultipleChoice('${q.id}', '${opt.id}')"
                   class="w-4 h-4 text-indigo-600 focus:ring-0">
-                <span class="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center font-bold text-xs text-slate-300">
+                <span class="w-6 h-6 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-slate-700">
                   ${opt.id}
                 </span>
-                <span class="text-sm text-slate-100 latex-box flex-1">
+                <span class="text-sm text-slate-900 latex-box flex-1">
                   ${opt.text}
                 </span>
                 ${(this.isSubmitted || this.isTeacherMode) && opt.isCorrect ? `
-                  <span class="text-xs text-emerald-400 font-bold">✓ Đúng</span>
+                  <span class="text-xs text-emerald-700 font-bold">✓ Đúng</span>
                 ` : ''}
               </label>
             `;
@@ -406,9 +406,9 @@ const QuizEngine = {
     } else if (q.type === 'true-false-4') {
       const userAnsObj = this.userAnswers[q.id] || {};
       return `
-        <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40">
+        <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-2xs">
           <table class="w-full text-left text-xs sm:text-sm">
-            <thead class="bg-slate-900 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+            <thead class="bg-slate-50 text-slate-700 uppercase text-[10px] tracking-wider border-b border-slate-200">
               <tr>
                 <th class="p-3">Mệnh đề (Proposition)</th>
                 <th class="p-3 text-center w-24">Đúng (True)</th>
@@ -416,19 +416,19 @@ const QuizEngine = {
                 ${(this.isSubmitted || this.isTeacherMode) ? '<th class="p-3 text-center w-20">Đáp án</th>' : ''}
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800/60">
+            <tbody class="divide-y divide-slate-100">
               ${q.propositions.map(prop => {
                 const userVal = userAnsObj[prop.id];
                 return `
-                  <tr class="hover:bg-slate-850/40 transition-colors">
+                  <tr class="hover:bg-slate-50/60 transition-colors">
                     <td class="p-3 pr-2">
                       <div class="flex items-baseline gap-2 flex-wrap">
-                        <span class="font-bold text-indigo-400">${prop.id})</span>
-                        <span class="text-slate-100 font-medium latex-box">${prop.textEn}</span>
+                        <span class="font-bold text-indigo-700">${prop.id})</span>
+                        <span class="text-slate-900 font-medium latex-box">${prop.textEn}</span>
                         ${window.BilingualHelper ? window.BilingualHelper.renderInlinePill(prop.textEn, prop.textVi) : ''}
                       </div>
                       ${prop.textVi ? `
-                        <div class="text-[11px] text-slate-400 italic vi-text mt-1 pl-4">${prop.textVi}</div>
+                        <div class="text-[11px] text-slate-600 italic vi-text mt-1 pl-4">${prop.textVi}</div>
                       ` : ''}
                     </td>
                     <td class="p-3 text-center">

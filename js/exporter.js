@@ -97,16 +97,48 @@ const Exporter = {
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
-    body { font-family: 'Outfit', sans-serif; }
+    body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #0f172a; }
     code, .font-mono { font-family: 'JetBrains Mono', monospace; }
     .glass-card {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+      color: #0f172a !important;
     }
-    .latex-box mjx-container {
-      font-size: 108% !important;
+    .latex-box {
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 0.75rem !important;
+      color: #0f172a !important;
+    }
+    mjx-container {
+      color: #0f172a !important;
       outline: none;
+    }
+    /* Universal light mode overrides so all elements have crisp black text and soothing light backgrounds */
+    .text-white, .text-slate-100, .text-slate-200 { color: #0f172a !important; }
+    .text-slate-300 { color: #1e293b !important; }
+    .text-slate-400 { color: #475569 !important; }
+    .text-indigo-300, .text-indigo-400 { color: #4338ca !important; }
+    .text-teal-300, .text-teal-400 { color: #0f766e !important; }
+    .text-purple-300, .text-purple-400 { color: #6b21a8 !important; }
+    .text-amber-300, .text-amber-400 { color: #92400e !important; }
+    .text-emerald-300, .text-emerald-400 { color: #047857 !important; }
+    .text-rose-300, .text-rose-400 { color: #b91c1c !important; }
+
+    .bg-slate-950, .bg-slate-900, .bg-slate-900\/90, .bg-slate-900\/80, .bg-slate-900\/60, .bg-indigo-950, .bg-indigo-950\/40, .bg-indigo-950\/30, .bg-purple-950, .bg-amber-950, .bg-teal-950, .bg-teal-950\/30 {
+      background-color: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    .bg-slate-800, .bg-slate-850 {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      color: #334155 !important;
+    }
+    .border-slate-800, .border-slate-700 {
+      border-color: #e2e8f0 !important;
     }
     @media print {
       .no-print { display: none !important; }
@@ -115,21 +147,21 @@ const Exporter = {
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
 
   <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md">
+  <header class="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-2xs">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-teal-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-bold text-lg text-white">
-          $\\sum$
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 flex items-center justify-center shadow-xs font-bold text-lg text-white">
+          🎓
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-xs uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Math Bilingual Studio (Offline Standalone)</span>
-            <span class="text-xs text-slate-400 hidden sm:inline">• ${lesson.meta.grade || 'Toán song ngữ THPT'}</span>
+            <span class="text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Math Bilingual Studio (Offline Standalone)</span>
+            <span class="text-xs text-slate-500 hidden sm:inline">• ${lesson.meta.grade || 'Toán song ngữ THPT'}</span>
           </div>
-          <h1 class="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-2">
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
             <span>${lesson.meta.titleEn}</span>
           </h1>
         </div>
@@ -137,18 +169,18 @@ const Exporter = {
 
       <!-- Navigation & Mode -->
       <div class="flex items-center gap-2">
-        <div class="flex bg-slate-800/90 p-1 rounded-xl border border-slate-700/60">
-          <button id="tab-btn-lesson" onclick="switchStandaloneTab('lesson')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow">
+        <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 gap-1">
+          <button id="tab-btn-lesson" onclick="switchStandaloneTab('lesson')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-indigo-700 shadow-xs">
             📖 Bài Giảng (Lesson)
           </button>
-          <button id="tab-btn-scaffold" onclick="switchStandaloneTab('scaffold')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50 border border-amber-500/30">
+          <button id="tab-btn-scaffold" onclick="switchStandaloneTab('scaffold')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
             🪜 Gia Sư Giàn Giáo (Tutor)
           </button>
-          <button id="tab-btn-quiz" onclick="switchStandaloneTab('quiz')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50">
+          <button id="tab-btn-quiz" onclick="switchStandaloneTab('quiz')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
             ✍️ Kiểm Tra (Quiz)
           </button>
         </div>
-        <button onclick="toggleAllVietnamese()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1.5" title="Bật/Tắt dịch tiếng Việt">
+        <button onclick="toggleAllVietnamese()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs flex items-center gap-1.5" title="Bật/Tắt dịch tiếng Việt">
           🇻🇳 <span id="vi-toggle-text">Dịch: Đang mở</span>
         </button>
       </div>
@@ -164,51 +196,51 @@ const Exporter = {
     <div id="standalone-lesson-view" class="space-y-8">
       
       <!-- Lesson Banner -->
-      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-950/80 via-slate-900 to-teal-950/50 p-6 sm:p-8 border border-indigo-500/20 shadow-xl">
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-50/80 via-white to-teal-50/60 p-6 sm:p-8 border border-slate-200 shadow-xs">
         <div class="relative z-10 max-w-3xl">
-          <span class="px-3 py-1 rounded-md text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-3 inline-block">
+          <span class="px-3 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-3 inline-block">
             Target Duration: ${lesson.meta.duration || '45 minutes'}
           </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-1">${lesson.meta.titleEn}</h2>
-          <h3 class="text-lg text-indigo-300 font-medium mb-4 vi-text">${lesson.meta.titleVi}</h3>
-          <p class="text-slate-300 text-sm leading-relaxed mb-2">${lesson.meta.overviewEn}</p>
-          <p class="text-slate-400 text-xs italic leading-relaxed vi-text border-l-2 border-indigo-400/40 pl-3">${lesson.meta.overviewVi}</p>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">${lesson.meta.titleEn}</h2>
+          <h3 class="text-base sm:text-lg text-indigo-700 font-semibold mb-4 vi-text">${lesson.meta.titleVi}</h3>
+          <p class="text-slate-800 text-sm leading-relaxed mb-2">${lesson.meta.overviewEn}</p>
+          <p class="text-slate-600 text-xs italic leading-relaxed vi-text border-l-2 border-indigo-400 pl-3">${lesson.meta.overviewVi}</p>
         </div>
-        <div class="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-indigo-600/10 to-transparent pointer-events-none"></div>
+        <div class="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
       </div>
 
       <!-- VOCABULARY SECTION -->
       <section class="space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center text-sm">🗣️</span>
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-sm border border-teal-200">🗣️</span>
             <span>Key Mathematical Vocabulary (Từ vựng trọng tâm)</span>
           </h3>
-          <span class="text-xs text-slate-400">Click 🔊 để nghe phát âm chuẩn bản xứ</span>
+          <span class="text-xs text-slate-500">Click 🔊 để nghe phát âm chuẩn bản xứ</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="vocab-grid">
           ${lesson.vocabulary.map((v, i) => `
-            <div class="glass-card p-4 rounded-xl hover:border-indigo-500/40 transition-all flex flex-col justify-between group">
+            <div class="glass-card p-4 rounded-xl border border-slate-200 hover:border-indigo-400 transition-all flex flex-col justify-between group bg-white shadow-xs">
               <div>
                 <div class="flex items-start justify-between gap-2 mb-1.5">
                   <div>
-                    <h4 class="text-base font-bold text-white group-hover:text-indigo-400 transition-colors">${v.term}</h4>
-                    <div class="flex items-center gap-2 text-xs text-slate-400">
-                      <span class="font-mono text-teal-400">${v.ipa || ''}</span>
-                      <span class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">${v.pos || 'term'}</span>
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">${v.term}</h4>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="font-mono text-teal-700 font-semibold">${v.ipa || ''}</span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">${v.pos || 'term'}</span>
                     </div>
                   </div>
-                  <button onclick="speakTerm('${v.term.replace(/'/g, "\\'")}')" class="p-2 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white transition-all text-xs" title="Listen pronunciation">
+                  <button onclick="speakTerm('${v.term.replace(/'/g, "\\'")}')" class="p-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white transition-all text-xs border border-indigo-200" title="Listen pronunciation">
                     🔊
                   </button>
                 </div>
-                <p class="text-sm font-medium text-emerald-400 vi-text mb-2.5">
+                <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
                   👉 ${v.meaningVi}
                 </p>
-                <div class="text-xs bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
                   <div class="latex-box mb-1">${v.exampleEn}</div>
-                  <div class="text-[11px] text-slate-400 italic vi-text">${v.exampleVi}</div>
+                  <div class="text-[11px] text-slate-600 italic vi-text">${v.exampleVi}</div>
                 </div>
               </div>
             </div>
@@ -218,27 +250,27 @@ const Exporter = {
 
       <!-- CONCEPTS & THEOREMS -->
       <section class="space-y-4">
-        <div class="border-b border-slate-800 pb-3">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm">📐</span>
+        <div class="border-b border-slate-200 pb-3">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-sm border border-indigo-200">📐</span>
             <span>Mathematical Concepts & Theorems (Định lý & Công thức)</span>
           </h3>
         </div>
 
         <div class="space-y-4">
           ${lesson.concepts.map((c, i) => `
-            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-500 space-y-3">
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-600 border-slate-200 bg-white shadow-xs space-y-3">
               <div class="flex items-center justify-between">
-                <h4 class="text-base font-bold text-white">${i + 1}. ${c.titleEn}</h4>
-                <span class="text-xs text-indigo-300 vi-text font-medium">${c.titleVi}</span>
+                <h4 class="text-base font-bold text-slate-900">${i + 1}. ${c.titleEn}</h4>
+                <span class="text-xs text-indigo-700 vi-text font-semibold">${c.titleVi}</span>
               </div>
-              <div class="text-sm text-slate-300 leading-relaxed">${c.contentEn}</div>
-              <div class="text-xs text-slate-400 italic leading-relaxed vi-text bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">${c.contentVi}</div>
-              <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800/90 text-center latex-box overflow-x-auto">
+              <div class="text-sm text-slate-800 leading-relaxed">${c.contentEn}</div>
+              <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">${c.contentVi}</div>
+              <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-center latex-box overflow-x-auto text-slate-900 font-medium">
                 $${c.formula}$
               </div>
               ${c.pedagogicalNote ? `
-                <div class="text-xs text-amber-300 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 flex items-start gap-2">
+                <div class="text-xs text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-2">
                   <span>💡</span>
                   <span><strong>Lưu ý sư phạm:</strong> ${c.pedagogicalNote}</span>
                 </div>
@@ -250,46 +282,46 @@ const Exporter = {
 
       <!-- WORKED EXAMPLES (STEP-BY-STEP) -->
       <section class="space-y-4">
-        <div class="border-b border-slate-800 pb-3">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-sm">💡</span>
+        <div class="border-b border-slate-200 pb-3">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center text-sm border border-purple-200">💡</span>
             <span>Worked Examples (Ví dụ mẫu từng bước)</span>
           </h3>
         </div>
 
         <div class="space-y-6">
           ${lesson.examples.map((ex, i) => `
-            <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-800 space-y-4">
-              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
-                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
                   Example ${i + 1}
                 </span>
-                <button onclick="revealAllSteps('${ex.id}')" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">
+                <button onclick="revealAllSteps('${ex.id}')" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">
                   Mở toàn bộ các bước giải 👁️
                 </button>
               </div>
 
               <div>
-                <p class="text-sm sm:text-base font-semibold text-slate-100 mb-1.5 latex-box">${ex.problemEn}</p>
-                <p class="text-xs text-slate-400 italic vi-text border-l-2 border-purple-400/40 pl-2.5">${ex.problemVi}</p>
+                <p class="text-sm sm:text-base font-semibold text-slate-900 mb-1.5 latex-box">${ex.problemEn}</p>
+                <p class="text-xs text-slate-600 italic vi-text border-l-2 border-purple-400 pl-2.5">${ex.problemVi}</p>
               </div>
 
               <!-- Steps Container -->
               <div class="space-y-3 pt-2">
                 ${ex.steps.map((st) => `
-                  <div class="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden">
-                    <button onclick="toggleStep('${ex.id}', ${st.stepNumber})" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-200 hover:bg-slate-800/60 transition-colors">
+                  <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
+                    <button onclick="toggleStep('${ex.id}', ${st.stepNumber})" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors">
                       <span class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-indigo-600/30 text-indigo-400 flex items-center justify-center text-[11px] font-bold">${st.stepNumber}</span>
+                        <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[11px] font-bold">${st.stepNumber}</span>
                         <span>Step ${st.stepNumber}: ${st.actionEn}</span>
                       </span>
-                      <span id="step-icon-${ex.id}-${st.stepNumber}" class="text-xs text-indigo-400 font-normal">➕ Mở bước này</span>
+                      <span id="step-icon-${ex.id}-${st.stepNumber}" class="text-xs text-indigo-600 font-medium">➕ Mở bước này</span>
                     </button>
-                    <div id="step-content-${ex.id}-${st.stepNumber}" class="hidden p-4 pt-2 border-t border-slate-800 text-xs sm:text-sm text-slate-300 space-y-2 bg-slate-950/40">
-                      <div class="text-slate-400 italic vi-text text-xs">${st.actionVi}</div>
-                      <div class="p-3 bg-slate-900 rounded-lg font-mono text-center latex-box overflow-x-auto">$${st.mathExpression}$</div>
-                      ${st.explanationEn ? `<div class="text-slate-300">${st.explanationEn}</div>` : ''}
-                      ${st.explanationVi ? `<div class="text-slate-400 vi-text text-[11px] italic">${st.explanationVi}</div>` : ''}
+                    <div id="step-content-${ex.id}-${st.stepNumber}" class="hidden p-4 pt-2 border-t border-slate-200 text-xs sm:text-sm text-slate-800 space-y-2 bg-slate-50">
+                      <div class="text-slate-600 italic vi-text text-xs">${st.actionVi}</div>
+                      <div class="p-3 bg-white rounded-lg border border-slate-200 font-mono text-center latex-box overflow-x-auto text-slate-900">$${st.mathExpression}$</div>
+                      ${st.explanationEn ? `<div class="text-slate-800">${st.explanationEn}</div>` : ''}
+                      ${st.explanationVi ? `<div class="text-slate-600 vi-text text-[11px] italic">${st.explanationVi}</div>` : ''}
                     </div>
                   </div>
                 `).join('')}
@@ -307,64 +339,64 @@ const Exporter = {
     <div id="standalone-scaffold-view" class="space-y-6 hidden">
       
       <!-- Top Scaffolding Tutor Banner -->
-      <div class="glass-card p-6 sm:p-7 rounded-3xl border-2 border-indigo-500/40 bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 shadow-2xl space-y-3">
+      <div class="glass-card p-6 sm:p-7 rounded-3xl border border-slate-200 bg-gradient-to-r from-indigo-50/70 via-white to-purple-50/50 shadow-xs space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-2">
-            <span class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg border border-amber-500/30">🪜</span>
+            <span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg border border-amber-300">🪜</span>
             <div>
-              <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded border border-amber-300">
                 Gia Sư Giàn Giáo Sư Phạm (Scaffolding Offline)
               </span>
-              <h2 class="text-xl sm:text-2xl font-black text-white">Bilingual Math Scaffolding Tutor</h2>
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900">Bilingual Math Scaffolding Tutor</h2>
             </div>
           </div>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
             Mô hình Vygotsky ZPD • Hoạt động 100% Offline
           </span>
         </div>
-        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
           Hệ thống cung cấp giàn giáo nhận thức nhiều tầng giúp bạn tự suy luận giải bài toán song ngữ: phá bỏ rào cản thuật ngữ tiếng Anh, mở gợi ý từng nấc và rèn luyện bài tập song song.
         </p>
 
         <!-- Presets Selection Bar -->
-        <div class="pt-2 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
-          <span class="text-xs font-bold text-slate-400">Chọn Bài Mẫu THPT:</span>
-          <button onclick="selectStandalonePreset('grade-10-vectors')" id="btn-pre-10" class="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all">
+        <div class="pt-2 border-t border-slate-200 flex flex-wrap items-center gap-2">
+          <span class="text-xs font-bold text-slate-700">Chọn Bài Mẫu THPT:</span>
+          <button onclick="selectStandalonePreset('grade-10-vectors')" id="btn-pre-10" class="px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all">
             📘 Khối 10: Tọa độ Oxy & Tích vô hướng
           </button>
-          <button onclick="selectStandalonePreset('grade-11-limits')" id="btn-pre-11" class="px-3 py-1 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all">
+          <button onclick="selectStandalonePreset('grade-11-limits')" id="btn-pre-11" class="px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all">
             📗 Khối 11: Giới hạn vô định 0/0
           </button>
-          <button onclick="selectStandalonePreset('grade-12-asymptotes')" id="btn-pre-12" class="px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all">
+          <button onclick="selectStandalonePreset('grade-12-asymptotes')" id="btn-pre-12" class="px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all">
             📙 Khối 12: Hàm phân thức & Tiệm cận
           </button>
         </div>
       </div>
 
       <!-- Current Problem Card -->
-      <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-800 space-y-2">
+      <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-2">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Đề bài mục tiêu (Target Problem):</span>
-          <span id="scaffold-grade-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-amber-400 border border-amber-500/30">Khối 12</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">Đề bài mục tiêu (Target Problem):</span>
+          <span id="scaffold-grade-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300">Khối 12</span>
         </div>
-        <div id="scaffold-problem-text" class="text-sm sm:text-base font-semibold text-white leading-relaxed latex-box">
+        <div id="scaffold-problem-text" class="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed latex-box">
           <!-- Rendered dynamically -->
         </div>
       </div>
 
       <!-- 3-Step Progress Tier Control Buttons -->
-      <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-3">
-        <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
           <span>⚡</span> <span>Mở mức độ hỗ trợ sư phạm:</span>
         </span>
         <div class="flex flex-wrap gap-2">
-          <button onclick="setStandaloneTier(1)" id="tier-btn-1" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow transition-all">
+          <button onclick="setStandaloneTier(1)" id="tier-btn-1" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow transition-all">
             🟡 Chỉ mở Gợi ý Nấc 1
           </button>
-          <button onclick="setStandaloneTier(2)" id="tier-btn-2" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition-all">
+          <button onclick="setStandaloneTier(2)" id="tier-btn-2" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all">
             🔵 Mở Khung tư duy 3 bước
           </button>
-          <button onclick="setStandaloneTier(3)" id="tier-btn-3" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition-all">
+          <button onclick="setStandaloneTier(3)" id="tier-btn-3" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all">
             🟢 Mở Toàn bộ Lời giải & Cạm bẫy
           </button>
         </div>
@@ -383,20 +415,20 @@ const Exporter = {
     <div id="standalone-quiz-view" class="space-y-8 hidden">
       
       <!-- Quiz Header Card -->
-      <div class="glass-card p-6 sm:p-8 rounded-2xl border border-indigo-500/30 flex flex-wrap items-center justify-between gap-4">
+      <div class="glass-card p-6 sm:p-8 rounded-2xl border border-slate-200 bg-white shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-2 inline-block">
+          <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-2 inline-block">
             Assessment Test
           </span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">${lesson.quiz.titleEn}</h2>
-          <h3 class="text-sm font-medium text-slate-400 vi-text mt-0.5">${lesson.quiz.titleVi}</h3>
-          <p class="text-xs text-slate-400 mt-2">
+          <h2 class="text-xl sm:text-2xl font-black text-slate-900">${lesson.quiz.titleEn}</h2>
+          <h3 class="text-sm font-semibold text-slate-700 vi-text mt-0.5">${lesson.quiz.titleVi}</h3>
+          <p class="text-xs text-slate-600 mt-2">
             Thời gian: <strong>${lesson.quiz.timeMinutes || 20} phút</strong> • Tổng số câu: <strong>${lesson.quiz.questions.length}</strong>
           </p>
         </div>
 
         <div class="flex gap-2">
-          <button onclick="gradeStandaloneQuiz()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-600/30 transition-all flex items-center gap-1.5">
+          <button onclick="gradeStandaloneQuiz()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md transition-all flex items-center gap-1.5">
             <span>✅</span> <span>Nộp Bài & Chấm Điểm</span>
           </button>
         </div>
@@ -408,17 +440,17 @@ const Exporter = {
       </div>
 
       <!-- Result Banner (Hidden initially) -->
-      <div id="standalone-quiz-result" class="hidden glass-card p-6 sm:p-8 rounded-2xl border-2 border-emerald-500/50 bg-gradient-to-b from-slate-900 to-emerald-950/30 text-center space-y-4">
-        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl font-bold shadow-lg shadow-emerald-500/20">
+      <div id="standalone-quiz-result" class="hidden glass-card p-6 sm:p-8 rounded-2xl border border-emerald-300 bg-emerald-50/60 text-center space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl font-bold shadow-sm">
           🏆
         </div>
-        <h3 class="text-2xl font-black text-white">Kết Quả Bài Kiểm Tra (Quiz Result)</h3>
+        <h3 class="text-2xl font-black text-slate-900">Kết Quả Bài Kiểm Tra (Quiz Result)</h3>
         <div class="flex justify-center items-baseline gap-2">
-          <span id="result-score-num" class="text-5xl font-black text-emerald-400">0.0</span>
-          <span class="text-xl text-slate-400 font-semibold">/ 10.0</span>
+          <span id="result-score-num" class="text-5xl font-black text-emerald-700">0.0</span>
+          <span class="text-xl text-slate-600 font-semibold">/ 10.0</span>
         </div>
-        <p id="result-feedback" class="text-sm font-medium text-slate-300 max-w-md mx-auto"></p>
-        <button onclick="resetStandaloneQuiz()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all">
+        <p id="result-feedback" class="text-sm font-semibold text-slate-800 max-w-md mx-auto"></p>
+        <button onclick="resetStandaloneQuiz()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 transition-all shadow-xs">
           🔄 Làm lại bài kiểm tra
         </button>
       </div>
@@ -427,7 +459,7 @@ const Exporter = {
 
   </main>
 
-  <footer class="mt-auto border-t border-slate-900 py-6 text-center text-xs text-slate-500 bg-slate-950">
+  <footer class="mt-auto border-t border-slate-200 py-6 text-center text-xs text-slate-600 bg-white">
     Được tạo tự động bởi <strong>Math Bilingual Studio</strong> • Hoạt động độc lập & Hỗ trợ học trực tuyến/offline.
   </footer>
 
@@ -463,20 +495,20 @@ const Exporter = {
       scaffoldView.classList.add('hidden');
       quizView.classList.add('hidden');
 
-      btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50';
-      btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50 border border-amber-500/30';
-      btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white hover:bg-slate-700/50';
+      btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100';
+      btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-amber-300';
+      btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100';
 
       if (tab === 'lesson') {
         lessonView.classList.remove('hidden');
-        btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
+        btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-xs';
       } else if (tab === 'scaffold') {
         scaffoldView.classList.remove('hidden');
-        btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-500 text-slate-950 font-bold shadow';
+        btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-500 text-white font-bold shadow-xs';
         renderStandaloneScaffold();
       } else {
         quizView.classList.remove('hidden');
-        btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow';
+        btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-600 text-white shadow-xs';
         renderStandaloneQuestions();
       }
       triggerMathJax();
@@ -543,12 +575,12 @@ const Exporter = {
       ['btn-pre-10', 'btn-pre-11', 'btn-pre-12'].forEach(id => {
         const b = document.getElementById(id);
         if (b) {
-          b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all';
+          b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all';
         }
       });
-      if (presetKey === 'grade-10-vectors') document.getElementById('btn-pre-10').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all';
-      if (presetKey === 'grade-11-limits') document.getElementById('btn-pre-11').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all';
-      if (presetKey === 'grade-12-asymptotes') document.getElementById('btn-pre-12').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 transition-all';
+      if (presetKey === 'grade-10-vectors') document.getElementById('btn-pre-10').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all';
+      if (presetKey === 'grade-11-limits') document.getElementById('btn-pre-11').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all';
+      if (presetKey === 'grade-12-asymptotes') document.getElementById('btn-pre-12').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-600 transition-all';
 
       setStandaloneTier(1);
     }
@@ -566,9 +598,9 @@ const Exporter = {
         const b = document.getElementById(id);
         if (b) {
           if (idx + 1 === tier) {
-            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 shadow transition-all';
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs transition-all';
           } else {
-            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:text-white transition-all';
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all';
           }
         }
       });
@@ -595,27 +627,27 @@ const Exporter = {
       let html = '';
 
       // 1. Bilingual Vocabulary Card
-      html += '<div class="glass-card rounded-2xl border border-teal-500/30 overflow-hidden">';
-      html += '<div onclick="toggleScaffoldSection(\\'vocab\\')" class="p-4 bg-teal-950/30 flex items-center justify-between cursor-pointer hover:bg-teal-950/50 transition-colors">';
+      html += '<div class="glass-card rounded-2xl border border-teal-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(\'vocab\')" class="p-4 bg-teal-50/70 border-b border-teal-100 flex items-center justify-between cursor-pointer hover:bg-teal-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
-      html += '<span class="text-teal-400 font-bold text-base">🗣️</span>';
-      html += '<span class="font-bold text-sm text-white">1. Thuật ngữ toán học then chốt (Key Mathematical Vocabulary)</span>';
+      html += '<span class="text-teal-700 font-bold text-base">🗣️</span>';
+      html += '<span class="font-bold text-sm text-slate-900">1. Thuật ngữ toán học then chốt (Key Mathematical Vocabulary)</span>';
       html += '</div>';
-      html += '<span class="text-xs text-teal-400 font-bold">' + (scaffoldTiers.vocab ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '<span class="text-xs text-teal-700 font-bold">' + (scaffoldTiers.vocab ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
 
       if (scaffoldTiers.vocab) {
-        html += '<div class="p-4 space-y-3 bg-slate-900/60">';
+        html += '<div class="p-4 space-y-3 bg-white">';
         html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
         (d.bilingual_vocabulary || []).forEach(v => {
-          html += '<div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between">';
+          html += '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">';
           html += '<div>';
           html += '<div class="flex items-center justify-between">';
-          html += '<span class="font-bold text-white text-sm">' + v.english_term + '</span>';
-          html += '<button onclick="speakTerm(\\'' + v.english_term.replace(/'/g, "\\\\'") + '\\')" class="text-xs p-1 px-2 rounded bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300">🔊</button>';
+          html += '<span class="font-bold text-slate-900 text-sm">' + v.english_term + '</span>';
+          html += '<button onclick="speakTerm(\'' + v.english_term.replace(/'/g, "\\'") + '\')" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all">🔊</button>';
           html += '</div>';
-          html += '<div class="text-emerald-400 font-medium text-xs mt-1">👉 ' + v.vietnamese_term + '</div>';
-          html += '<div class="text-slate-400 text-[11px] mt-1.5 italic latex-box">' + v.context_note + '</div>';
+          html += '<div class="text-emerald-700 font-semibold text-xs mt-1">👉 ' + v.vietnamese_term + '</div>';
+          html += '<div class="text-slate-600 text-[11px] mt-1.5 italic latex-box">' + v.context_note + '</div>';
           html += '</div></div>';
         });
         html += '</div></div>';
@@ -623,47 +655,47 @@ const Exporter = {
       html += '</div>';
 
       // 2. Problem Analysis Card
-      html += '<div class="glass-card rounded-2xl border border-indigo-500/30 overflow-hidden">';
-      html += '<div onclick="toggleScaffoldSection(\\'analysis\\')" class="p-4 bg-indigo-950/30 flex items-center justify-between cursor-pointer hover:bg-indigo-950/50 transition-colors">';
+      html += '<div class="glass-card rounded-2xl border border-indigo-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(\'analysis\')" class="p-4 bg-indigo-50/70 border-b border-indigo-100 flex items-center justify-between cursor-pointer hover:bg-indigo-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
-      html += '<span class="text-indigo-400 font-bold text-base">🔍</span>';
-      html += '<span class="font-bold text-sm text-white">2. Bóc tách đề bài & Trọng tâm kiến thức</span>';
+      html += '<span class="text-indigo-700 font-bold text-base">🔍</span>';
+      html += '<span class="font-bold text-sm text-slate-900">2. Bóc tách đề bài & Trọng tâm kiến thức</span>';
       html += '</div>';
-      html += '<span class="text-xs text-indigo-400 font-bold">' + (scaffoldTiers.analysis ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '<span class="text-xs text-indigo-700 font-bold">' + (scaffoldTiers.analysis ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
       if (scaffoldTiers.analysis) {
-        html += '<div class="p-4 bg-slate-900/60 text-xs sm:text-sm text-slate-300 leading-relaxed latex-box">' + d.problem_analysis + '</div>';
+        html += '<div class="p-4 bg-white text-xs sm:text-sm text-slate-800 leading-relaxed latex-box">' + d.problem_analysis + '</div>';
       }
       html += '</div>';
 
       // 3. Tier 1 Hint Card
-      html += '<div class="glass-card rounded-2xl border border-amber-500/30 overflow-hidden">';
-      html += '<div onclick="toggleScaffoldSection(\\'tier1\\')" class="p-4 bg-amber-950/30 flex items-center justify-between cursor-pointer hover:bg-amber-950/50 transition-colors">';
+      html += '<div class="glass-card rounded-2xl border border-amber-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(\'tier1\')" class="p-4 bg-amber-50/70 border-b border-amber-100 flex items-center justify-between cursor-pointer hover:bg-amber-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
-      html += '<span class="text-amber-400 font-bold text-base">💡</span>';
-      html += '<span class="font-bold text-sm text-white">3. Giàn giáo Nấc 1: Câu hỏi gợi mở định hướng tư duy (Tier 1 Hint)</span>';
+      html += '<span class="text-amber-700 font-bold text-base">💡</span>';
+      html += '<span class="font-bold text-sm text-slate-900">3. Giàn giáo Nấc 1: Câu hỏi gợi mở định hướng tư duy (Tier 1 Hint)</span>';
       html += '</div>';
-      html += '<span class="text-xs text-amber-400 font-bold">' + (scaffoldTiers.tier1 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '<span class="text-xs text-amber-700 font-bold">' + (scaffoldTiers.tier1 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
       if (scaffoldTiers.tier1) {
-        html += '<div class="p-4 bg-slate-900/60 text-xs sm:text-sm text-amber-200/90 leading-relaxed latex-box border-l-4 border-amber-400">' + d.tier_1_hint + '</div>';
+        html += '<div class="p-4 bg-amber-50/50 text-xs sm:text-sm text-slate-900 leading-relaxed latex-box border-l-4 border-amber-400">' + d.tier_1_hint + '</div>';
       }
       html += '</div>';
 
       // 4. Tier 2 Breakdown Card
-      html += '<div class="glass-card rounded-2xl border border-blue-500/30 overflow-hidden">';
-      html += '<div onclick="toggleScaffoldSection(\\'tier2\\')" class="p-4 bg-blue-950/30 flex items-center justify-between cursor-pointer hover:bg-blue-950/50 transition-colors">';
+      html += '<div class="glass-card rounded-2xl border border-blue-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(\'tier2\')" class="p-4 bg-blue-50/70 border-b border-blue-100 flex items-center justify-between cursor-pointer hover:bg-blue-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
-      html += '<span class="text-blue-400 font-bold text-base">🪜</span>';
-      html += '<span class="font-bold text-sm text-white">4. Giàn giáo Nấc 2: Khung tư duy chia nhỏ các bước (Tier 2 Breakdown)</span>';
+      html += '<span class="text-blue-700 font-bold text-base">🪜</span>';
+      html += '<span class="font-bold text-sm text-slate-900">4. Giàn giáo Nấc 2: Khung tư duy chia nhỏ các bước (Tier 2 Breakdown)</span>';
       html += '</div>';
-      html += '<span class="text-xs text-blue-400 font-bold">' + (scaffoldTiers.tier2 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '<span class="text-xs text-blue-700 font-bold">' + (scaffoldTiers.tier2 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
       if (scaffoldTiers.tier2) {
-        html += '<div class="p-4 bg-slate-900/60 space-y-2">';
+        html += '<div class="p-4 bg-white space-y-2">';
         (d.tier_2_breakdown || []).forEach((st, idx) => {
-          html += '<div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-xs sm:text-sm text-slate-200 latex-box flex items-start gap-2.5">';
-          html += '<span class="w-6 h-6 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">' + (idx+1) + '</span>';
+          html += '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 latex-box flex items-start gap-2.5">';
+          html += '<span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 border border-blue-200">' + (idx+1) + '</span>';
           html += '<span>' + st + '</span>';
           html += '</div>';
         });
@@ -672,46 +704,46 @@ const Exporter = {
       html += '</div>';
 
       // 5. Common Pitfalls
-      html += '<div class="glass-card rounded-2xl border border-rose-500/30 overflow-hidden">';
-      html += '<div onclick="toggleScaffoldSection(\\'pitfall\\')" class="p-4 bg-rose-950/30 flex items-center justify-between cursor-pointer hover:bg-rose-950/50 transition-colors">';
+      html += '<div class="glass-card rounded-2xl border border-rose-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(\'pitfall\')" class="p-4 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between cursor-pointer hover:bg-rose-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
-      html += '<span class="text-rose-400 font-bold text-base">⚠️</span>';
-      html += '<span class="font-bold text-sm text-white">5. Cảnh báo lỗi sai & Cạm bẫy thường gặp (Common Pitfalls)</span>';
+      html += '<span class="text-rose-700 font-bold text-base">⚠️</span>';
+      html += '<span class="font-bold text-sm text-slate-900">5. Cảnh báo lỗi sai & Cạm bẫy thường gặp (Common Pitfalls)</span>';
       html += '</div>';
-      html += '<span class="text-xs text-rose-400 font-bold">' + (scaffoldTiers.pitfall ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '<span class="text-xs text-rose-700 font-bold">' + (scaffoldTiers.pitfall ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
       if (scaffoldTiers.pitfall) {
-        html += '<div class="p-4 bg-slate-900/60 text-xs sm:text-sm text-rose-200/90 leading-relaxed latex-box">' + d.common_pitfall + '</div>';
+        html += '<div class="p-4 bg-rose-50/50 text-xs sm:text-sm text-slate-900 leading-relaxed latex-box border-l-4 border-rose-400">' + d.common_pitfall + '</div>';
       }
       html += '</div>';
 
       // 6. Full Solution Card
-      html += '<div class="glass-card rounded-2xl border border-emerald-500/30 overflow-hidden">';
-      html += '<div onclick="toggleScaffoldSection(\\'tier3\\')" class="p-4 bg-emerald-950/30 flex items-center justify-between cursor-pointer hover:bg-emerald-950/50 transition-colors">';
+      html += '<div class="glass-card rounded-2xl border border-emerald-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(\'tier3\')" class="p-4 bg-emerald-50/70 border-b border-emerald-100 flex items-center justify-between cursor-pointer hover:bg-emerald-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
-      html += '<span class="text-emerald-400 font-bold text-base">📝</span>';
-      html += '<span class="font-bold text-sm text-white">6. Lời giải mẫu hoàn chỉnh từng bước (Full Solution)</span>';
+      html += '<span class="text-emerald-700 font-bold text-base">📝</span>';
+      html += '<span class="font-bold text-sm text-slate-900">6. Lời giải mẫu hoàn chỉnh từng bước (Full Solution)</span>';
       html += '</div>';
-      html += '<span class="text-xs text-emerald-400 font-bold">' + (scaffoldTiers.tier3 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '<span class="text-xs text-emerald-700 font-bold">' + (scaffoldTiers.tier3 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
       if (scaffoldTiers.tier3) {
         const solFormatted = (d.full_solution || '').replace(/\\n/g, '<br>');
-        html += '<div class="p-5 bg-slate-900/60 text-xs sm:text-sm text-slate-200 leading-relaxed latex-box">' + solFormatted + '</div>';
+        html += '<div class="p-5 bg-white text-xs sm:text-sm text-slate-900 leading-relaxed latex-box">' + solFormatted + '</div>';
       }
       html += '</div>';
 
       // 7. Parallel Exercise
       if (d.parallel_exercise) {
-        html += '<div class="glass-card rounded-2xl border-2 border-teal-500/40 p-5 space-y-3 bg-gradient-to-r from-teal-950/30 via-slate-900 to-indigo-950/30">';
+        html += '<div class="glass-card rounded-2xl border border-teal-200 p-5 space-y-3 bg-gradient-to-r from-teal-50/60 via-white to-indigo-50/40 shadow-xs">';
         html += '<div class="flex items-center gap-2">';
-        html += '<span class="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-sm">🎯</span>';
-        html += '<span class="font-bold text-sm text-white">7. Bài tập tương tự tự rèn luyện (Parallel Exercise)</span>';
+        html += '<span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm border border-teal-200">🎯</span>';
+        html += '<span class="font-bold text-sm text-slate-900">7. Bài tập tương tự tự rèn luyện (Parallel Exercise)</span>';
         html += '</div>';
-        html += '<div class="text-xs sm:text-sm text-slate-100 font-semibold latex-box">' + d.parallel_exercise.question_en + '</div>';
-        html += '<div class="text-xs text-slate-400 italic vi-text border-l-2 border-teal-500/40 pl-2.5">' + d.parallel_exercise.question_vi + '</div>';
+        html += '<div class="text-xs sm:text-sm text-slate-900 font-semibold latex-box">' + d.parallel_exercise.question_en + '</div>';
+        html += '<div class="text-xs text-slate-600 italic vi-text border-l-2 border-teal-400 pl-2.5">' + d.parallel_exercise.question_vi + '</div>';
         html += '<div class="flex flex-wrap items-center gap-3 pt-2">';
-        html += '<input type="text" id="offline-parallel-input" placeholder="Nhập đáp số (Ví dụ: 0, 7, 2...)" class="px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs sm:text-sm text-white font-mono w-64 focus:border-teal-400 focus:outline-none">';
-        html += '<button onclick="checkStandaloneParallelAnswer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow transition-all">Kiểm Tra Đáp Số</button>';
+        html += '<input type="text" id="offline-parallel-input" placeholder="Nhập đáp số (Ví dụ: 0, 7, 2...)" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 font-mono w-64 focus:border-teal-500 focus:outline-none">';
+        html += '<button onclick="checkStandaloneParallelAnswer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-all">Kiểm Tra Đáp Số</button>';
         html += '</div>';
         html += '<div id="offline-parallel-feedback" class="hidden text-xs p-3 rounded-xl"></div>';
         html += '</div>';
@@ -730,14 +762,14 @@ const Exporter = {
       const userVal = input.value.trim().toLowerCase();
       const correctVal = String(d.parallel_exercise.short_answer).trim().toLowerCase();
 
-      fb.classList.remove('hidden', 'bg-emerald-950/40', 'border-emerald-500/40', 'text-emerald-300', 'bg-rose-950/40', 'border-rose-500/40', 'text-rose-300');
+      fb.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-800', 'bg-rose-50', 'border-rose-300', 'text-rose-800');
       fb.classList.add('border');
 
       if (userVal === correctVal) {
-        fb.classList.add('bg-emerald-950/40', 'border-emerald-500/40', 'text-emerald-300');
+        fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
         fb.innerHTML = '🎉 <strong>Chính xác tuyệt đối!</strong> Em đã vận dụng rất tốt phương pháp giàn giáo để tự giải quyết trọn vẹn bài toán.';
       } else {
-        fb.classList.add('bg-rose-950/40', 'border-rose-500/40', 'text-rose-300');
+        fb.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800');
         fb.innerHTML = '⚠️ <strong>Chưa chính xác!</strong> Hãy xem lại Nấc 2 (Khung tư duy) và Nấc 5 (Cạm bẫy thường gặp) phía trên để điều chỉnh phép tính.';
       }
     }
@@ -753,61 +785,61 @@ const Exporter = {
       let html = '';
 
       questions.forEach((q, index) => {
-        html += '<div id="q-card-' + q.id + '" class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-800 transition-all">';
+        html += '<div id="q-card-' + q.id + '" class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs transition-all">';
         html += '<div class="flex items-start justify-between gap-3 mb-3">';
         html += '<div>';
-        html += '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-500/20 text-indigo-400">Question ' + (index+1) + '</span>';
+        html += '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">Question ' + (index+1) + '</span>';
         html += '<span class="text-xs text-slate-500 ml-2">[' + q.points + ' pts]</span>';
         html += '</div>';
-        html += '<span class="text-xs text-slate-400 font-medium capitalize">' + q.type.replace('-', ' ') + '</span>';
+        html += '<span class="text-xs text-slate-600 font-medium capitalize">' + q.type.replace('-', ' ') + '</span>';
         html += '</div>';
 
         // Question stem
-        html += '<div class="text-sm sm:text-base font-semibold text-slate-100 mb-2 latex-box">' + q.stemEn + '</div>';
+        html += '<div class="text-sm sm:text-base font-semibold text-slate-900 mb-2 latex-box">' + q.stemEn + '</div>';
         if (q.stemVi) {
-          html += '<div class="text-xs text-slate-400 italic mb-4 vi-text border-l-2 border-indigo-500/30 pl-2.5">' + q.stemVi + '</div>';
+          html += '<div class="text-xs text-slate-600 italic mb-4 vi-text border-l-2 border-indigo-300 pl-2.5">' + q.stemVi + '</div>';
         }
 
         // Options rendering based on type
         if (q.type === 'multiple-choice') {
           html += '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 my-3">';
           q.options.forEach(opt => {
-            html += '<label class="flex items-center gap-3 p-3 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-850 hover:border-indigo-500/50 cursor-pointer transition-all">';
+            html += '<label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-indigo-400 cursor-pointer transition-all shadow-xs">';
             html += '<input type="radio" name="ans-' + q.id + '" value="' + opt.id + '" class="w-4 h-4 text-indigo-600 focus:ring-0">';
-            html += '<span class="font-bold text-xs px-2 py-1 rounded bg-slate-800 text-slate-300">' + opt.id + '</span>';
-            html += '<span class="text-sm text-slate-200 latex-box">' + opt.text + '</span>';
+            html += '<span class="font-bold text-xs px-2 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">' + opt.id + '</span>';
+            html += '<span class="text-sm text-slate-900 latex-box">' + opt.text + '</span>';
             html += '</label>';
           });
           html += '</div>';
         } else if (q.type === 'true-false-4') {
           html += '<div class="space-y-2.5 my-3 overflow-x-auto">';
           html += '<table class="w-full text-left text-xs sm:text-sm">';
-          html += '<thead class="text-slate-400 uppercase text-[10px] border-b border-slate-800"><tr><th class="py-2">Mệnh đề (Proposition)</th><th class="text-center py-2 w-20">Đúng (T)</th><th class="text-center py-2 w-20">Sai (F)</th></tr></thead>';
-          html += '<tbody class="divide-y divide-slate-800/60">';
+          html += '<thead class="text-slate-600 uppercase text-[10px] border-b border-slate-200 bg-slate-50"><tr><th class="py-2 px-3">Mệnh đề (Proposition)</th><th class="text-center py-2 w-20">Đúng (T)</th><th class="text-center py-2 w-20">Sai (F)</th></tr></thead>';
+          html += '<tbody class="divide-y divide-slate-200">';
           q.propositions.forEach(prop => {
             html += '<tr>';
-            html += '<td class="py-2.5 pr-2">';
-            html += '<span class="font-bold text-indigo-400 mr-1.5">' + prop.id + ')</span>';
-            html += '<span class="text-slate-200 latex-box">' + prop.textEn + '</span>';
-            if (prop.textVi) html += '<div class="text-[11px] text-slate-400 italic vi-text mt-0.5">' + prop.textVi + '</div>';
+            html += '<td class="py-2.5 pr-2 px-3">';
+            html += '<span class="font-bold text-indigo-700 mr-1.5">' + prop.id + ')</span>';
+            html += '<span class="text-slate-900 latex-box">' + prop.textEn + '</span>';
+            if (prop.textVi) html += '<div class="text-[11px] text-slate-600 italic vi-text mt-0.5">' + prop.textVi + '</div>';
             html += '</td>';
-            html += '<td class="text-center py-2.5"><input type="radio" name="tf-' + q.id + '-' + prop.id + '" value="true" class="w-4 h-4 text-emerald-500"></td>';
-            html += '<td class="text-center py-2.5"><input type="radio" name="tf-' + q.id + '-' + prop.id + '" value="false" class="w-4 h-4 text-rose-500"></td>';
+            html += '<td class="text-center py-2.5"><input type="radio" name="tf-' + q.id + '-' + prop.id + '" value="true" class="w-4 h-4 text-emerald-600"></td>';
+            html += '<td class="text-center py-2.5"><input type="radio" name="tf-' + q.id + '-' + prop.id + '" value="false" class="w-4 h-4 text-rose-600"></td>';
             html += '</tr>';
           });
           html += '</tbody></table></div>';
         } else if (q.type === 'short-answer') {
           html += '<div class="my-4 max-w-sm">';
-          html += '<label class="block text-xs text-slate-400 mb-1.5 font-medium">Nhập đáp số (số thực / phân số):</label>';
-          html += '<input type="text" id="short-input-' + q.id + '" placeholder="Ví dụ: 3 hoặc 0.75..." class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono text-sm focus:border-indigo-500 focus:outline-none">';
+          html += '<label class="block text-xs text-slate-600 mb-1.5 font-medium">Nhập đáp số (số thực / phân số):</label>';
+          html += '<input type="text" id="short-input-' + q.id + '" placeholder="Ví dụ: 3 hoặc 0.75..." class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-mono text-sm focus:border-indigo-500 focus:outline-none">';
           html += '</div>';
         }
 
         // Solution box (hidden until graded)
-        html += '<div id="solution-' + q.id + '" class="hidden mt-4 p-4 rounded-xl bg-slate-950/80 border border-slate-800 text-xs sm:text-sm text-slate-300 space-y-1.5">';
-        html += '<div class="font-bold text-indigo-400">💡 Giải thích chi tiết:</div>';
-        html += '<div class="latex-box">' + (q.explanationEn || '') + '</div>';
-        if (q.explanationVi) html += '<div class="text-slate-400 vi-text italic">' + q.explanationVi + '</div>';
+        html += '<div id="solution-' + q.id + '" class="hidden mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 space-y-1.5">';
+        html += '<div class="font-bold text-indigo-700">💡 Giải thích chi tiết:</div>';
+        html += '<div class="latex-box text-slate-900">' + (q.explanationEn || '') + '</div>';
+        if (q.explanationVi) html += '<div class="text-slate-600 vi-text italic">' + q.explanationVi + '</div>';
         html += '</div>';
 
         html += '</div>';
@@ -833,9 +865,9 @@ const Exporter = {
           const correctOpt = q.options.find(o => o.isCorrect);
           if (selected && selected.value === correctOpt.id) {
             earnedPoints += q.points;
-            card.classList.add('border-emerald-500/80', 'bg-emerald-950/10');
+            card.classList.add('border-emerald-400', 'bg-emerald-50/50');
           } else {
-            card.classList.add('border-rose-500/80', 'bg-rose-950/10');
+            card.classList.add('border-rose-400', 'bg-rose-50/50');
           }
         } else if (q.type === 'true-false-4') {
           let correctCount = 0;
@@ -853,11 +885,11 @@ const Exporter = {
           
           earnedPoints += q.points * multiplier;
           if (correctCount === 4) {
-            card.classList.add('border-emerald-500/80', 'bg-emerald-950/10');
+            card.classList.add('border-emerald-400', 'bg-emerald-50/50');
           } else if (correctCount >= 2) {
-            card.classList.add('border-amber-500/80', 'bg-amber-950/10');
+            card.classList.add('border-amber-400', 'bg-amber-50/50');
           } else {
-            card.classList.add('border-rose-500/80', 'bg-rose-950/10');
+            card.classList.add('border-rose-400', 'bg-rose-50/50');
           }
         } else if (q.type === 'short-answer') {
           const input = document.getElementById('short-input-' + q.id);
@@ -875,9 +907,9 @@ const Exporter = {
 
           if (isRight) {
             earnedPoints += q.points;
-            card.classList.add('border-emerald-500/80', 'bg-emerald-950/10');
+            card.classList.add('border-emerald-400', 'bg-emerald-50/50');
           } else {
-            card.classList.add('border-rose-500/80', 'bg-rose-950/10');
+            card.classList.add('border-rose-400', 'bg-rose-50/50');
           }
         }
       });
