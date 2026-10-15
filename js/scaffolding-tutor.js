@@ -516,9 +516,11 @@ NGUYÊN TẮC BẮT BUỘC:
         <div>
           <div class="flex items-start justify-between gap-2">
             <span class="font-bold text-sm text-indigo-300">${v.english_term}</span>
+            ${window.BilingualHelper ? window.BilingualHelper.renderInlinePill(v.english_term, v.vietnamese_term) : `
             <button onclick="ScaffoldingTutor.speakText('${v.english_term.replace(/'/g, "\\'")}')" class="text-xs text-slate-400 hover:text-teal-300 transition-colors" title="Nghe phát âm">
               🔊
             </button>
+            `}
           </div>
           <div class="text-xs font-bold text-teal-300 mt-1 flex items-center gap-1.5">
             <span>🇻🇳</span>
@@ -866,7 +868,10 @@ NGUYÊN TẮC BẮT BUỘC:
             <div class="px-6 pb-6 pt-1 border-t border-indigo-500/20 space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800">
-                  <div class="text-[11px] font-bold text-indigo-400 uppercase mb-1">🇬🇧 English:</div>
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-[11px] font-bold text-indigo-400 uppercase">🇬🇧 English:</span>
+                    ${window.BilingualHelper ? window.BilingualHelper.renderInlinePill(d.parallel_exercise.question_en, d.parallel_exercise.question_vi) : ''}
+                  </div>
                   <div class="text-xs sm:text-sm text-white font-medium">${d.parallel_exercise.question_en}</div>
                 </div>
 

@@ -322,7 +322,10 @@ const QuizEngine = {
 
           <!-- Stems -->
           <div>
-            <div class="text-base sm:text-lg font-semibold text-white latex-box leading-relaxed">${q.stemEn}</div>
+            <div class="text-base sm:text-lg font-semibold text-white latex-box leading-relaxed flex items-start flex-wrap gap-1.5">
+              <span>${q.stemEn}</span>
+              ${window.BilingualHelper ? window.BilingualHelper.renderInlinePill(q.stemEn, q.stemVi) : ''}
+            </div>
             ${q.stemVi ? `
               <div class="text-xs sm:text-sm text-slate-400 italic vi-text mt-1.5 border-l-2 border-indigo-500/40 pl-3">
                 ${q.stemVi}
@@ -341,7 +344,10 @@ const QuizEngine = {
               <div class="flex items-center gap-2 font-bold text-indigo-400">
                 <span>💡 Hướng dẫn giải & Đáp án:</span>
               </div>
-              <div class="latex-box leading-relaxed">${q.explanationEn || 'Không có giải thích.'}</div>
+              <div class="latex-box leading-relaxed flex items-start justify-between gap-2">
+                <span>${q.explanationEn || 'Không có giải thích.'}</span>
+                ${(q.explanationEn && window.BilingualHelper) ? window.BilingualHelper.renderInlinePill(q.explanationEn, q.explanationVi) : ''}
+              </div>
               ${q.explanationVi ? `
                 <div class="text-slate-400 italic vi-text text-xs border-t border-slate-800/60 pt-1.5">${q.explanationVi}</div>
               ` : ''}
@@ -416,9 +422,10 @@ const QuizEngine = {
                 return `
                   <tr class="hover:bg-slate-850/40 transition-colors">
                     <td class="p-3 pr-2">
-                      <div class="flex items-baseline gap-2">
+                      <div class="flex items-baseline gap-2 flex-wrap">
                         <span class="font-bold text-indigo-400">${prop.id})</span>
                         <span class="text-slate-100 font-medium latex-box">${prop.textEn}</span>
+                        ${window.BilingualHelper ? window.BilingualHelper.renderInlinePill(prop.textEn, prop.textVi) : ''}
                       </div>
                       ${prop.textVi ? `
                         <div class="text-[11px] text-slate-400 italic vi-text mt-1 pl-4">${prop.textVi}</div>

@@ -1421,13 +1421,21 @@ const App = {
     // Banner
     const banner = document.getElementById('preview-lesson-banner');
     if (banner) {
+      const helperTitle = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(lesson.meta.titleEn, lesson.meta.titleVi) : '';
+      const helperOverview = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(lesson.meta.overviewEn, lesson.meta.overviewVi) : '';
       banner.innerHTML = `
         <span class="px-3 py-1 rounded-md text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-3 inline-block">
           ${lesson.meta.grade || 'Toán THPT'} • Thời lượng: ${lesson.meta.duration || '45 phút'}
         </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">${lesson.meta.titleEn}</h2>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center flex-wrap gap-2">
+          <span>${lesson.meta.titleEn}</span>
+          ${helperTitle}
+        </h2>
         <h3 class="text-base sm:text-lg text-indigo-300 font-medium mb-3 vi-text">${lesson.meta.titleVi}</h3>
-        <p class="text-slate-300 text-sm leading-relaxed mb-2">${lesson.meta.overviewEn}</p>
+        <div class="text-slate-300 text-sm leading-relaxed mb-2 flex items-start flex-wrap gap-1.5">
+          <span>${lesson.meta.overviewEn}</span>
+          ${helperOverview}
+        </div>
         <p class="text-slate-400 text-xs italic leading-relaxed vi-text border-l-2 border-indigo-500/40 pl-3">${lesson.meta.overviewVi}</p>
       `;
     }
@@ -1435,105 +1443,145 @@ const App = {
     // Vocabulary
     const vContainer = document.getElementById('preview-vocab-container');
     if (vContainer) {
-      vContainer.innerHTML = (lesson.vocabulary || []).map(v => `
-        <div class="glass-card p-4 rounded-xl hover:border-indigo-500/40 transition-all flex flex-col justify-between group">
-          <div>
-            <div class="flex items-start justify-between gap-2 mb-1.5">
-              <div>
-                <h4 class="text-base font-bold text-white group-hover:text-indigo-400 transition-colors">${v.term}</h4>
-                <div class="flex items-center gap-2 text-xs text-slate-400">
-                  <span class="font-mono text-teal-400">${v.ipa || ''}</span>
-                  <span class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">${v.pos || 'term'}</span>
+      vContainer.innerHTML = (lesson.vocabulary || []).map(v => {
+        const vPill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(v.term, v.meaningVi) : '';
+        const exPill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(v.exampleEn, v.exampleVi) : '';
+        return `
+          <div class="glass-card p-4 rounded-xl hover:border-indigo-500/40 transition-all flex flex-col justify-between group">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-1.5">
+                <div>
+                  <h4 class="text-base font-bold text-white group-hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+                    <span>${v.term}</span>
+                  </h4>
+                  <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+                    <span class="font-mono text-teal-400 font-semibold">${v.ipa || ''}</span>
+                    <span class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">${v.pos || 'term'}</span>
+                  </div>
                 </div>
+                ${vPill}
               </div>
-              <button onclick="App.speakText('${v.term}')" class="p-2 rounded-lg bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white transition-all text-xs" title="Phát âm">
-                🔊
-              </button>
-            </div>
-            <p class="text-sm font-semibold text-emerald-400 vi-text mb-2.5">
-              👉 ${v.meaningVi}
-            </p>
-            <div class="text-xs bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 text-slate-300">
-              <div class="latex-box mb-1">${v.exampleEn}</div>
-              <div class="text-slate-400 italic vi-text text-[11px]">${v.exampleVi}</div>
+              <p class="text-sm font-semibold text-emerald-400 vi-text mb-2.5">
+                👉 ${v.meaningVi}
+              </p>
+              <div class="text-xs bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                <div class="latex-box mb-1 flex items-start justify-between gap-1">
+                  <span>${v.exampleEn}</span>
+                  ${exPill}
+                </div>
+                <div class="text-slate-400 italic vi-text text-[11px]">${v.exampleVi}</div>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // Concepts
     const cContainer = document.getElementById('preview-concepts-container');
     if (cContainer) {
-      cContainer.innerHTML = (lesson.concepts || []).map((c, i) => `
-        <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-500">
-          <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-            <h4 class="text-base sm:text-lg font-bold text-white">
-              ${i+1}. ${c.titleEn}
-            </h4>
-            <span class="text-sm font-medium text-indigo-300 vi-text">(${c.titleVi})</span>
-          </div>
-          
-          <div class="bg-slate-900/90 p-4 rounded-xl border border-indigo-500/20 text-center my-3 overflow-x-auto latex-box">
-            $$${c.latex}$$
-          </div>
+      cContainer.innerHTML = (lesson.concepts || []).map((c, i) => {
+        const cTitlePill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(c.titleEn, c.titleVi) : '';
+        const cDescPill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(c.descEn, c.descVi) : '';
+        const cNotePill = c.notesEn && window.BilingualHelper ? window.BilingualHelper.renderInlinePill(c.notesEn, c.notesVi) : '';
+        return `
+          <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-500">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+              <h4 class="text-base sm:text-lg font-bold text-white flex items-center flex-wrap gap-1.5">
+                <span>${i+1}. ${c.titleEn}</span>
+                ${cTitlePill}
+              </h4>
+              <span class="text-sm font-medium text-indigo-300 vi-text">(${c.titleVi})</span>
+            </div>
+            
+            <div class="bg-slate-900/90 p-4 rounded-xl border border-indigo-500/20 text-center my-3 overflow-x-auto latex-box">
+              $$${c.latex}$$
+            </div>
 
-          <div class="space-y-2 mt-4 text-sm text-slate-300">
-            <p class="leading-relaxed"><strong class="text-slate-100">En:</strong> ${c.descEn}</p>
-            <p class="leading-relaxed text-slate-400 vi-text border-l-2 border-indigo-500/30 pl-3"><strong class="text-indigo-300">Vi:</strong> ${c.descVi}</p>
-            ${c.notesEn ? `
-              <div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200">
-                <div>💡 <strong>Note:</strong> ${c.notesEn}</div>
-                <div class="vi-text mt-1 text-amber-300/80">👉 ${c.notesVi}</div>
+            <div class="space-y-2 mt-4 text-sm text-slate-300">
+              <div class="leading-relaxed flex items-start flex-wrap gap-1">
+                <strong class="text-slate-100">En:</strong>
+                <span>${c.descEn}</span>
+                ${cDescPill}
               </div>
-            ` : ''}
+              <p class="leading-relaxed text-slate-400 vi-text border-l-2 border-indigo-500/30 pl-3"><strong class="text-indigo-300">Vi:</strong> ${c.descVi}</p>
+              ${c.notesEn ? `
+                <div class="mt-3 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200 space-y-1">
+                  <div class="flex items-start flex-wrap gap-1">
+                    <span>💡 <strong>Note:</strong> ${c.notesEn}</span>
+                    ${cNotePill}
+                  </div>
+                  <div class="vi-text mt-1 text-amber-300/80">👉 ${c.notesVi}</div>
+                </div>
+              ` : ''}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // Examples
     const exContainer = document.getElementById('preview-examples-container');
     if (exContainer) {
-      exContainer.innerHTML = (lesson.examples || []).map((ex, exIdx) => `
-        <div class="glass-card p-5 sm:p-6 rounded-2xl">
-          <div class="mb-4">
-            <span class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 text-xs font-semibold">Example ${exIdx+1}</span>
-            <h4 class="text-base sm:text-lg font-bold text-white mt-1">${ex.titleEn} <span class="vi-text font-normal text-slate-400 text-sm">(${ex.titleVi})</span></h4>
-            <div class="mt-3 p-4 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200 leading-relaxed">
-              <div class="latex-box">${ex.problemEn}</div>
-              <div class="vi-text text-slate-400 text-xs italic mt-2 border-t border-slate-800 pt-2">${ex.problemVi}</div>
-            </div>
-          </div>
-
-          <div class="space-y-3 mt-4">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Step-by-step Solution</span>
-              <button onclick="App.revealAllStepsPreview('${ex.id}')" class="text-xs text-indigo-400 hover:text-indigo-300 underline">
-                Mở tất cả các bước (Show all)
-              </button>
-            </div>
-            ${(ex.steps || []).map(st => `
-              <div id="prev-step-${ex.id}-${st.stepNum}" class="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden transition-all">
-                <button onclick="App.toggleStepPreview('${ex.id}', ${st.stepNum})" class="w-full text-left p-3.5 flex items-center justify-between hover:bg-slate-800/40 transition-colors">
-                  <span class="font-semibold text-xs sm:text-sm text-indigo-300 flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs">${st.stepNum}</span>
-                    ${st.titleEn} <span class="vi-text text-slate-400 text-xs font-normal">(${st.titleVi})</span>
-                  </span>
-                  <span id="prev-step-icon-${ex.id}-${st.stepNum}" class="text-xs text-slate-400">➕ Mở bước này</span>
-                </button>
-                <div id="prev-step-content-${ex.id}-${st.stepNum}" class="p-4 pt-1 border-t border-slate-800 hidden bg-slate-950/40 text-sm">
-                  <div class="p-3 bg-slate-900 rounded-lg my-2 border border-slate-800/80 text-center latex-box">
-                    $$${st.latex}$$
-                  </div>
-                  <p class="text-xs sm:text-sm text-slate-300">${st.explanationEn}</p>
-                  <p class="text-xs text-slate-400 italic vi-text mt-1">${st.explanationVi}</p>
+      exContainer.innerHTML = (lesson.examples || []).map((ex, exIdx) => {
+        const exTitlePill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(ex.titleEn, ex.titleVi) : '';
+        const exProbPill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(ex.problemEn, ex.problemVi) : '';
+        return `
+          <div class="glass-card p-5 sm:p-6 rounded-2xl">
+            <div class="mb-4">
+              <span class="px-2.5 py-1 rounded bg-purple-500/20 text-purple-300 text-xs font-semibold">Example ${exIdx+1}</span>
+              <h4 class="text-base sm:text-lg font-bold text-white mt-1 flex items-center flex-wrap gap-1.5">
+                <span>${ex.titleEn}</span>
+                ${exTitlePill}
+                <span class="vi-text font-normal text-slate-400 text-sm">(${ex.titleVi})</span>
+              </h4>
+              <div class="mt-3 p-4 rounded-xl bg-slate-900 border border-slate-800 text-sm text-slate-200 leading-relaxed">
+                <div class="latex-box flex items-start justify-between gap-2">
+                  <span>${ex.problemEn}</span>
+                  ${exProbPill}
                 </div>
+                <div class="vi-text text-slate-400 text-xs italic mt-2 border-t border-slate-800 pt-2">${ex.problemVi}</div>
               </div>
-            `).join('')}
+            </div>
+
+            <div class="space-y-3 mt-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase text-slate-400 tracking-wider">Step-by-step Solution</span>
+                <button onclick="App.revealAllStepsPreview('${ex.id}')" class="text-xs text-indigo-400 hover:text-indigo-300 underline">
+                  Mở tất cả các bước (Show all)
+                </button>
+              </div>
+              ${(ex.steps || []).map(st => {
+                const stTitlePill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(st.titleEn, st.titleVi) : '';
+                const stExpPill = window.BilingualHelper ? window.BilingualHelper.renderInlinePill(st.explanationEn, st.explanationVi) : '';
+                return `
+                  <div id="prev-step-${ex.id}-${st.stepNum}" class="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden transition-all">
+                    <button onclick="App.toggleStepPreview('${ex.id}', ${st.stepNum})" class="w-full text-left p-3.5 flex items-center justify-between hover:bg-slate-800/40 transition-colors">
+                      <span class="font-semibold text-xs sm:text-sm text-indigo-300 flex items-center flex-wrap gap-1.5">
+                        <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs">${st.stepNum}</span>
+                        <span>${st.titleEn}</span>
+                        ${stTitlePill}
+                        <span class="vi-text text-slate-400 text-xs font-normal">(${st.titleVi})</span>
+                      </span>
+                      <span id="prev-step-icon-${ex.id}-${st.stepNum}" class="text-xs text-slate-400">➕ Mở bước này</span>
+                    </button>
+                    <div id="prev-step-content-${ex.id}-${st.stepNum}" class="p-4 pt-1 border-t border-slate-800 hidden bg-slate-950/40 text-sm">
+                      <div class="p-3 bg-slate-900 rounded-lg my-2 border border-slate-800/80 text-center latex-box">
+                        $$${st.latex}$$
+                      </div>
+                      <div class="text-xs sm:text-sm text-slate-300 flex items-start flex-wrap gap-1.5">
+                        <span>${st.explanationEn}</span>
+                        ${stExpPill}
+                      </div>
+                      <p class="text-xs text-slate-400 italic vi-text mt-1">${st.explanationVi}</p>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // Visualizer Embed
