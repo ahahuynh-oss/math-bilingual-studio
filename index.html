@@ -103,7 +103,7 @@
         <div class="sidebar-section-title">TỔNG QUAN</div>
         <button onclick="App.switchTab('my-exams')" id="side-nav-my-exams" class="sidebar-link active">
           <span class="text-base">📊</span>
-          <span>Đề thi của tôi</span>
+          <span>Danh sách đã tạo</span>
         </button>
 
         <!-- Group 1: GIẢNG DẠY -->
@@ -202,7 +202,7 @@
         <div class="flex items-center gap-2 text-xs sm:text-sm font-medium">
           <span class="text-slate-400 hover:text-slate-600 cursor-pointer" onclick="App.switchTab('my-exams')">Giáo viên</span>
           <span class="text-slate-300">›</span>
-          <span id="breadcrumb-active" class="font-bold text-slate-800">Đề của tôi</span>
+          <span id="breadcrumb-active" class="font-bold text-slate-800">Danh sách đã tạo</span>
         </div>
       </div>
 
@@ -278,21 +278,21 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
 
       <!-- ============================================================ -->
-      <!-- TAB 0: ĐỀ THI CỦA TÔI (MY EXAMS & LESSONS DASHBOARD LIKE SAMPLE) -->
+      <!-- TAB 0: DANH SÁCH ĐÃ TẠO (CREATED LIBRARY & EXAMS DASHBOARD) -->
       <!-- ============================================================ -->
       <div id="panel-my-exams" class="space-y-6">
         
         <!-- Header -->
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Đề thi của tôi</h1>
-            <p id="my-exams-count-label" class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">21 đề thi & bài giảng song ngữ</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Danh sách đã tạo</h1>
+            <p id="my-exams-count-label" class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Tự động đồng bộ các bài giảng & đề thi đã soạn</p>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="App.openAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs flex items-center gap-1.5 transition-all">
               ✨ <span>Soạn tự động / Tải tài liệu</span>
             </button>
-            <button onclick="App.switchTab('builder-lesson')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs flex items-center gap-1.5 transition-all">
+            <button onclick="App.createNewLesson(); App.switchTab('builder-lesson')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs flex items-center gap-1.5 transition-all">
               ➕ <span>Soạn bài mới</span>
             </button>
           </div>
@@ -307,28 +307,28 @@
               <span class="flex items-center gap-2">
                 <span>📄</span> <span>Tất cả</span>
               </span>
-              <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-xs font-bold">21</span>
+              <span id="filter-count-all" class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-xs font-bold">0</span>
             </button>
 
             <button onclick="App.filterExams('Khối 12')" id="filter-grade-Khối12" class="w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all">
               <span class="flex items-center gap-2">
                 <span>📙</span> <span>Khối 12</span>
               </span>
-              <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">8</span>
+              <span id="filter-count-Khối12" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">0</span>
             </button>
 
             <button onclick="App.filterExams('Khối 11')" id="filter-grade-Khối11" class="w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all">
               <span class="flex items-center gap-2">
                 <span>📗</span> <span>Khối 11</span>
               </span>
-              <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">6</span>
+              <span id="filter-count-Khối11" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">0</span>
             </button>
 
             <button onclick="App.filterExams('Khối 10')" id="filter-grade-Khối10" class="w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all">
               <span class="flex items-center gap-2">
                 <span>📘</span> <span>Khối 10</span>
               </span>
-              <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">7</span>
+              <span id="filter-count-Khối10" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">0</span>
             </button>
           </div>
 
@@ -338,14 +338,14 @@
               <table class="w-full text-left text-xs sm:text-sm">
                 <thead>
                   <tr class="border-b border-slate-200 bg-slate-50/70 text-slate-500 uppercase text-[10px] tracking-wider font-bold">
-                    <th class="py-3.5 px-4">TÊN ĐỀ</th>
+                    <th class="py-3.5 px-4">TÊN BÀI GIẢNG / ĐỀ THI</th>
                     <th class="py-3.5 px-3">MÃ ĐỀ</th>
                     <th class="py-3.5 px-3">LINK</th>
                     <th class="py-3.5 px-3">TRẠNG THÁI</th>
                     <th class="py-3.5 px-3">LỚP</th>
                     <th class="py-3.5 px-3 text-center">SỐ CÂU</th>
-                    <th class="py-3.5 px-3 text-center">SL ĐÃ THI</th>
-                    <th class="py-3.5 px-4 text-right">CHẾ ĐỘ</th>
+                    <th class="py-3.5 px-3 text-center">CẬP NHẬT</th>
+                    <th class="py-3.5 px-4 text-right">CHẾ ĐỘ / THAO TÁC</th>
                   </tr>
                 </thead>
                 <tbody id="my-exams-tbody">

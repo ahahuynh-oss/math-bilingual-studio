@@ -15,6 +15,8 @@ const App = {
 
   init() {
     this.loadLessonFromStorage();
+    this.loadCreatedLibrary();
+    this.syncCurrentLessonToLibrary(false);
     this.setupEventListeners();
     this.setupSpeechVoices();
     this.renderAll();
@@ -40,8 +42,9 @@ const App = {
   saveLessonToStorage(notify = false) {
     try {
       localStorage.setItem('math_bilingual_studio_active_lesson', JSON.stringify(this.currentLesson));
+      this.syncCurrentLessonToLibrary(true);
       if (notify) {
-        this.showToast('Đã lưu bài học vào bộ nhớ trình duyệt!');
+        this.showToast('Đã tự động lưu & đồng bộ vào Danh sách đã tạo!');
       }
     } catch (e) {
       console.error('Error saving to localStorage:', e);
@@ -129,97 +132,242 @@ const App = {
     el.dispatchEvent(new Event('input', { bubbles: true }));
   },
 
+  LIBRARY_STORAGE_KEY: 'math_bilingual_studio_created_library',
   myExamsFilter: 'all',
-  examList: [
-    {
-      id: 'derivatives-extrema',
-      code: 'P8DZW2',
-      title: 'Ôn tập Bài 4 – Chương 1 – Toán 12 – 003: Đạo hàm & Cực trị hàm số (Derivatives and Extrema)',
-      grade: 'Khối 12',
-      status: 'Đang mở',
-      schedule: 'Không đặt lịch',
-      questionCount: 22,
-      takenCount: 0,
-      presetKey: 'derivatives-extrema'
-    },
-    {
-      id: 'grade-12-asymptotes',
-      code: 'Z9AAJW',
-      title: 'Đề HSG Chuyên Đề – Hàm phân thức & Tiệm cận (Rational Functions & Asymptotes - Bài 1.26)',
-      grade: 'Khối 12',
-      status: 'Đang mở',
-      schedule: 'Theo lịch',
-      questionCount: 50,
-      takenCount: 0,
-      scaffoldKey: 'grade-12-asymptotes'
-    },
-    {
-      id: 'grade-11-limits',
-      code: '5SNKDC',
-      title: 'Ôn tập Bài 15 – Chương 5 – Toán 11 – 002: Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)',
-      grade: 'Khối 11',
-      status: 'Đang mở',
-      schedule: 'Không đặt lịch',
-      questionCount: 22,
-      takenCount: 0,
-      scaffoldKey: 'grade-11-limits'
-    },
-    {
-      id: 'grade-10-vectors',
-      code: '7ZC696',
-      title: 'Ôn tập Bài 15 – Chương 5 – Toán 10 – 001: Tọa độ Oxy, Trọng tâm & Tích vô hướng (Vectors in Oxy)',
-      grade: 'Khối 10',
-      status: 'Đang mở',
-      schedule: 'Không đặt lịch',
-      questionCount: 22,
-      takenCount: 0,
-      scaffoldKey: 'grade-10-vectors'
-    },
-    {
-      id: 'vectors-3d',
-      code: '8KNSRW',
-      title: 'Ôn tập Bài 3 – Chương 1 – Toán 12 – 001: Vectơ & Hình học Không gian Oxyz (Vectors in 3D Space)',
-      grade: 'Khối 12',
-      status: 'Đang mở',
-      schedule: 'Không đặt lịch',
-      questionCount: 22,
-      takenCount: 0,
-      presetKey: 'vectors-3d'
-    },
-    {
-      id: 'integrals-calculus',
-      code: 'F2H75Q',
-      title: 'Ôn tập Bài 4 – Chương 3 – Toán 12 – 002: Tích phân Xác định & Diện tích Hình phẳng (Calculus)',
-      grade: 'Khối 12',
-      status: 'Đang mở',
-      schedule: 'Không đặt lịch',
-      questionCount: 22,
-      takenCount: 0,
-      curriculumKey: 'integrals-calculus'
-    },
-    {
-      id: 'probability-events',
-      code: 'XP482L',
-      title: 'Đề kiểm tra 45 phút – Xác suất Cổ điển & Biến cố Độc lập (Classical Probability & Events)',
-      grade: 'Khối 11',
-      status: 'Đang mở',
-      schedule: 'Không đặt lịch',
-      questionCount: 25,
-      takenCount: 0,
-      curriculumKey: 'probability-statistics'
-    },
-    {
-      id: 'complex-numbers',
-      code: 'C912VM',
-      title: 'Chuyên đề Số phức & Biểu diễn hình học trên mặt phẳng phức (Complex Numbers & Argand)',
-      grade: 'Khối 12',
-      status: 'Đang mở',
-      schedule: 'Theo lịch',
-      questionCount: 30,
-      takenCount: 0,
-      curriculumKey: 'complex-numbers'
+  createdLibrary: [],
+
+  loadCreatedLibrary() {
+    try {
+      const saved = localStorage.getItem(this.LIBRARY_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.createdLibrary = parsed;
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not read created library from storage:', e);
     }
-  ],
+    this.createdLibrary = this.getDefaultSeedLibrary();
+    this.saveCreatedLibrary();
+  },
+
+  saveCreatedLibrary() {
+    try {
+      localStorage.setItem(this.LIBRARY_STORAGE_KEY, JSON.stringify(this.createdLibrary));
+    } catch (e) {
+      console.error('Error saving createdLibrary to localStorage:', e);
+    }
+  },
+
+  getDefaultSeedLibrary() {
+    const l0 = (typeof SAMPLE_LESSONS !== 'undefined' && SAMPLE_LESSONS[0]) ? JSON.parse(JSON.stringify(SAMPLE_LESSONS[0])) : null;
+    const l1 = (typeof SAMPLE_LESSONS !== 'undefined' && SAMPLE_LESSONS[1]) ? JSON.parse(JSON.stringify(SAMPLE_LESSONS[1])) : null;
+    return [
+      {
+        id: 'derivatives-extrema',
+        code: 'P8DZW2',
+        title: 'Ôn tập Bài 4 – Chương 1 – Toán 12: Đạo hàm & Cực trị hàm số (Derivatives and Extrema)',
+        titleVi: 'Đạo hàm & Cực trị hàm số',
+        titleEn: 'Derivatives and Extrema of Functions',
+        grade: 'Khối 12',
+        status: 'Đang mở',
+        schedule: 'Tự do',
+        questionCount: 22,
+        conceptCount: 3,
+        vocabCount: 8,
+        takenCount: 14,
+        updatedAt: 'Hôm nay',
+        presetKey: 'derivatives-extrema',
+        lessonData: l0
+      },
+      {
+        id: 'grade-12-asymptotes',
+        code: 'Z9AAJW',
+        title: 'Đề HSG Chuyên Đề – Hàm phân thức & Tiệm cận (Rational Functions & Asymptotes - Bài 1.26)',
+        titleVi: 'Hàm phân thức & Tiệm cận',
+        titleEn: 'Rational Functions & Asymptotes',
+        grade: 'Khối 12',
+        status: 'Đang mở',
+        schedule: 'Theo lịch',
+        questionCount: 50,
+        conceptCount: 4,
+        vocabCount: 10,
+        takenCount: 8,
+        updatedAt: '14/10/2026',
+        scaffoldKey: 'grade-12-asymptotes'
+      },
+      {
+        id: 'grade-11-limits',
+        code: '5SNKDC',
+        title: 'Ôn tập Bài 15 – Chương 5 – Toán 11: Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)',
+        titleVi: 'Giới hạn hàm số dạng vô định 0/0',
+        titleEn: 'Limits of Functions (0/0 Indeterminate Form)',
+        grade: 'Khối 11',
+        status: 'Đang mở',
+        schedule: 'Tự do',
+        questionCount: 22,
+        conceptCount: 3,
+        vocabCount: 7,
+        takenCount: 19,
+        updatedAt: '13/10/2026',
+        scaffoldKey: 'grade-11-limits'
+      },
+      {
+        id: 'grade-10-vectors',
+        code: '7ZC696',
+        title: 'Ôn tập Bài 15 – Chương 5 – Toán 10: Tọa độ Oxy, Trọng tâm & Tích vô hướng (Vectors in Oxy)',
+        titleVi: 'Tọa độ Oxy, Trọng tâm & Tích vô hướng',
+        titleEn: 'Vectors & Coordinate Geometry in Oxy',
+        grade: 'Khối 10',
+        status: 'Đang mở',
+        schedule: 'Tự do',
+        questionCount: 22,
+        conceptCount: 3,
+        vocabCount: 9,
+        takenCount: 12,
+        updatedAt: '12/10/2026',
+        scaffoldKey: 'grade-10-vectors'
+      },
+      {
+        id: 'vectors-3d',
+        code: '8KNSRW',
+        title: 'Ôn tập Bài 3 – Chương 1 – Toán 12: Vectơ & Hình học Không gian Oxyz (Vectors in 3D Space)',
+        titleVi: 'Vectơ & Hình học Không gian Oxyz',
+        titleEn: 'Vectors & Analytic Geometry in 3D Space',
+        grade: 'Khối 12',
+        status: 'Đang mở',
+        schedule: 'Tự do',
+        questionCount: 22,
+        conceptCount: 4,
+        vocabCount: 8,
+        takenCount: 25,
+        updatedAt: '11/10/2026',
+        presetKey: 'vectors-3d',
+        lessonData: l1
+      },
+      {
+        id: 'integrals-calculus',
+        code: 'F2H75Q',
+        title: 'Ôn tập Bài 4 – Chương 3 – Toán 12: Tích phân Xác định & Diện tích Hình phẳng (Calculus)',
+        titleVi: 'Tích phân Xác định & Diện tích Hình phẳng',
+        titleEn: 'Definite Integrals & Planar Area',
+        grade: 'Khối 12',
+        status: 'Đang mở',
+        schedule: 'Tự do',
+        questionCount: 22,
+        conceptCount: 3,
+        vocabCount: 6,
+        takenCount: 6,
+        updatedAt: '10/10/2026',
+        curriculumKey: 'integrals-calculus'
+      },
+      {
+        id: 'probability-events',
+        code: 'XP482L',
+        title: 'Đề kiểm tra 45 phút – Xác suất Cổ điển & Biến cố Độc lập (Classical Probability & Events)',
+        titleVi: 'Xác suất Cổ điển & Biến cố Độc lập',
+        titleEn: 'Classical Probability & Independent Events',
+        grade: 'Khối 11',
+        status: 'Đang mở',
+        schedule: 'Tự do',
+        questionCount: 25,
+        conceptCount: 3,
+        vocabCount: 8,
+        takenCount: 15,
+        updatedAt: '09/10/2026',
+        curriculumKey: 'probability-statistics'
+      },
+      {
+        id: 'complex-numbers',
+        code: 'C912VM',
+        title: 'Chuyên đề Số phức & Biểu diễn hình học trên mặt phẳng phức (Complex Numbers & Argand)',
+        titleVi: 'Số phức & Biểu diễn hình học',
+        titleEn: 'Complex Numbers & Geometric Representations',
+        grade: 'Khối 12',
+        status: 'Đang mở',
+        schedule: 'Theo lịch',
+        questionCount: 30,
+        conceptCount: 4,
+        vocabCount: 11,
+        takenCount: 7,
+        updatedAt: '08/10/2026',
+        curriculumKey: 'complex-numbers'
+      }
+    ];
+  },
+
+  syncCurrentLessonToLibrary(rerender = true) {
+    if (!this.currentLesson) return;
+
+    if (!this.currentLesson.id) {
+      this.currentLesson.id = `lesson-${Date.now()}`;
+    }
+    if (!this.currentLesson.code) {
+      this.currentLesson.code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    const meta = this.currentLesson.meta || {};
+    let grade = meta.grade || 'Khối 12';
+    if (grade.includes('12')) grade = 'Khối 12';
+    else if (grade.includes('11')) grade = 'Khối 11';
+    else if (grade.includes('10')) grade = 'Khối 10';
+
+    const vi = (meta.titleVi || '').trim();
+    const en = (meta.titleEn || '').trim();
+    let displayTitle = vi;
+    if (en && en !== vi) {
+      displayTitle = vi ? `${vi} (${en})` : en;
+    }
+    if (!displayTitle) {
+      displayTitle = 'Bài giảng / Đề thi Toán Song ngữ';
+    }
+
+    const qCount = (this.currentLesson.quiz?.questions?.length || 0);
+    const exCount = (this.currentLesson.workedExamples?.length || this.currentLesson.examples?.length || 0);
+    const totalQuestions = qCount > 0 ? qCount : (exCount > 0 ? exCount : 15);
+    const conceptCount = this.currentLesson.concepts?.length || 0;
+    const vocabCount = this.currentLesson.vocabulary?.length || 0;
+
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    const existingIdx = this.createdLibrary.findIndex(item => item.id === this.currentLesson.id);
+
+    const libraryEntry = {
+      id: this.currentLesson.id,
+      code: this.currentLesson.code,
+      title: displayTitle,
+      titleVi: vi,
+      titleEn: en,
+      grade: grade,
+      status: 'Đang mở',
+      schedule: 'Tự do',
+      questionCount: totalQuestions,
+      conceptCount: conceptCount,
+      vocabCount: vocabCount,
+      takenCount: existingIdx >= 0 ? (this.createdLibrary[existingIdx].takenCount || 0) : 0,
+      updatedAt: timeStr,
+      lessonData: JSON.parse(JSON.stringify(this.currentLesson))
+    };
+
+    if (existingIdx >= 0) {
+      if (this.createdLibrary[existingIdx].code) {
+        libraryEntry.code = this.createdLibrary[existingIdx].code;
+        this.currentLesson.code = libraryEntry.code;
+      }
+      this.createdLibrary[existingIdx] = libraryEntry;
+    } else {
+      this.createdLibrary.unshift(libraryEntry);
+    }
+
+    this.saveCreatedLibrary();
+
+    if (rerender && this.activeTab === 'my-exams') {
+      this.renderMyExamsTable(this.myExamsFilter || 'all');
+    }
+  },
 
   toggleSidebar() {
     const sidebar = document.getElementById('app-sidebar');
@@ -232,16 +380,16 @@ const App = {
   updateBreadcrumb(tabName) {
     const el = document.getElementById('breadcrumb-active');
     if (!el) return;
-    const title = this.currentLesson?.meta?.titleEn || 'Bài học';
+    const title = this.currentLesson?.meta?.titleVi || this.currentLesson?.meta?.titleEn || 'Bài học';
     switch (tabName) {
       case 'my-exams':
-        el.innerText = 'Đề của tôi';
+        el.innerText = 'Danh sách đã tạo';
         break;
       case 'builder-lesson':
         el.innerText = `Soạn bài giảng › ${title}`;
         break;
       case 'builder-quiz':
-        el.innerText = `Soạn đề thi › ${this.currentLesson?.quiz?.titleEn || 'Đề kiểm tra'}`;
+        el.innerText = `Soạn đề thi › ${this.currentLesson?.quiz?.titleVi || this.currentLesson?.quiz?.titleEn || 'Đề kiểm tra'}`;
         break;
       case 'interactive-preview':
         el.innerText = `Làm bài tương tác › ${title}`;
@@ -250,7 +398,7 @@ const App = {
         el.innerText = 'Gia sư giàn giáo nhận thức (ZPD)';
         break;
       default:
-        el.innerText = 'Đề của tôi';
+        el.innerText = 'Danh sách đã tạo';
     }
   },
 
@@ -264,13 +412,29 @@ const App = {
     const countLabel = document.getElementById('my-exams-count-label');
     if (!tbody) return;
 
-    let filtered = this.examList;
+    // Real-time dynamic counts across all categories
+    const countAll = this.createdLibrary.length;
+    const count12 = this.createdLibrary.filter(item => (item.grade || '').includes('12')).length;
+    const count11 = this.createdLibrary.filter(item => (item.grade || '').includes('11')).length;
+    const count10 = this.createdLibrary.filter(item => (item.grade || '').includes('10')).length;
+
+    const elAll = document.getElementById('filter-count-all');
+    const el12 = document.getElementById('filter-count-Khối12');
+    const el11 = document.getElementById('filter-count-Khối11');
+    const el10 = document.getElementById('filter-count-Khối10');
+
+    if (elAll) elAll.innerText = countAll;
+    if (el12) el12.innerText = count12;
+    if (el11) el11.innerText = count11;
+    if (el10) el10.innerText = count10;
+
+    let filtered = this.createdLibrary;
     if (gradeFilter !== 'all') {
-      filtered = this.examList.filter(item => item.grade === gradeFilter);
+      filtered = this.createdLibrary.filter(item => (item.grade || '') === gradeFilter || (item.grade || '').includes(gradeFilter.replace('Khối ', '')));
     }
 
     if (countLabel) {
-      countLabel.innerText = `${filtered.length} đề thi & bài giảng song ngữ`;
+      countLabel.innerText = `${filtered.length} bài giảng & đề thi song ngữ đã tạo (Tự động cập nhật)`;
     }
 
     // Filter button active styles
@@ -287,38 +451,58 @@ const App = {
       }
     });
 
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" class="py-12 text-center text-slate-400 text-sm">
+            <div class="text-3xl mb-2">📁</div>
+            <p class="font-medium">Chưa có bài giảng hoặc đề thi nào thuộc mục này.</p>
+            <p class="text-xs text-slate-400 mt-1">Hãy bấm "Soạn bài mới" hoặc dùng "AI Studio" để tự động tạo!</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     tbody.innerHTML = filtered.map(item => {
-      const gradeColor = item.grade === 'Khối 12' 
+      const gradeColor = (item.grade || '').includes('12') 
         ? 'bg-amber-50 text-amber-700 border-amber-200' 
-        : item.grade === 'Khối 11' 
+        : (item.grade || '').includes('11') 
           ? 'bg-purple-50 text-purple-700 border-purple-200' 
           : 'bg-sky-50 text-sky-700 border-sky-200';
+
+      const detailInfo = [];
+      if (item.conceptCount) detailInfo.push(`${item.conceptCount} lý thuyết`);
+      if (item.vocabCount) detailInfo.push(`${item.vocabCount} thuật ngữ`);
+      const detailStr = detailInfo.length > 0 ? detailInfo.join(' • ') : 'Song ngữ Anh - Việt';
 
       return `
         <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100 group">
           <td class="py-3.5 px-4 font-semibold text-slate-800 text-xs sm:text-sm max-w-xs sm:max-w-md">
-            <div class="line-clamp-2 hover:text-indigo-600 cursor-pointer font-bold" onclick="App.openExamFromList('${item.id}')">
+            <div class="line-clamp-2 hover:text-indigo-600 cursor-pointer font-bold" onclick="App.openExamFromList('${item.id}')" title="Nhấp để mở bài làm">
               ${item.title}
             </div>
             <div class="text-[11px] text-slate-400 font-normal mt-0.5 flex items-center gap-2">
               <span class="text-teal-600 font-medium">Song ngữ Anh - Việt</span>
               <span>•</span>
-              <span>MathJax 3</span>
+              <span>${detailStr}</span>
+              <span>•</span>
+              <span class="text-indigo-600 font-mono text-[10px]">MathJax 3</span>
             </div>
           </td>
 
-          <td class="py-3.5 px-3">
+          <td class="py-3.5 px-3 whitespace-nowrap">
             <span class="px-2 py-1 rounded bg-slate-100 text-slate-700 font-mono text-[11px] font-bold border border-slate-200">
               ${item.code}
             </span>
           </td>
 
-          <td class="py-3.5 px-3 text-slate-400">
+          <td class="py-3.5 px-3 text-slate-400 whitespace-nowrap">
             <div class="flex items-center gap-1.5">
-              <button onclick="App.copyExamLink('${item.code}')" class="p-1 hover:text-indigo-600 rounded hover:bg-slate-100 text-xs" title="Sao chép liên kết">
+              <button onclick="App.copyExamLink('${item.code}')" class="p-1.5 hover:text-indigo-600 rounded-lg hover:bg-slate-100 text-xs transition-colors" title="Sao chép liên kết đề">
                 📋
               </button>
-              <button onclick="App.openExamFromList('${item.id}')" class="p-1 hover:text-indigo-600 rounded hover:bg-slate-100 text-xs" title="Mở làm bài">
+              <button onclick="App.openExamFromList('${item.id}')" class="p-1.5 hover:text-indigo-600 rounded-lg hover:bg-slate-100 text-xs transition-colors" title="Mở trực tiếp">
                 ↗
               </button>
             </div>
@@ -326,38 +510,41 @@ const App = {
 
           <td class="py-3.5 px-3 whitespace-nowrap">
             <div class="badge-status-open">
-              ${item.status}
+              ${item.status || 'Đang mở'}
             </div>
-            <div class="text-[10px] text-slate-400 mt-0.5">${item.schedule}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${item.schedule || 'Tự do'}</div>
           </td>
 
           <td class="py-3.5 px-3 whitespace-nowrap">
             <span class="px-2 py-0.5 rounded text-[11px] font-semibold border ${gradeColor}">
-              ${item.grade}
+              ${item.grade || 'Khối 12'}
             </span>
           </td>
 
-          <td class="py-3.5 px-3 text-center text-xs font-semibold text-slate-700">
-            ${item.questionCount}
+          <td class="py-3.5 px-3 text-center text-xs font-bold text-slate-700 whitespace-nowrap">
+            ${item.questionCount || 0} câu
           </td>
 
-          <td class="py-3.5 px-3 text-center text-xs text-slate-400">
-            ${item.takenCount}
+          <td class="py-3.5 px-3 text-center text-[11px] text-slate-500 whitespace-nowrap">
+            ${item.updatedAt || 'Vừa xong'}
           </td>
 
           <td class="py-3.5 px-4 text-right whitespace-nowrap">
             <div class="flex items-center justify-end gap-1.5">
-              <button onclick="App.openExamFromList('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all" title="Làm bài / Xem trước">
+              <button onclick="App.openExamFromList('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all" title="Làm bài tương tác / Xem trước">
                 👁️ <span>Mở</span>
               </button>
               <button onclick="App.editExamFromList('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all" title="Chỉnh sửa bài giảng & đề thi">
-                ✏️
+                ✏️ <span>Sửa</span>
               </button>
-              <button onclick="App.openScaffoldForExam('${item.scaffoldKey || item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-all" title="Gia sư giàn giáo ZPD">
+              <button onclick="App.openScaffoldForExam('${item.scaffoldKey || item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-all" title="Gia sư giàn giáo nhận thức ZPD">
                 🪜
               </button>
-              <button onclick="App.openExportWordModal()" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all" title="Xuất file Word (.doc)">
+              <button onclick="App.exportWordForExam('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all" title="Xuất file Microsoft Word (.doc)">
                 📄
+              </button>
+              <button onclick="App.deleteExamFromList('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 transition-all" title="Xóa khỏi danh sách đã tạo">
+                🗑️
               </button>
             </div>
           </td>
@@ -367,8 +554,16 @@ const App = {
   },
 
   openExamFromList(examId) {
-    const item = this.examList.find(e => e.id === examId);
+    const item = this.createdLibrary.find(e => e.id === examId);
     if (!item) return;
+
+    if (item.lessonData) {
+      this.currentLesson = JSON.parse(JSON.stringify(item.lessonData));
+      localStorage.setItem('math_bilingual_studio_active_lesson', JSON.stringify(this.currentLesson));
+      this.renderAll();
+      this.switchTab('interactive-preview');
+      return;
+    }
 
     if (item.presetKey) {
       this.loadPreset(item.presetKey);
@@ -389,12 +584,43 @@ const App = {
   },
 
   editExamFromList(examId) {
-    const item = this.examList.find(e => e.id === examId);
+    const item = this.createdLibrary.find(e => e.id === examId);
     if (!item) return;
+
+    if (item.lessonData) {
+      this.currentLesson = JSON.parse(JSON.stringify(item.lessonData));
+      localStorage.setItem('math_bilingual_studio_active_lesson', JSON.stringify(this.currentLesson));
+      this.renderAll();
+      this.switchTab('builder-lesson');
+      return;
+    }
+
     if (item.presetKey) {
       this.loadPreset(item.presetKey);
     }
     this.switchTab('builder-lesson');
+  },
+
+  exportWordForExam(examId) {
+    const item = this.createdLibrary.find(e => e.id === examId);
+    if (item && item.lessonData) {
+      this.currentLesson = JSON.parse(JSON.stringify(item.lessonData));
+      localStorage.setItem('math_bilingual_studio_active_lesson', JSON.stringify(this.currentLesson));
+      this.renderAll();
+    }
+    this.openExportWordModal();
+  },
+
+  deleteExamFromList(examId) {
+    const item = this.createdLibrary.find(e => e.id === examId);
+    const title = item ? item.title : 'bài này';
+    if (!confirm(`Bạn có chắc chắn muốn xóa "${title}" khỏi Danh sách đã tạo không?`)) {
+      return;
+    }
+    this.createdLibrary = this.createdLibrary.filter(e => e.id !== examId);
+    this.saveCreatedLibrary();
+    this.renderMyExamsTable(this.myExamsFilter || 'all');
+    this.showToast('Đã xóa thành công khỏi Danh sách đã tạo!');
   },
 
   openScaffoldForExam(scaffoldKey) {
@@ -513,19 +739,23 @@ const App = {
   },
 
   createNewLesson() {
+    const newId = `lesson-${Date.now()}`;
+    const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     this.currentLesson = {
-      id: `lesson-${Date.now()}`,
+      id: newId,
+      code: newCode,
       meta: {
-        titleEn: "New Math Bilingual Lesson",
-        titleVi: "Bài giảng Toán Song ngữ Mới",
-        grade: "Grade 11 / 12",
-        duration: "45 minutes",
-        teacher: "Math Bilingual Department",
-        overviewEn: "Enter learning objectives and essential concepts in English.",
-        overviewVi: "Nhập mục tiêu học tập và khái niệm trọng tâm bằng tiếng Việt."
+        titleEn: "New Math Bilingual Lesson & Quiz",
+        titleVi: "Bài giảng & Đề thi Toán Song ngữ Mới",
+        grade: "Khối 12",
+        duration: "45 phút",
+        teacher: "Thầy Hưng",
+        overviewEn: "Enter learning objectives and core theorems in English.",
+        overviewVi: "Nhập mục tiêu bài học, định lý và phương pháp giải bằng tiếng Việt."
       },
       concepts: [],
       vocabulary: [],
+      workedExamples: [],
       examples: [],
       visualizer: {
         type: "canvas-interactive",
@@ -545,6 +775,7 @@ const App = {
     };
     this.saveLessonToStorage(true);
     this.renderAll();
+    this.switchTab('builder-lesson');
   },
 
   // ==========================================
