@@ -508,7 +508,6 @@ NGUYÊN TẮC BẮT BUỘC:
 
     const d = this.currentData;
     const acc = this.accordions;
-    const activeTier = this.activeTierTab;
 
     // 1. Vocabulary Grid Items
     const vocabHtml = (d.bilingual_vocabulary || []).map((v) => `
@@ -552,81 +551,7 @@ NGUYÊN TẮC BẮT BUỘC:
       </span>
     `;
 
-    // Active state classes for Stepper buttons
-    const btn1Class = activeTier === 1 
-      ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/30 ring-2 ring-indigo-400' 
-      : (acc.tier1 ? 'bg-indigo-950/60 text-indigo-300 border border-indigo-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white');
-
-    const btn2Class = activeTier === 2 
-      ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg shadow-teal-600/30 ring-2 ring-teal-400' 
-      : (acc.tier2 ? 'bg-teal-950/60 text-teal-300 border border-teal-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white');
-
-    const btn3Class = activeTier === 3 
-      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/30 ring-2 ring-purple-400' 
-      : (acc.tier3 ? 'bg-purple-950/60 text-purple-300 border border-purple-500/40' : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white');
-
     container.innerHTML = `
-      <!-- ========================================================= -->
-      <!-- 3 NÚT BẤM MỞ RỘNG THEO NẤC (STEPPER NAVIGATION) -->
-      <!-- ========================================================= -->
-      <div class="sticky top-[140px] z-30 glass-card p-3 sm:p-4 rounded-2xl border-2 border-indigo-500/30 shadow-2xl bg-slate-950/95 backdrop-blur-md flex flex-wrap items-center justify-between gap-3">
-        
-        <!-- Left label -->
-        <div class="flex items-center gap-2">
-          <span class="text-lg">🪜</span>
-          <span class="text-xs font-black uppercase tracking-wider text-slate-300 hidden md:inline">
-            Tiến Trình Giàn Giáo:
-          </span>
-        </div>
-
-        <!-- 3 Stepper Buttons -->
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3 flex-1 justify-center">
-          
-          <!-- Nấc 1 -->
-          <button onclick="ScaffoldingTutor.activateTier(1)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${btn1Class}">
-            <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black">1</span>
-            <span>Nấc 1: Gợi ý cốt lõi</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded font-normal ${acc.tier1 ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">
-              ${acc.tier1 ? 'Đang mở' : 'Thu gọn'}
-            </span>
-          </button>
-
-          <span class="text-slate-600 font-bold hidden sm:inline">➔</span>
-
-          <!-- Nấc 2 -->
-          <button onclick="ScaffoldingTutor.activateTier(2)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${btn2Class}">
-            <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black">2</span>
-            <span>Nấc 2: Chia nhỏ bước</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded font-normal ${acc.tier2 ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">
-              ${acc.tier2 ? 'Đang mở' : 'Đang ẩn'}
-            </span>
-          </button>
-
-          <span class="text-slate-600 font-bold hidden sm:inline">➔</span>
-
-          <!-- Nấc 3 -->
-          <button onclick="ScaffoldingTutor.activateTier(3)" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer ${btn3Class}">
-            <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px] font-black">3</span>
-            <span>Nấc 3: Lời giải hoàn chỉnh</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded font-normal ${acc.tier3 ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">
-              ${acc.tier3 ? 'Đang mở' : 'Đang ẩn'}
-            </span>
-          </button>
-
-        </div>
-
-        <!-- Right Quick Actions -->
-        <div class="flex items-center gap-2">
-          <button onclick="ScaffoldingTutor.expandAll()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition-colors" title="Mở rộng tất cả các tầng">
-            Mở tất cả
-          </button>
-          <button onclick="ScaffoldingTutor.collapseToDefault()" class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-slate-900 hover:bg-slate-800 text-amber-400 border border-amber-500/30 transition-colors" title="Chỉ hiện Nấc 1 và Từ vựng theo mặc định">
-            🔄 Mặc định (Nấc 1)
-          </button>
-        </div>
-
-      </div>
-
       <!-- ========================================================= -->
       <!-- ACCORDION 1: BÓC TÁCH ĐỀ BÀI (PROBLEM ANALYSIS) -->
       <!-- ========================================================= -->
