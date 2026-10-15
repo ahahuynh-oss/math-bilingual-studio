@@ -3,7 +3,7 @@
  * Math Bilingual Studio
  */
 
-const App = {
+var App = window.App = {
   currentLesson: null,
   activeTab: 'builder-lesson', // 'builder-lesson' | 'builder-quiz' | 'interactive-preview'
   activeSubTabPreview: 'lesson', // 'lesson' | 'quiz'
@@ -14,6 +14,7 @@ const App = {
   canvasGrapher: null,
 
   init() {
+    window.App = this;
     this.loadLessonFromStorage();
     this.loadCreatedLibrary();
     this.syncCurrentLessonToLibrary(false);
@@ -2303,7 +2304,10 @@ const App = {
   }
 };
 
+window.App = App;
+
 window.addEventListener('DOMContentLoaded', () => {
+  window.App = App;
   App.init();
 });
 

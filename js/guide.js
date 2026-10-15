@@ -317,7 +317,8 @@ const UserGuide = {
             'Hệ thống hiển thị phiên âm quốc tế IPA và nghĩa tiếng Việt chuẩn theo thuật ngữ toán học.',
             'Học sinh nghe mẫu 2 lần, sau đó bấm <strong>Bắt đầu thu âm</strong> và đọc câu tiếng Anh vào micro.',
             'Hệ thống đối chiếu giọng nói và tô màu phản hồi: <span class="text-emerald-600 font-bold">Màu xanh lá</span> (phát âm chuẩn), <span class="text-rose-600 font-bold">Màu đỏ</span> (cần cải thiện), kèm phần trăm độ chính xác.'
-          ]
+          ],
+          actionBtn: { text: 'Mở Làm bài tương tác để luyện nói', tab: 'interactive-preview', icon: '🎙️' }
         }
       ]
     },
@@ -340,7 +341,8 @@ const UserGuide = {
             'Bấm nút <strong>Xuất Word</strong> trên thanh công cụ bên trái.',
             'Chọn 1 trong 3 định dạng: <em>1. Phiếu bài tập cho học sinh</em>, <em>2. Đề thi kèm đáp án chi tiết cho giáo viên</em>, hoặc <em>3. Phiếu giàn giáo sư phạm ZPD</em>.',
             'File Word được định dạng sẵn khổ giấy A4 chuẩn, lề 2cm, phông chữ Times New Roman 12pt sắc nét.'
-          ]
+          ],
+          actionBtn: { text: 'Mở Xuất Word (.doc / .docx)', tab: 'open-export-word', icon: '📄' }
         },
         {
           num: 2,
@@ -351,7 +353,8 @@ const UserGuide = {
             'Bấm nút <strong>Export Standalone HTML</strong> trên thanh bên.',
             'Hệ thống nén toàn bộ bài giảng, đề thi, công cụ phát âm và MathJax vào một file duy nhất.',
             'Học sinh có thể nhấp đúp để mở làm bài trên mọi trình duyệt (Chrome, Safari, Edge, Cốc Cốc) ngay cả khi không có mạng Internet.'
-          ]
+          ],
+          actionBtn: { text: 'Tạo File Standalone HTML', tab: 'export-html', icon: '🚀' }
         },
         {
           num: 3,
@@ -361,7 +364,8 @@ const UserGuide = {
           bullets: [
             'Bấm <strong>In Worksheet A4</strong>.',
             'Tự động ẩn thanh công cụ web và căn chỉnh bố cục trang in 2 cột rõ nét, sẵn sàng in photocopy cho học sinh làm trên lớp.'
-          ]
+          ],
+          actionBtn: { text: 'In Worksheet A4', tab: 'print-a4', icon: '🖨️' }
         }
       ]
     },
@@ -652,17 +656,43 @@ const UserGuide = {
   },
 
   handleActionClick(target) {
+    const app = window.App || (typeof App !== 'undefined' ? App : null);
+    if (!app) {
+      console.warn('App instance not ready yet');
+      return;
+    }
+
     if (target === 'open-ai-modal') {
-      if (window.App && window.App.openAIGeneratorModal) {
-        window.App.openAIGeneratorModal();
-        window.App.switchAIGeneratorTab('gemini');
+      if (app.openAIGeneratorModal) {
+        app.openAIGeneratorModal();
+        if (app.switchAIGeneratorTab) app.switchAIGeneratorTab('gemini');
       }
     } else if (target === 'open-feedback-modal') {
-      if (window.App && window.App.openFeedbackModal) {
-        window.App.openFeedbackModal();
+      if (app.openFeedbackModal) {
+        app.openFeedbackModal();
       }
-    } else if (window.App && window.App.switchTab) {
-      window.App.switchTab(target);
+    } else if (target === 'open-export-word') {
+      if (app.openExportWordModal) {
+        app.openExportWordModal();
+      }
+    } else if (target === 'export-html') {
+      if (app.exportStandaloneHTML) {
+        app.exportStandaloneHTML();
+      }
+    } else if (target === 'print-a4') {
+      if (app.openPrintModal) {
+        app.openPrintModal();
+      }
+    } else if (app.switchTab) {
+      app.switchTab(target);
+
+      // Close mobile drawer if opened
+      const sidebar = document.getElementById('app-sidebar');
+      const overlay = document.getElementById('sidebar-backdrop');
+      if (window.innerWidth < 1024 && sidebar && !sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+        if (overlay) overlay.classList.add('hidden');
+      }
     }
   }
 };
