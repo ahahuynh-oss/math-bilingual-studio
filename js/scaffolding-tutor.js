@@ -183,10 +183,11 @@ window.ScaffoldingTutor = {
     parallel: false  // Mặc định ẩn
   },
 
-  currentInputMode: 'custom', // 'custom' hoặc 'preset'
+  currentInputMode: 'preset', // 'custom' hoặc 'preset'
 
   init() {
     this.selectPreset("grade-12-asymptotes");
+    this.updatePresetCardsUI("grade-12-asymptotes");
   },
 
   resetAccordionDefaults() {
@@ -200,6 +201,88 @@ window.ScaffoldingTutor = {
       pitfall: false,  // Ẩn Cạm bẫy
       parallel: false  // Ẩn Bài tập tương tự
     };
+  },
+
+  updatePresetCardsUI(activePresetId) {
+    const cardsConfig = {
+      'grade-10-vectors': {
+        btnId: 'scaffold-preset-btn-grade-10-vectors',
+        badgeId: 'scaffold-badge-grade-10-vectors',
+        statusId: 'scaffold-status-grade-10-vectors',
+        titleId: 'scaffold-title-grade-10-vectors',
+        gradeText: 'Khối 10',
+        titleText: 'Tọa độ & Tích vô hướng Oxy',
+        inactiveBtnClass: 'p-3.5 rounded-2xl border border-sky-200 bg-sky-50/40 hover:bg-sky-50 hover:border-sky-300 text-left transition-all space-y-1.5 group cursor-pointer opacity-85 hover:opacity-100',
+        inactiveBadgeClass: 'px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-100 text-sky-800 border border-sky-200',
+        inactiveStatusHtml: '<span class="text-xs text-sky-600 group-hover:translate-x-0.5 transition-transform font-medium">Chọn ➔</span>',
+        inactiveTitleClass: 'font-bold text-slate-800 text-xs',
+        activeBtnClass: 'p-3.5 rounded-2xl border-2 border-sky-500 bg-sky-100/95 shadow-md ring-4 ring-sky-300/60 ring-offset-1 text-left transition-all space-y-1.5 group cursor-pointer scale-[1.02] transform duration-150',
+        activeBadgeClass: 'px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-600 text-white shadow-xs',
+        activeStatusHtml: '<span class="text-xs font-bold text-sky-900 bg-white/95 px-2.5 py-0.5 rounded-md border border-sky-300 flex items-center gap-1.5 shadow-2xs"><span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>✓ Đang chọn</span>',
+        activeTitleClass: 'font-black text-sky-950 text-xs sm:text-sm flex items-center gap-1.5'
+      },
+      'grade-11-limits': {
+        btnId: 'scaffold-preset-btn-grade-11-limits',
+        badgeId: 'scaffold-badge-grade-11-limits',
+        statusId: 'scaffold-status-grade-11-limits',
+        titleId: 'scaffold-title-grade-11-limits',
+        gradeText: 'Khối 11',
+        titleText: 'Giới hạn vô định 0/0',
+        inactiveBtnClass: 'p-3.5 rounded-2xl border border-purple-200 bg-purple-50/40 hover:bg-purple-50 hover:border-purple-300 text-left transition-all space-y-1.5 group cursor-pointer opacity-85 hover:opacity-100',
+        inactiveBadgeClass: 'px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200',
+        inactiveStatusHtml: '<span class="text-xs text-purple-600 group-hover:translate-x-0.5 transition-transform font-medium">Chọn ➔</span>',
+        inactiveTitleClass: 'font-bold text-slate-800 text-xs',
+        activeBtnClass: 'p-3.5 rounded-2xl border-2 border-purple-500 bg-purple-100/95 shadow-md ring-4 ring-purple-300/60 ring-offset-1 text-left transition-all space-y-1.5 group cursor-pointer scale-[1.02] transform duration-150',
+        activeBadgeClass: 'px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-purple-600 text-white shadow-xs',
+        activeStatusHtml: '<span class="text-xs font-bold text-purple-900 bg-white/95 px-2.5 py-0.5 rounded-md border border-purple-300 flex items-center gap-1.5 shadow-2xs"><span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>✓ Đang chọn</span>',
+        activeTitleClass: 'font-black text-purple-950 text-xs sm:text-sm flex items-center gap-1.5'
+      },
+      'grade-12-asymptotes': {
+        btnId: 'scaffold-preset-btn-grade-12-asymptotes',
+        badgeId: 'scaffold-badge-grade-12-asymptotes',
+        statusId: 'scaffold-status-grade-12-asymptotes',
+        titleId: 'scaffold-title-grade-12-asymptotes',
+        gradeText: 'Khối 12',
+        titleText: 'Hàm phân thức & Tiệm cận (1.26)',
+        inactiveBtnClass: 'p-3.5 rounded-2xl border border-amber-200 bg-amber-50/40 hover:bg-amber-50 hover:border-amber-300 text-left transition-all space-y-1.5 group cursor-pointer opacity-85 hover:opacity-100',
+        inactiveBadgeClass: 'px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200',
+        inactiveStatusHtml: '<span class="text-xs text-amber-600 group-hover:translate-x-0.5 transition-transform font-medium">Chọn ➔</span>',
+        inactiveTitleClass: 'font-bold text-slate-800 text-xs',
+        activeBtnClass: 'p-3.5 rounded-2xl border-2 border-amber-500 bg-amber-100/95 shadow-md ring-4 ring-amber-300/60 ring-offset-1 text-left transition-all space-y-1.5 group cursor-pointer scale-[1.02] transform duration-150',
+        activeBadgeClass: 'px-2.5 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-600 text-white shadow-xs',
+        activeStatusHtml: '<span class="text-xs font-bold text-amber-950 bg-white/95 px-2.5 py-0.5 rounded-md border border-amber-300 flex items-center gap-1.5 shadow-2xs"><span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>✓ Đang chọn</span>',
+        activeTitleClass: 'font-black text-amber-950 text-xs sm:text-sm flex items-center gap-1.5'
+      }
+    };
+
+    Object.keys(cardsConfig).forEach((key) => {
+      const cfg = cardsConfig[key];
+      const btnEl = document.getElementById(cfg.btnId);
+      const badgeEl = document.getElementById(cfg.badgeId);
+      const statusEl = document.getElementById(cfg.statusId);
+      const titleEl = document.getElementById(cfg.titleId);
+
+      if (!btnEl) return;
+
+      const isActive = (key === activePresetId);
+      if (isActive) {
+        btnEl.className = cfg.activeBtnClass;
+        if (badgeEl) badgeEl.className = cfg.activeBadgeClass;
+        if (statusEl) statusEl.innerHTML = cfg.activeStatusHtml;
+        if (titleEl) {
+          titleEl.className = cfg.activeTitleClass;
+          titleEl.innerHTML = `<span>🎯</span> <span>${cfg.titleText}</span>`;
+        }
+      } else {
+        btnEl.className = cfg.inactiveBtnClass;
+        if (badgeEl) badgeEl.className = cfg.inactiveBadgeClass;
+        if (statusEl) statusEl.innerHTML = cfg.inactiveStatusHtml;
+        if (titleEl) {
+          titleEl.className = cfg.inactiveTitleClass;
+          titleEl.innerHTML = cfg.titleText;
+        }
+      }
+    });
   },
 
   switchInputMode(mode) {
@@ -218,6 +301,7 @@ window.ScaffoldingTutor = {
       if (btnPreset) {
         btnPreset.className = 'px-4 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5 border border-transparent cursor-pointer';
       }
+      this.updatePresetCardsUI('');
     } else {
       if (customPanel) customPanel.classList.add('hidden');
       if (presetPanel) presetPanel.classList.remove('hidden');
@@ -227,6 +311,7 @@ window.ScaffoldingTutor = {
       if (btnPreset) {
         btnPreset.className = 'px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-white text-indigo-800 border border-slate-200/80 shadow-xs cursor-pointer';
       }
+      this.updatePresetCardsUI(this.currentPresetKey);
     }
   },
 
@@ -240,6 +325,7 @@ window.ScaffoldingTutor = {
     if (inputEl) inputEl.value = p.rawInput;
     this.currentData = p.data;
     this.resetAccordionDefaults();
+    this.updatePresetCardsUI(presetId);
     this.render();
   },
 
@@ -551,7 +637,72 @@ NGUYÊN TẮC BẮT BUỘC:
       </span>
     `;
 
+    // Determine active problem banner metadata
+    const activePreset = this.presets[this.currentPresetKey];
+    let bannerGrade = 'Toán THPT';
+    let bannerTitle = 'Bài toán mục tiêu tạo giàn giáo';
+    let bannerRawInput = '';
+    let themeBorder = 'border-indigo-300';
+    let themeBg = 'bg-gradient-to-r from-indigo-50/80 via-white to-indigo-50/30';
+    let themeBadge = 'bg-indigo-600 text-white';
+    let themeDot = 'bg-indigo-500';
+
+    if (this.currentPresetKey === 'grade-10-vectors') {
+      bannerGrade = 'Khối 10 (Hình học & Vectơ Oxy)';
+      bannerTitle = activePreset?.title || 'Tọa độ & Tích vô hướng Oxy';
+      bannerRawInput = activePreset?.rawInput || '';
+      themeBorder = 'border-sky-300';
+      themeBg = 'bg-gradient-to-r from-sky-100/70 via-sky-50/40 to-white';
+      themeBadge = 'bg-sky-600 text-white';
+      themeDot = 'bg-sky-500';
+    } else if (this.currentPresetKey === 'grade-11-limits') {
+      bannerGrade = 'Khối 11 (Giải tích & Giới hạn)';
+      bannerTitle = activePreset?.title || 'Giới hạn hàm số dạng vô định 0/0';
+      bannerRawInput = activePreset?.rawInput || '';
+      themeBorder = 'border-purple-300';
+      themeBg = 'bg-gradient-to-r from-purple-100/70 via-purple-50/40 to-white';
+      themeBadge = 'bg-purple-600 text-white';
+      themeDot = 'bg-purple-500';
+    } else if (this.currentPresetKey === 'grade-12-asymptotes') {
+      bannerGrade = 'Khối 12 (Giải tích & Khảo sát hàm số)';
+      bannerTitle = activePreset?.title || 'Hàm phân thức & Tiệm cận (Bài 1.26)';
+      bannerRawInput = activePreset?.rawInput || '';
+      themeBorder = 'border-amber-300';
+      themeBg = 'bg-gradient-to-r from-amber-100/70 via-amber-50/40 to-white';
+      themeBadge = 'bg-amber-600 text-white';
+      themeDot = 'bg-amber-500';
+    } else {
+      const customInput = document.getElementById('scaffold-problem-input');
+      bannerGrade = 'Đề toán tùy biến';
+      bannerTitle = 'Phân tích & Giàn giáo nhận thức cá nhân hóa';
+      bannerRawInput = customInput ? customInput.value.trim() : '';
+    }
+
     container.innerHTML = `
+      <!-- ========================================================= -->
+      <!-- BANNER BÀI TOÁN MỤC TIÊU ĐANG CHỌN (HERO CARD) -->
+      <!-- ========================================================= -->
+      <div class="glass-card rounded-2xl border-2 ${themeBorder} ${themeBg} p-5 sm:p-6 shadow-xs transition-all space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-md text-[11px] font-extrabold ${themeBadge} shadow-2xs">${bannerGrade}</span>
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full ${themeDot} animate-pulse"></span>
+              Đang học bài toán mục tiêu:
+            </span>
+          </div>
+          <span class="text-xs text-slate-500 font-medium">Bấm các nấc thang bên dưới để xem gợi ý & lời giải ⬇️</span>
+        </div>
+        <div>
+          <h3 class="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">${bannerTitle}</h3>
+          ${bannerRawInput ? `
+            <div class="mt-2.5 p-3.5 rounded-xl bg-white/90 border border-slate-200 text-xs sm:text-sm text-slate-900 leading-relaxed font-mono shadow-2xs">
+              <span class="font-bold text-slate-700">Đề bài:</span> ${bannerRawInput}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
       <!-- ========================================================= -->
       <!-- ACCORDION 1: BÓC TÁCH ĐỀ BÀI (PROBLEM ANALYSIS) -->
       <!-- ========================================================= -->

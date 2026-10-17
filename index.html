@@ -835,30 +835,30 @@
               Bấm chọn nhanh 1 trong 3 bài toán tiêu biểu của các khối THPT:
             </label>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <button onclick="ScaffoldingTutor.selectPresetAndRender('grade-10-vectors')" class="p-3.5 rounded-2xl border border-sky-200 bg-sky-50/40 hover:bg-sky-50 hover:border-sky-400 text-left transition-all space-y-1.5 group">
+              <button id="scaffold-preset-btn-grade-10-vectors" onclick="ScaffoldingTutor.selectPresetAndRender('grade-10-vectors')" class="p-3.5 rounded-2xl border border-sky-200 bg-sky-50/40 hover:bg-sky-50 hover:border-sky-300 text-left transition-all space-y-1.5 group cursor-pointer opacity-85 hover:opacity-100">
                 <div class="flex items-center justify-between">
-                  <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-100 text-sky-800 border border-sky-200">Khối 10</span>
-                  <span class="text-xs text-sky-600 group-hover:translate-x-0.5 transition-transform">Chọn ➔</span>
+                  <span id="scaffold-badge-grade-10-vectors" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-sky-100 text-sky-800 border border-sky-200">Khối 10</span>
+                  <span id="scaffold-status-grade-10-vectors" class="text-xs text-sky-600 group-hover:translate-x-0.5 transition-transform font-medium">Chọn ➔</span>
                 </div>
-                <div class="font-bold text-slate-900 text-xs">Tọa độ & Tích vô hướng Oxy</div>
+                <div id="scaffold-title-grade-10-vectors" class="font-bold text-slate-800 text-xs">Tọa độ & Tích vô hướng Oxy</div>
                 <div class="text-[11px] text-slate-500 line-clamp-2">Cho tam giác ABC với A(1; 2), B(-2; 6), C(5; 5). Tìm tọa độ trọng tâm G và tính tích vô hướng AB.AC.</div>
               </button>
 
-              <button onclick="ScaffoldingTutor.selectPresetAndRender('grade-11-limits')" class="p-3.5 rounded-2xl border border-purple-200 bg-purple-50/40 hover:bg-purple-50 hover:border-purple-400 text-left transition-all space-y-1.5 group">
+              <button id="scaffold-preset-btn-grade-11-limits" onclick="ScaffoldingTutor.selectPresetAndRender('grade-11-limits')" class="p-3.5 rounded-2xl border border-purple-200 bg-purple-50/40 hover:bg-purple-50 hover:border-purple-300 text-left transition-all space-y-1.5 group cursor-pointer opacity-85 hover:opacity-100">
                 <div class="flex items-center justify-between">
-                  <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200">Khối 11</span>
-                  <span class="text-xs text-purple-600 group-hover:translate-x-0.5 transition-transform">Chọn ➔</span>
+                  <span id="scaffold-badge-grade-11-limits" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-200">Khối 11</span>
+                  <span id="scaffold-status-grade-11-limits" class="text-xs text-purple-600 group-hover:translate-x-0.5 transition-transform font-medium">Chọn ➔</span>
                 </div>
-                <div class="font-bold text-slate-900 text-xs">Giới hạn vô định 0/0</div>
+                <div id="scaffold-title-grade-11-limits" class="font-bold text-slate-800 text-xs">Giới hạn vô định 0/0</div>
                 <div class="text-[11px] text-slate-500 line-clamp-2">Tính giới hạn hàm số: L = lim_{x -> 2} (x^2 - 5x + 6) / (x - 2).</div>
               </button>
 
-              <button onclick="ScaffoldingTutor.selectPresetAndRender('grade-12-asymptotes')" class="p-3.5 rounded-2xl border border-amber-200 bg-amber-50/40 hover:bg-amber-50 hover:border-amber-400 text-left transition-all space-y-1.5 group">
+              <button id="scaffold-preset-btn-grade-12-asymptotes" onclick="ScaffoldingTutor.selectPresetAndRender('grade-12-asymptotes')" class="p-3.5 rounded-2xl border border-amber-200 bg-amber-50/40 hover:bg-amber-50 hover:border-amber-300 text-left transition-all space-y-1.5 group cursor-pointer opacity-85 hover:opacity-100">
                 <div class="flex items-center justify-between">
-                  <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200">Khối 12</span>
-                  <span class="text-xs text-amber-600 group-hover:translate-x-0.5 transition-transform">Chọn ➔</span>
+                  <span id="scaffold-badge-grade-12-asymptotes" class="px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200">Khối 12</span>
+                  <span id="scaffold-status-grade-12-asymptotes" class="text-xs text-amber-600 group-hover:translate-x-0.5 transition-transform font-medium">Chọn ➔</span>
                 </div>
-                <div class="font-bold text-slate-900 text-xs">Hàm phân thức & Tiệm cận (1.26)</div>
+                <div id="scaffold-title-grade-12-asymptotes" class="font-bold text-slate-800 text-xs">Hàm phân thức & Tiệm cận (1.26)</div>
                 <div class="text-[11px] text-slate-500 line-clamp-2">Cho hàm số y = (x + 1)/(x - 1) có đồ thị (C). Tính tích khoảng cách từ điểm thuộc (C) đến hai tiệm cận.</div>
               </button>
             </div>
@@ -1493,13 +1493,13 @@
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261017_11"></script>
-  <script src="js/ai-generator.js?v=20261017_11"></script>
-  <script src="js/exporter.js?v=20261017_11"></script>
-  <script src="js/quiz.js?v=20261017_11"></script>
-  <script src="js/scaffolding-tutor.js?v=20261017_11"></script>
-  <script src="js/bilingual-helper.js?v=20261017_11"></script>
-  <script src="js/guide.js?v=20261017_11"></script>
-  <script src="js/app.js?v=20261017_11"></script>
+  <script src="js/data.js?v=20261017_12"></script>
+  <script src="js/ai-generator.js?v=20261017_12"></script>
+  <script src="js/exporter.js?v=20261017_12"></script>
+  <script src="js/quiz.js?v=20261017_12"></script>
+  <script src="js/scaffolding-tutor.js?v=20261017_12"></script>
+  <script src="js/bilingual-helper.js?v=20261017_12"></script>
+  <script src="js/guide.js?v=20261017_12"></script>
+  <script src="js/app.js?v=20261017_12"></script>
 </body>
 </html>
