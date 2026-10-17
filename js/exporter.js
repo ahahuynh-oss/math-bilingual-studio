@@ -166,7 +166,8 @@ const Exporter = {
           </div>
           <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
             <span>${lesson.meta.titleEn}</span>
-            <button type="button" onclick="speakText(this)" data-speech="${(lesson.meta.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề bài học">🔊</button>
+            <button type="button" onclick="speakText(this)" data-speech="${(lesson.meta.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe giọng nữ chuẩn (1.0x)">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="${(lesson.meta.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe chậm phát âm (0.72x)">🐢</button>
           </h1>
         </div>
       </div>
@@ -205,14 +206,20 @@ const Exporter = {
           <span class="px-3 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-3 inline-block">
             Target Duration: ${lesson.meta.duration || '45 minutes'}
           </span>
-          <div class="flex items-center gap-2.5 mb-1 flex-wrap">
+          <div class="flex items-center gap-2 mb-1 flex-wrap">
             <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">${lesson.meta.titleEn}</h2>
-            <button type="button" onclick="speakText(this)" data-speech="${(lesson.meta.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề bài học">🔊 <span class="text-[11px] font-semibold">Nghe</span></button>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="speakText(this)" data-speech="${(lesson.meta.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs font-semibold" title="Nghe giọng nữ chuẩn (1.0x)">🔊 <span>Nghe</span></button>
+              <button type="button" onclick="speakSlow(this)" data-speech="${(lesson.meta.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 transition-all text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs font-semibold" title="Nghe chậm (0.72x)">🐢 <span>Chậm</span></button>
+            </div>
           </div>
           <h3 class="text-base sm:text-lg text-indigo-700 font-semibold mb-4 vi-text">${lesson.meta.titleVi}</h3>
           <div class="flex items-start gap-2.5 mb-2">
             <p class="text-slate-800 text-sm leading-relaxed flex-1">${lesson.meta.overviewEn}</p>
-            <button type="button" onclick="speakText(this)" data-speech="${(lesson.meta.overviewEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white border border-slate-200 transition-all text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc phần tổng quan">🔊</button>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" onclick="speakText(this)" data-speech="${(lesson.meta.overviewEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white border border-slate-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe đọc phần tổng quan (1.0x)">🔊</button>
+              <button type="button" onclick="speakSlow(this)" data-speech="${(lesson.meta.overviewEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe chậm tổng quan (0.72x)">🐢</button>
+            </div>
           </div>
           <p class="text-slate-600 text-xs italic leading-relaxed vi-text border-l-2 border-indigo-400 pl-3">${lesson.meta.overviewVi}</p>
         </div>
@@ -226,8 +233,9 @@ const Exporter = {
             <span class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-sm border border-teal-200">🗣️</span>
             <span>Key Mathematical Vocabulary (Từ vựng trọng tâm)</span>
             <button type="button" onclick="speakText(this)" data-speech="Key Mathematical Vocabulary" class="p-1 px-1.5 rounded-md bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white border border-teal-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần từ vựng">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Key Mathematical Vocabulary" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm">🐢</button>
           </h3>
-          <span class="text-xs text-slate-500">Click 🔊 để nghe phát âm chuẩn bản xứ</span>
+          <span class="text-xs text-slate-500">Bấm 🔊 để nghe chuẩn, 🐢 để nghe chậm phát âm</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="vocab-grid">
@@ -242,9 +250,14 @@ const Exporter = {
                       <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">${v.pos || 'term'}</span>
                     </div>
                   </div>
-                  <button type="button" onclick="speakTerm(this)" data-term="${(v.term || '').replace(/"/g, '&quot;')}" class="p-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer" title="Listen pronunciation">
-                    🔊
-                  </button>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakTerm(this)" data-term="${(v.term || '').replace(/"/g, '&quot;')}" class="p-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer shadow-2xs font-bold" title="Nghe giọng nữ chuẩn (1.0x)">
+                      🔊
+                    </button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="${(v.term || '').replace(/"/g, '&quot;')}" class="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white transition-all text-xs border border-amber-200 cursor-pointer shadow-2xs font-bold" title="Nghe chậm từng âm tiết (0.72x)">
+                      🐢
+                    </button>
+                  </div>
                 </div>
                 <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
                   👉 ${v.meaningVi}
@@ -252,7 +265,10 @@ const Exporter = {
                 <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
                   <div class="flex items-start justify-between gap-1 mb-1">
                     <div class="latex-box flex-1">${v.exampleEn}</div>
-                    <button type="button" onclick="speakText(this)" data-speech="${(v.exampleEn || '').replace(/"/g, '&quot;')}" class="p-1 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe câu ví dụ">🔊</button>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="speakText(this)" data-speech="${(v.exampleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe câu ví dụ (1.0x)">🔊</button>
+                      <button type="button" onclick="speakSlow(this)" data-speech="${(v.exampleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm câu ví dụ (0.72x)">🐢</button>
+                    </div>
                   </div>
                   <div class="text-[11px] text-slate-600 italic vi-text">${v.exampleVi}</div>
                 </div>
@@ -268,7 +284,8 @@ const Exporter = {
           <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
             <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-sm border border-indigo-200">📐</span>
             <span>Mathematical Concepts & Theorems (Định lý & Công thức)</span>
-            <button type="button" onclick="speakText(this)" data-speech="Mathematical Concepts and Theorems" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần định lý">🔊</button>
+            <button type="button" onclick="speakText(this)" data-speech="Mathematical Concepts and Theorems" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần định lý (1.0x)">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Mathematical Concepts and Theorems" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
           </h3>
         </div>
 
@@ -276,15 +293,21 @@ const Exporter = {
           ${lesson.concepts.map((c, i) => `
             <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-600 border-slate-200 bg-white shadow-xs space-y-3">
               <div class="flex items-center justify-between gap-2 flex-wrap">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 flex-wrap">
                   <h4 class="text-base font-bold text-slate-900">${i + 1}. ${c.titleEn || ''}</h4>
-                  <button type="button" onclick="speakText(this)" data-speech="${(c.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc định lý">🔊</button>
+                  <div class="flex items-center gap-1">
+                    <button type="button" onclick="speakText(this)" data-speech="${(c.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc định lý (1.0x)">🔊</button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="${(c.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                  </div>
                 </div>
                 <span class="text-xs text-indigo-700 vi-text font-semibold">${c.titleVi || ''}</span>
               </div>
               <div class="flex items-start justify-between gap-2">
                 <div class="text-sm text-slate-800 leading-relaxed flex-1">${c.descEn || c.contentEn || ''}</div>
-                <button type="button" onclick="speakText(this)" data-speech="${((c.descEn || c.contentEn || '') + ' ' + (c.latex || c.formula || '')).replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc định nghĩa và công thức">🔊</button>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="speakText(this)" data-speech="${((c.descEn || c.contentEn || '') + ' ' + (c.latex || c.formula || '')).replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-xs cursor-pointer shadow-2xs" title="Nghe đọc định nghĩa và công thức (1.0x)">🔊</button>
+                  <button type="button" onclick="speakSlow(this)" data-speech="${((c.descEn || c.contentEn || '') + ' ' + (c.latex || c.formula || '')).replace(/"/g, '&quot;')}" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                </div>
               </div>
               <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">${c.descVi || c.contentVi || ''}</div>
               ${(c.latex || c.formula) ? `
@@ -308,7 +331,8 @@ const Exporter = {
           <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
             <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center text-sm border border-purple-200">💡</span>
             <span>Worked Examples (Ví dụ mẫu từng bước)</span>
-            <button type="button" onclick="speakText(this)" data-speech="Worked Examples" class="p-1 px-1.5 rounded-md bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white border border-purple-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần ví dụ">🔊</button>
+            <button type="button" onclick="speakText(this)" data-speech="Worked Examples" class="p-1 px-1.5 rounded-md bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white border border-purple-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần ví dụ (1.0x)">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Worked Examples" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
           </h3>
         </div>
 
@@ -329,7 +353,10 @@ const Exporter = {
               <div>
                 <div class="flex items-start justify-between gap-2 mb-1.5">
                   <p class="text-sm sm:text-base font-semibold text-slate-900 latex-box flex-1">${ex.problemEn || ex.titleEn || ''}</p>
-                  <button type="button" onclick="speakText(this)" data-speech="${(ex.problemEn || ex.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white border border-purple-200 text-xs shrink-0 cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc đề bài ví dụ">🔊 <span class="text-[11px] font-semibold">Đề bài</span></button>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakText(this)" data-speech="${(ex.problemEn || ex.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white border border-purple-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc đề bài ví dụ (1.0x)">🔊 <span class="text-[11px] font-semibold">Đề bài</span></button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="${(ex.problemEn || ex.titleEn || '').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe chậm đề bài (0.72x)">🐢 <span class="text-[11px] font-semibold">Chậm</span></button>
+                  </div>
                 </div>
                 <p class="text-xs text-slate-600 italic vi-text border-l-2 border-purple-400 pl-2.5">${ex.problemVi || ex.titleVi || ''}</p>
               </div>
@@ -347,7 +374,10 @@ const Exporter = {
                       <span class="flex items-center gap-2 flex-1 pr-2 flex-wrap">
                         <span class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-[11px] font-bold border border-indigo-200 shrink-0">${stepIndex}</span>
                         <span>Step ${stepIndex}: ${stepTitleEn}</span>
-                        <button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="${(stepTitleEn + (stepLatex ? (' ' + stepLatex) : '')).replace(/"/g, '&quot;')}" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[11px] shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc bước này">🔊</button>
+                        <div class="flex items-center gap-0.5" onclick="event.stopPropagation()">
+                          <button type="button" onclick="speakText(this)" data-speech="${(stepTitleEn + (stepLatex ? (' ' + stepLatex) : '')).replace(/"/g, '&quot;')}" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe đọc bước này (1.0x)">🔊</button>
+                          <button type="button" onclick="speakSlow(this)" data-speech="${(stepTitleEn + (stepLatex ? (' ' + stepLatex) : '')).replace(/"/g, '&quot;')}" class="p-0.5 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                        </div>
                         ${stepTitleVi ? `<span class="text-slate-500 italic vi-text text-xs font-normal">(${stepTitleVi})</span>` : ''}
                       </span>
                       <span id="step-icon-${exampleId}-${stepIndex}" class="text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs">➕ Mở bước này</span>
@@ -357,7 +387,10 @@ const Exporter = {
                       ${st.explanationEn ? `
                         <div class="flex items-start justify-between gap-2 text-slate-800">
                           <div class="flex-1">${st.explanationEn}</div>
-                          <button type="button" onclick="speakText(this)" data-speech="${st.explanationEn.replace(/"/g, '&quot;')}" class="p-1 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe giải thích bước này">🔊</button>
+                          <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="speakText(this)" data-speech="${st.explanationEn.replace(/"/g, '&quot;')}" class="p-1 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe giải thích bước này (1.0x)">🔊</button>
+                            <button type="button" onclick="speakSlow(this)" data-speech="${st.explanationEn.replace(/"/g, '&quot;')}" class="p-1 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                          </div>
                         </div>
                       ` : ''}
                       ${st.explanationVi ? `<div class="text-slate-600 vi-text text-[11px] italic">${st.explanationVi}</div>` : ''}
@@ -391,6 +424,7 @@ const Exporter = {
               <div class="flex items-center gap-2">
                 <h2 class="text-xl sm:text-2xl font-black text-slate-900">Bilingual Math Scaffolding Tutor</h2>
                 <button type="button" onclick="speakText(this)" data-speech="Bilingual Math Scaffolding Tutor" class="p-1 px-2 rounded-lg bg-amber-100 hover:bg-amber-600 text-amber-800 hover:text-white border border-amber-300 text-xs cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề giàn giáo">🔊</button>
+                <button type="button" onclick="speakSlow(this)" data-speech="Bilingual Math Scaffolding Tutor" class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 text-xs cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>
               </div>
             </div>
           </div>
@@ -421,9 +455,10 @@ const Exporter = {
       <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">Đề bài mục tiêu (Target Problem):</span>
-          <div class="flex items-center gap-2">
-            <span id="scaffold-grade-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300">Khối 12</span>
+          <div class="flex items-center gap-1.5">
+            <span id="scaffold-grade-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300 mr-1">Khối 12</span>
             <button type="button" onclick="speakText(document.getElementById('scaffold-problem-text').innerText)" class="p-1 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe đọc đề bài mục tiêu">🔊 <span class="text-[11px] font-semibold">Nghe đề</span></button>
+            <button type="button" onclick="speakSlow(document.getElementById('scaffold-problem-text').innerText)" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe chậm đề bài (0.72x)">🐢 <span class="text-[11px] font-semibold">Chậm</span></button>
           </div>
         </div>
         <div id="scaffold-problem-text" class="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed latex-box">
@@ -467,9 +502,10 @@ const Exporter = {
           <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-2 inline-block">
             Assessment Test
           </span>
-          <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <div class="flex items-center gap-1.5 mb-1 flex-wrap">
             <h2 class="text-xl sm:text-2xl font-black text-slate-900">${(lesson.quiz && lesson.quiz.titleEn) || 'Assessment Test'}</h2>
             <button type="button" onclick="speakText(this)" data-speech="${((lesson.quiz && lesson.quiz.titleEn) || 'Assessment Test').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề bài kiểm tra">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="${((lesson.quiz && lesson.quiz.titleEn) || 'Assessment Test').replace(/"/g, '&quot;')}" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>
           </div>
           <h3 class="text-sm font-semibold text-slate-700 vi-text mt-0.5">${(lesson.quiz && lesson.quiz.titleVi) || 'Kiểm tra đánh giá'}</h3>
           <p class="text-xs text-slate-600 mt-2">
@@ -624,36 +660,101 @@ const Exporter = {
         .replace(/<[^>]*>/g, ' ');
     }
 
-    function speakText(elOrText) {
-      let rawText = '';
+    function getBestFemaleVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      var voices = window.speechSynthesis.getVoices() || [];
+      if (!voices.length) return null;
+
+      var isMale = function(name) {
+        var n = (name || '').toLowerCase();
+        return n.includes('david') || n.includes('mark') || n.includes('george') || 
+               n.includes('guy') || n.includes('james') || n.includes('richard') || 
+               n.includes('daniel') || (n.includes('male') && !n.includes('female'));
+      };
+
+      // 1. Top tier Natural / Neural American Female voices (Jenny, Aria, Michelle, Zira, Samantha, Ava)
+      for (var i = 0; i < voices.length; i++) {
+        var v = voices[i];
+        var n = (v.name || '').toLowerCase();
+        var l = (v.lang || '').replace('_', '-').toLowerCase();
+        if ((l.startsWith('en-us') || l.startsWith('en-gb') || l.startsWith('en')) &&
+            (n.includes('jenny') || n.includes('aria') || n.includes('michelle') || n.includes('zira') || n.includes('samantha') || n.includes('ava') || n.includes('allison') || n.includes('susan') || n.includes('karen') || n.includes('victoria')) &&
+            !isMale(v.name)) {
+          return v;
+        }
+      }
+
+      // 2. Google US English (Standard Chrome natural female voice) or Natural non-male
+      for (var j = 0; j < voices.length; j++) {
+        var v2 = voices[j];
+        var n2 = (v2.name || '').toLowerCase();
+        var l2 = (v2.lang || '').replace('_', '-').toLowerCase();
+        if (l2.startsWith('en-us') && (n2.includes('google us english') || (n2.includes('natural') && !isMale(v2.name)) || n2.includes('female'))) {
+          return v2;
+        }
+      }
+
+      // 3. Any en-US voice that is not male
+      for (var k = 0; k < voices.length; k++) {
+        var v3 = voices[k];
+        var l3 = (v3.lang || '').replace('_', '-').toLowerCase();
+        if (l3.startsWith('en-us') && !isMale(v3.name)) {
+          return v3;
+        }
+      }
+
+      // 4. Any English voice that is not male
+      for (var m = 0; m < voices.length; m++) {
+        var v4 = voices[m];
+        var l4 = (v4.lang || '').replace('_', '-').toLowerCase();
+        if (l4.startsWith('en') && !isMale(v4.name)) {
+          return v4;
+        }
+      }
+
+      return voices[0];
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = function() {
+        getBestFemaleVoice();
+      };
+    }
+
+    function speakText(elOrText, rate) {
+      if (typeof rate !== 'number') rate = 1.0;
+      var rawText = '';
       if (typeof elOrText === 'string') {
         rawText = elOrText;
       } else if (elOrText && elOrText.getAttribute) {
         rawText = elOrText.getAttribute('data-speech') || elOrText.getAttribute('data-term') || '';
         if (!rawText && elOrText.parentElement) {
-          const siblingTarget = elOrText.parentElement.querySelector('.speech-target') || elOrText.previousElementSibling;
+          var siblingTarget = elOrText.parentElement.querySelector('.speech-target') || elOrText.previousElementSibling;
           if (siblingTarget) rawText = siblingTarget.innerText || '';
         }
         if (!rawText) rawText = elOrText.innerText || '';
       }
       if (!rawText) return;
-      const clean = cleanLatexForSpeech(rawText);
+      var clean = cleanLatexForSpeech(rawText);
       if (!clean) return;
 
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(clean);
+        var utter = new SpeechSynthesisUtterance(clean);
         utter.lang = 'en-US';
-        utter.rate = 0.9;
-        const voices = window.speechSynthesis.getVoices();
-        const usVoice = voices.find(v => (v.lang === 'en-US' || v.lang === 'en_US') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('David')));
-        if (usVoice) utter.voice = usVoice;
+        utter.rate = rate; // 1.0 is standard normal speed, 0.72 is slow practice
+        var femaleVoice = getBestFemaleVoice();
+        if (femaleVoice) utter.voice = femaleVoice;
         window.speechSynthesis.speak(utter);
       } else {
         alert('Trình duyệt của bạn chưa hỗ trợ Web Speech API.');
       }
     }
-    const speakTerm = speakText;
+
+    function speakSlow(elOrText) {
+      speakText(elOrText, 0.72);
+    }
+    var speakTerm = speakText;
 
     function toggleStep(exId, stepNum) {
       const content = document.getElementById('step-content-' + exId + '-' + stepNum);
@@ -785,9 +886,12 @@ const Exporter = {
           const engSafe = (v.english_term || '').replace(/"/g, '&quot;');
           html += '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">';
           html += '<div>';
-          html += '<div class="flex items-center justify-between">';
+          html += '<div class="flex items-center justify-between gap-1">';
           html += '<span class="font-bold text-slate-900 text-sm">' + (v.english_term || '') + '</span>';
-          html += '<button type="button" onclick="speakTerm(this)" data-term="' + engSafe + '" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer" title="Listen pronunciation">🔊</button>';
+          html += '<div class="flex items-center gap-1">';
+          html += '<button type="button" onclick="speakTerm(this)" data-term="' + engSafe + '" class="text-xs p-1 px-1.5 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Listen pronunciation">🔊</button>';
+          html += '<button type="button" onclick="speakSlow(this)" data-term="' + engSafe + '" class="text-xs p-1 px-1.5 rounded bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Nghe phát âm chậm (0.72x)">🐢</button>';
+          html += '</div>';
           html += '</div>';
           html += '<div class="text-emerald-700 font-semibold text-xs mt-1">👉 ' + (v.vietnamese_term || '') + '</div>';
           html += '<div class="text-slate-600 text-[11px] mt-1.5 italic latex-box">' + (v.context_note || '') + '</div>';
@@ -804,6 +908,7 @@ const Exporter = {
       html += '<span class="text-indigo-700 font-bold text-base">🔍</span>';
       html += '<span class="font-bold text-sm text-slate-900">2. Bóc tách đề bài & Trọng tâm kiến thức</span>';
       html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Problem Analysis" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Problem Analysis" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-500 text-indigo-700 hover:text-white border border-indigo-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
       html += '</div>';
       html += '<span class="text-xs text-indigo-700 font-bold">' + (scaffoldTiers.analysis ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
@@ -811,7 +916,10 @@ const Exporter = {
         const analysisSafe = escapeSpeechAttr(d.problem_analysis);
         html += '<div class="p-4 bg-white flex items-start justify-between gap-3">';
         html += '<div class="text-xs sm:text-sm text-slate-800 leading-relaxed latex-box flex-1">' + d.problem_analysis + '</div>';
-        html += '<button type="button" onclick="speakText(this)" data-speech="' + analysisSafe + '" class="shrink-0 text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Nghe phân tích đề bài">🔊</button>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + analysisSafe + '" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Nghe phân tích đề bài">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + analysisSafe + '" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Nghe phân tích chậm (0.72x)">🐢</button>';
+        html += '</div>';
         html += '</div>';
       }
       html += '</div>';
@@ -823,6 +931,7 @@ const Exporter = {
       html += '<span class="text-amber-700 font-bold text-base">💡</span>';
       html += '<span class="font-bold text-sm text-slate-900">3. Giàn giáo Nấc 1: Gợi mở định hướng tư duy (Tier 1 Hint)</span>';
       html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Tier 1 Hint" class="p-0.5 px-1.5 rounded bg-white hover:bg-amber-600 text-amber-800 hover:text-white border border-amber-300 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Tier 1 Hint" class="p-0.5 px-1.5 rounded bg-white hover:bg-amber-500 text-amber-800 hover:text-white border border-amber-300 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
       html += '</div>';
       html += '<span class="text-xs text-amber-700 font-bold">' + (scaffoldTiers.tier1 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
@@ -830,7 +939,10 @@ const Exporter = {
         const hintSafe = escapeSpeechAttr(d.tier_1_hint);
         html += '<div class="p-4 bg-amber-50/50 flex items-start justify-between gap-3 border-l-4 border-amber-400">';
         html += '<div class="text-xs sm:text-sm text-slate-900 leading-relaxed latex-box flex-1">' + d.tier_1_hint + '</div>';
-        html += '<button type="button" onclick="speakText(this)" data-speech="' + hintSafe + '" class="shrink-0 text-xs p-1 px-2 rounded bg-amber-100 hover:bg-amber-600 text-amber-800 hover:text-white border border-amber-300 transition-all cursor-pointer shadow-2xs" title="Nghe câu hỏi gợi ý Nấc 1">🔊</button>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + hintSafe + '" class="text-xs p-1 px-2 rounded bg-amber-100 hover:bg-amber-600 text-amber-800 hover:text-white border border-amber-300 transition-all cursor-pointer shadow-2xs" title="Nghe câu hỏi gợi ý Nấc 1">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + hintSafe + '" class="text-xs p-1 px-2 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 transition-all cursor-pointer shadow-2xs" title="Nghe chậm gợi ý Nấc 1 (0.72x)">🐢</button>';
+        html += '</div>';
         html += '</div>';
       }
       html += '</div>';
@@ -842,6 +954,7 @@ const Exporter = {
       html += '<span class="text-blue-700 font-bold text-base">🪜</span>';
       html += '<span class="font-bold text-sm text-slate-900">4. Giàn giáo Nấc 2: Khung tư duy chia nhỏ các bước (Tier 2 Breakdown)</span>';
       html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Tier 2 Breakdown" class="p-0.5 px-1.5 rounded bg-white hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Tier 2 Breakdown" class="p-0.5 px-1.5 rounded bg-white hover:bg-blue-500 text-blue-700 hover:text-white border border-blue-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
       html += '</div>';
       html += '<span class="text-xs text-blue-700 font-bold">' + (scaffoldTiers.tier2 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
@@ -854,7 +967,10 @@ const Exporter = {
           html += '<span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 border border-blue-200">' + (idx+1) + '</span>';
           html += '<span class="flex-1">' + st + '</span>';
           html += '</div>';
-          html += '<button type="button" onclick="speakText(this)" data-speech="' + stepSafe + '" class="shrink-0 text-xs p-1 rounded bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 transition-all cursor-pointer shadow-2xs" title="Nghe bước ' + (idx+1) + '">🔊</button>';
+          html += '<div class="flex items-center gap-1 shrink-0">';
+          html += '<button type="button" onclick="speakText(this)" data-speech="' + stepSafe + '" class="text-xs p-1 rounded bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 transition-all cursor-pointer shadow-2xs" title="Nghe bước ' + (idx+1) + '">🔊</button>';
+          html += '<button type="button" onclick="speakSlow(this)" data-speech="' + stepSafe + '" class="text-xs p-1 rounded bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white border border-blue-200 transition-all cursor-pointer shadow-2xs" title="Nghe chậm bước ' + (idx+1) + ' (0.72x)">🐢</button>';
+          html += '</div>';
           html += '</div>';
         });
         html += '</div>';
@@ -868,6 +984,7 @@ const Exporter = {
       html += '<span class="text-rose-700 font-bold text-base">⚠️</span>';
       html += '<span class="font-bold text-sm text-slate-900">5. Cảnh báo lỗi sai & Cạm bẫy thường gặp (Common Pitfalls)</span>';
       html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Common Pitfalls" class="p-0.5 px-1.5 rounded bg-white hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Common Pitfalls" class="p-0.5 px-1.5 rounded bg-white hover:bg-rose-500 text-rose-700 hover:text-white border border-rose-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
       html += '</div>';
       html += '<span class="text-xs text-rose-700 font-bold">' + (scaffoldTiers.pitfall ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
@@ -875,7 +992,10 @@ const Exporter = {
         const pitfallSafe = escapeSpeechAttr(d.common_pitfall);
         html += '<div class="p-4 bg-rose-50/50 flex items-start justify-between gap-3 border-l-4 border-rose-400">';
         html += '<div class="text-xs sm:text-sm text-slate-900 leading-relaxed latex-box flex-1">' + d.common_pitfall + '</div>';
-        html += '<button type="button" onclick="speakText(this)" data-speech="' + pitfallSafe + '" class="shrink-0 text-xs p-1 px-2 rounded bg-rose-100 hover:bg-rose-600 text-rose-800 hover:text-white border border-rose-300 transition-all cursor-pointer shadow-2xs" title="Nghe cảnh báo cạm bẫy">🔊</button>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + pitfallSafe + '" class="text-xs p-1 px-2 rounded bg-rose-100 hover:bg-rose-600 text-rose-800 hover:text-white border border-rose-300 transition-all cursor-pointer shadow-2xs" title="Nghe cảnh báo cạm bẫy">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + pitfallSafe + '" class="text-xs p-1 px-2 rounded bg-rose-50 hover:bg-rose-500 text-rose-700 hover:text-white border border-rose-300 transition-all cursor-pointer shadow-2xs" title="Nghe chậm cảnh báo cạm bẫy (0.72x)">🐢</button>';
+        html += '</div>';
         html += '</div>';
       }
       html += '</div>';
@@ -887,6 +1007,7 @@ const Exporter = {
       html += '<span class="text-emerald-700 font-bold text-base">📝</span>';
       html += '<span class="font-bold text-sm text-slate-900">6. Lời giải mẫu hoàn chỉnh từng bước (Full Solution)</span>';
       html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Full Solution" class="p-0.5 px-1.5 rounded bg-white hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Full Solution" class="p-0.5 px-1.5 rounded bg-white hover:bg-emerald-500 text-emerald-700 hover:text-white border border-emerald-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
       html += '</div>';
       html += '<span class="text-xs text-emerald-700 font-bold">' + (scaffoldTiers.tier3 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
       html += '</div>';
@@ -895,7 +1016,10 @@ const Exporter = {
         const solSafe = escapeSpeechAttr(d.full_solution);
         html += '<div class="p-5 bg-white flex items-start justify-between gap-3">';
         html += '<div class="text-xs sm:text-sm text-slate-900 leading-relaxed latex-box flex-1">' + solFormatted + '</div>';
-        html += '<button type="button" onclick="speakText(this)" data-speech="' + solSafe + '" class="shrink-0 text-xs p-1 px-2 rounded bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 transition-all cursor-pointer shadow-2xs" title="Nghe lời giải hoàn chỉnh">🔊</button>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + solSafe + '" class="text-xs p-1 px-2 rounded bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 transition-all cursor-pointer shadow-2xs" title="Nghe lời giải hoàn chỉnh">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + solSafe + '" class="text-xs p-1 px-2 rounded bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white border border-emerald-200 transition-all cursor-pointer shadow-2xs" title="Nghe chậm lời giải hoàn chỉnh (0.72x)">🐢</button>';
+        html += '</div>';
         html += '</div>';
       }
       html += '</div>';
@@ -909,7 +1033,10 @@ const Exporter = {
         html += '<span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm border border-teal-200">🎯</span>';
         html += '<span class="font-bold text-sm text-slate-900">7. Bài tập tương tự tự rèn luyện (Parallel Exercise)</span>';
         html += '</div>';
-        html += '<button type="button" onclick="speakText(this)" data-speech="' + pEnSafe + '" class="p-1 px-2 rounded-lg bg-teal-50 hover:bg-teal-600 text-teal-800 hover:text-white border border-teal-200 text-xs shrink-0 cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc bài tập tương tự">🔊 <span class="text-[11px] font-semibold">Nghe đề</span></button>';
+        html += '<div class="flex items-center gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + pEnSafe + '" class="p-1 px-2 rounded-lg bg-teal-50 hover:bg-teal-600 text-teal-800 hover:text-white border border-teal-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc bài tập tương tự">🔊 <span class="text-[11px] font-semibold">Nghe đề</span></button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + pEnSafe + '" class="p-1 px-1.5 rounded-lg bg-teal-50 hover:bg-teal-500 text-teal-700 hover:text-white border border-teal-200 text-xs cursor-pointer shadow-2xs inline-flex items-center" title="Nghe chậm (0.72x)">🐢</button>';
+        html += '</div>';
         html += '</div>';
         html += '<div class="text-xs sm:text-sm text-slate-900 font-semibold latex-box">' + d.parallel_exercise.question_en + '</div>';
         html += '<div class="text-xs text-slate-600 italic vi-text border-l-2 border-teal-400 pl-2.5">' + d.parallel_exercise.question_vi + '</div>';
@@ -970,7 +1097,10 @@ const Exporter = {
         const stemSafe = escapeSpeechAttr(q.stemEn);
         html += '<div class="flex items-start justify-between gap-2 mb-2">';
         html += '<div class="text-sm sm:text-base font-semibold text-slate-900 latex-box flex-1">' + q.stemEn + '</div>';
-        html += '<button type="button" onclick="speakText(this)" data-speech="' + stemSafe + '" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc câu hỏi">🔊 <span class="text-[11px] font-semibold">Nghe</span></button>';
+        html += '<div class="flex items-center gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + stemSafe + '" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc câu hỏi">🔊 <span class="text-[11px] font-semibold">Nghe</span></button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + stemSafe + '" class="p-1 px-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 text-xs cursor-pointer shadow-2xs inline-flex items-center" title="Nghe chậm câu hỏi (0.72x)">🐢</button>';
+        html += '</div>';
         html += '</div>';
         if (q.stemVi) {
           html += '<div class="text-xs text-slate-600 italic mb-4 vi-text border-l-2 border-indigo-300 pl-2.5">' + q.stemVi + '</div>';
@@ -987,7 +1117,10 @@ const Exporter = {
             html += '<span class="font-bold text-xs px-2 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">' + opt.id + '</span>';
             html += '<span class="text-sm text-slate-900 latex-box">' + opt.text + '</span>';
             html += '</div>';
-            html += '<button type="button" onclick="event.preventDefault(); event.stopPropagation(); speakText(this)" data-speech="' + optSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs opacity-70 group-hover:opacity-100 transition-opacity" title="Nghe đáp án này">🔊</button>';
+            html += '<div class="flex items-center gap-1 shrink-0">';
+            html += '<button type="button" onclick="event.preventDefault(); event.stopPropagation(); speakText(this)" data-speech="' + optSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs opacity-70 group-hover:opacity-100 transition-opacity" title="Nghe đáp án này">🔊</button>';
+            html += '<button type="button" onclick="event.preventDefault(); event.stopPropagation(); speakSlow(this)" data-speech="' + optSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-500 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs opacity-70 group-hover:opacity-100 transition-opacity" title="Nghe chậm đáp án (0.72x)">🐢</button>';
+            html += '</div>';
             html += '</label>';
           });
           html += '</div>';
@@ -1006,7 +1139,10 @@ const Exporter = {
             html += '<span class="text-slate-900 latex-box">' + prop.textEn + '</span>';
             if (prop.textVi) html += '<div class="text-[11px] text-slate-600 italic vi-text mt-0.5">' + prop.textVi + '</div>';
             html += '</div>';
-            html += '<button type="button" onclick="speakText(this)" data-speech="' + propSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe mệnh đề này">🔊</button>';
+            html += '<div class="flex items-center gap-1 shrink-0">';
+            html += '<button type="button" onclick="speakText(this)" data-speech="' + propSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe mệnh đề này">🔊</button>';
+            html += '<button type="button" onclick="speakSlow(this)" data-speech="' + propSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-500 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm mệnh đề (0.72x)">🐢</button>';
+            html += '</div>';
             html += '</div>';
             html += '</td>';
             html += '<td class="text-center py-2.5"><input type="radio" name="tf-' + q.id + '-' + prop.id + '" value="true" class="w-4 h-4 text-emerald-600"></td>';
@@ -1026,7 +1162,10 @@ const Exporter = {
         html += '<div id="solution-' + q.id + '" class="hidden mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 space-y-1.5">';
         html += '<div class="flex items-center justify-between">';
         html += '<div class="font-bold text-indigo-700">💡 Giải thích chi tiết:</div>';
-        html += '<button type="button" onclick="speakText(this)" data-speech="' + expSafe + '" class="p-1 px-2 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe giải thích chi tiết">🔊 Nghe giải thích</button>';
+        html += '<div class="flex items-center gap-1.5">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + expSafe + '" class="p-1 px-2 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe giải thích chi tiết">🔊 Nghe</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + expSafe + '" class="p-1 px-1.5 rounded bg-white hover:bg-indigo-500 text-indigo-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe giải thích chậm (0.72x)">🐢 Chậm</button>';
+        html += '</div>';
         html += '</div>';
         html += '<div class="latex-box text-slate-900">' + (q.explanationEn || '') + '</div>';
         if (q.explanationVi) html += '<div class="text-slate-600 vi-text italic">' + q.explanationVi + '</div>';

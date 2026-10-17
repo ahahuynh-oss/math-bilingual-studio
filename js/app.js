@@ -120,6 +120,10 @@ var App = window.App = {
     window.speechSynthesis.speak(utter);
   },
 
+  speakSlow(text) {
+    this.speakText(text, 0.72);
+  },
+
   insertLatex(snippet) {
     const el = this.lastFocusedInput;
     if (!el) {
@@ -1127,10 +1131,13 @@ var App = window.App = {
     container.innerHTML = vocab.map((v, idx) => `
       <div class="glass-card p-4 rounded-xl border border-slate-200 bg-white space-y-3 shadow-xs">
         <div class="flex items-center justify-between border-b border-slate-200 pb-2">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5">
             <span class="w-6 h-6 rounded-md bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-bold text-xs">${idx + 1}</span>
-            <button onclick="App.speakText('${v.term}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition-all text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
-              🔊 Nghe phát âm
+            <button type="button" onclick="App.speakText('${v.term}')" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition-all text-xs font-semibold flex items-center gap-1.5 cursor-pointer" title="Nghe giọng nữ chuẩn (1.0x)">
+              🔊 Nghe
+            </button>
+            <button type="button" onclick="App.speakSlow('${v.term}')" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-all text-xs font-semibold flex items-center gap-1 cursor-pointer" title="Nghe phát âm chậm (0.72x)">
+              🐢 Chậm
             </button>
           </div>
           <button onclick="App.deleteVocab(${idx})" class="text-slate-500 hover:text-rose-600 text-xs cursor-pointer">🗑️ Xóa</button>

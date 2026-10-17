@@ -139,6 +139,53 @@ const BilingualHelper = {
       .trim();
   },
 
+  getBestFemaleVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return null;
+
+    const isMale = (name) => {
+      const n = (name || '').toLowerCase();
+      return n.includes('david') || n.includes('mark') || n.includes('george') || 
+             n.includes('guy') || n.includes('james') || n.includes('richard') || 
+             n.includes('daniel') || (n.includes('male') && !n.includes('female'));
+    };
+
+    // 1. Top tier Natural / Neural American Female voices (Jenny, Aria, Michelle, Zira, Samantha)
+    const topTier = voices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      const l = (v.lang || '').replace('_', '-').toLowerCase();
+      return (l.startsWith('en-us') || l.startsWith('en-gb') || l.startsWith('en')) &&
+             (n.includes('jenny') || n.includes('aria') || n.includes('michelle') || n.includes('zira') || n.includes('samantha') || n.includes('ava') || n.includes('allison') || n.includes('susan') || n.includes('karen') || n.includes('victoria')) &&
+             !isMale(v.name);
+    });
+    if (topTier) return topTier;
+
+    // 2. Google US English (Standard Chrome natural female voice) or Natural non-male
+    const googleOrNatural = voices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      const l = (v.lang || '').replace('_', '-').toLowerCase();
+      return l.startsWith('en-us') && (n.includes('google us english') || (n.includes('natural') && !isMale(v.name)) || n.includes('female'));
+    });
+    if (googleOrNatural) return googleOrNatural;
+
+    // 3. Any en-US voice that is not male
+    const usFemale = voices.find(v => {
+      const l = (v.lang || '').replace('_', '-').toLowerCase();
+      return l.startsWith('en-us') && !isMale(v.name);
+    });
+    if (usFemale) return usFemale;
+
+    // 4. Any English voice that is not male
+    const anyEnFemale = voices.find(v => {
+      const l = (v.lang || '').replace('_', '-').toLowerCase();
+      return l.startsWith('en') && !isMale(v.name);
+    });
+    if (anyEnFemale) return anyEnFemale;
+
+    return voices[0];
+  },
+
   speak(text, rate = 1.0) {
     if (!('speechSynthesis' in window)) {
       alert('Trình duyệt hiện tại không hỗ trợ Web Speech API.');
@@ -150,14 +197,17 @@ const BilingualHelper = {
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(clean);
     utter.lang = 'en-US';
-    utter.rate = rate; // 1.0 is standard, 0.75 is slow practice
+    utter.rate = rate; // 1.0 is standard, 0.72 is slow practice
 
-    // Select natural US voice if available
-    const voices = window.speechSynthesis.getVoices();
-    const usVoice = voices.find(v => (v.lang === 'en-US' || v.lang === 'en_US') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha')));
-    if (usVoice) utter.voice = usVoice;
+    // Select standard natural female voice
+    const femaleVoice = this.getBestFemaleVoice();
+    if (femaleVoice) utter.voice = femaleVoice;
 
     window.speechSynthesis.speak(utter);
+  },
+
+  speakSlow(text) {
+    this.speak(text, 0.72);
   },
 
   async translate(text) {
