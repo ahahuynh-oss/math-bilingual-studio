@@ -3274,6 +3274,290 @@ var App = window.App = {
         btn.innerText = '✨ Khởi Chạy Sinh Bài Giảng Với Gemini';
       }
     }
+  },
+
+  // ==============================================================
+  // SOẠN BÀI GIẢNG TỰ ĐỘNG & THEO TÀI LIỆU (BÁM SÁT MỤC TIÊU & CHUẨN KHOA HỌC)
+  // ==============================================================
+  _uploadedLessonImage: null,
+
+  async generateLessonFromCurrentObjectives() {
+    const btn = document.getElementById('btn-ai-auto-lesson');
+    const origText = btn ? btn.innerHTML : '';
+    
+    // Read objectives and titles from form
+    const titleVi = document.getElementById('meta-title-vi')?.value?.trim() || this.currentLesson?.meta?.titleVi || 'Tổng và hiệu của hai vectơ';
+    const titleEn = document.getElementById('meta-title-en')?.value?.trim() || this.currentLesson?.meta?.titleEn || 'Addition and Subtraction of Vectors';
+    const grade = document.getElementById('meta-grade')?.value?.trim() || this.currentLesson?.meta?.grade || 'Grade 10';
+    const duration = document.getElementById('meta-duration')?.value?.trim() || this.currentLesson?.meta?.duration || '45 minutes';
+    const overviewVi = document.getElementById('meta-overview-vi')?.value?.trim() || this.currentLesson?.meta?.overviewVi || '';
+    const overviewEn = document.getElementById('meta-overview-en')?.value?.trim() || this.currentLesson?.meta?.overviewEn || '';
+
+    if (!overviewVi && !overviewEn && !titleVi) {
+      this.showToast('Vui lòng nhập Tên bài học và Mục tiêu bài giảng trước khi tạo tự động!', 'error');
+      return;
+    }
+
+    try {
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="animate-spin text-sm">⏳</span> <span>Đang khởi tạo bài giảng khoa học...</span>`;
+      }
+      this.showToast('Đang kết nối AI & biên soạn bài học bám sát mục tiêu GDPT 2018...');
+
+      const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('ai-api-key')?.value?.trim() || '';
+      const preferredModel = localStorage.getItem('gemini_selected_model') || 'gemini-2.5-flash';
+
+      const generated = await AIGenerator.generateScientificLesson({
+        titleVi,
+        titleEn,
+        grade,
+        overviewVi,
+        overviewEn,
+        duration,
+        documentText: '',
+        apiKey,
+        preferredModel,
+        onProgress: (status) => {
+          this.showToast(status);
+        }
+      });
+
+      this.currentLesson = generated;
+      this.saveLessonToStorage(true);
+      this.renderAll();
+      
+      const modelInfo = generated.meta?.generatedByModel ? ` (${generated.meta.generatedByModel})` : '';
+      this.showToast(`✨ Đã tự động tạo bài giảng chuẩn khoa học thành công!${modelInfo}`);
+      
+      window.scrollTo({ top: 100, behavior: 'smooth' });
+    } catch (err) {
+      console.error('Error in generateLessonFromCurrentObjectives:', err);
+      this.showToast(`Lỗi tạo bài giảng: ${err.message}`, 'error');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    }
+  },
+
+  openLessonDocumentUploaderModal() {
+    // Sync current form metadata to modal
+    const titleVi = document.getElementById('meta-title-vi')?.value?.trim() || this.currentLesson?.meta?.titleVi || '';
+    const titleEn = document.getElementById('meta-title-en')?.value?.trim() || this.currentLesson?.meta?.titleEn || '';
+    const grade = document.getElementById('meta-grade')?.value?.trim() || this.currentLesson?.meta?.grade || 'Grade 10';
+    const duration = document.getElementById('meta-duration')?.value?.trim() || this.currentLesson?.meta?.duration || '45 minutes';
+    const overviewVi = document.getElementById('meta-overview-vi')?.value?.trim() || this.currentLesson?.meta?.overviewVi || '';
+    const overviewEn = document.getElementById('meta-overview-en')?.value?.trim() || this.currentLesson?.meta?.overviewEn || '';
+
+    const titleInput = document.getElementById('lesson-doc-modal-title');
+    if (titleInput) {
+      titleInput.value = titleVi ? `${titleVi} (${titleEn || ''})` : titleEn;
+    }
+
+    const gradeBadge = document.getElementById('lesson-doc-modal-grade');
+    if (gradeBadge) gradeBadge.innerText = grade;
+
+    const durationInput = document.getElementById('lesson-doc-modal-duration');
+    if (durationInput) durationInput.value = duration;
+
+    const overviewInput = document.getElementById('lesson-doc-modal-overview');
+    if (overviewInput) {
+      overviewInput.value = overviewVi || overviewEn || 'Bám sát chuẩn kiến thức kỹ năng GDPT 2018, định nghĩa chính xác, ví dụ mẫu 3 bước và bài tập trắc nghiệm theo 4 mức độ nhận thức.';
+    }
+
+    const statusEl = document.getElementById('lesson-doc-status');
+    if (statusEl) {
+      statusEl.innerText = 'Chưa tải tài liệu nào lên. (Bạn cũng có thể dán trực tiếp nội dung bên dưới).';
+      statusEl.className = 'text-xs text-slate-500 italic px-1';
+    }
+
+    const progEl = document.getElementById('lesson-doc-progress-status');
+    if (progEl) progEl.innerHTML = '';
+
+    const modal = document.getElementById('modal-lesson-doc-uploader');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeLessonDocumentUploaderModal() {
+    const modal = document.getElementById('modal-lesson-doc-uploader');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  clearUploadedLessonDocImage() {
+    this._uploadedLessonImage = null;
+    const container = document.getElementById('lesson-doc-image-preview-container');
+    if (container) container.classList.add('hidden');
+    const img = document.getElementById('lesson-doc-image-preview');
+    if (img) img.src = '';
+    const statusEl = document.getElementById('lesson-doc-status');
+    if (statusEl) statusEl.innerText = 'Đã gỡ ảnh đính kèm.';
+  },
+
+  async handleLessonDocFileUpload(event) {
+    const file = event.target?.files?.[0];
+    if (!file) return;
+
+    const statusEl = document.getElementById('lesson-doc-status');
+    const textarea = document.getElementById('lesson-doc-extracted-text');
+    if (statusEl) {
+      statusEl.innerText = `Đang đọc tệp "${file.name}" (${(file.size / 1024).toFixed(1)} KB)...`;
+      statusEl.className = 'text-xs text-indigo-600 font-semibold px-1';
+    }
+
+    const fileName = file.name.toLowerCase();
+
+    try {
+      if (fileName.endsWith('.docx')) {
+        if (window.mammoth) {
+          const arrayBuffer = await file.arrayBuffer();
+          const res = await window.mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+          if (textarea) {
+            textarea.value = (textarea.value ? textarea.value + '\n\n' : '') + res.value;
+          }
+          if (statusEl) {
+            statusEl.innerText = `✅ Đã trích xuất xong từ tệp Word: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            statusEl.className = 'text-xs text-emerald-600 font-bold px-1';
+          }
+        } else {
+          alert('Thư viện đọc Word (.docx) đang nạp, vui lòng thử lại sau giây lát!');
+        }
+      } else if (fileName.endsWith('.pdf')) {
+        if (window.pdfjsLib) {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let fullText = '';
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            const pageStrings = content.items.map(item => item.str);
+            fullText += `\n--- Trang ${i} ---\n` + pageStrings.join(' ');
+          }
+          if (textarea) {
+            textarea.value = (textarea.value ? textarea.value + '\n\n' : '') + fullText;
+          }
+          if (statusEl) {
+            statusEl.innerText = `✅ Đã trích xuất ${pdf.numPages} trang từ PDF: ${file.name}`;
+            statusEl.className = 'text-xs text-emerald-600 font-bold px-1';
+          }
+        } else {
+          alert('Thư viện đọc PDF đang nạp, vui lòng thử lại sau giây lát!');
+        }
+      } else if (file.type && file.type.startsWith('image/')) {
+        // Image SGK / photo
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64Data = e.target.result;
+          const mimeType = file.type || 'image/png';
+          this._uploadedLessonImage = {
+            base64: base64Data.split(',')[1] || base64Data,
+            mimeType: mimeType
+          };
+
+          const container = document.getElementById('lesson-doc-image-preview-container');
+          const img = document.getElementById('lesson-doc-image-preview');
+          if (container && img) {
+            img.src = base64Data;
+            container.classList.remove('hidden');
+          }
+          if (statusEl) {
+            statusEl.innerText = `✅ Đã nhận ảnh sách giáo khoa: ${file.name}. Hệ thống AI sẽ đọc trực tiếp từ ảnh và mục tiêu bài học!`;
+            statusEl.className = 'text-xs text-emerald-600 font-bold px-1';
+          }
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Text, markdown, LaTeX
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (textarea) {
+            textarea.value = (textarea.value ? textarea.value + '\n\n' : '') + e.target.result;
+          }
+          if (statusEl) {
+            statusEl.innerText = `✅ Đã đọc thành công tệp văn bản: ${file.name}`;
+            statusEl.className = 'text-xs text-emerald-600 font-bold px-1';
+          }
+        };
+        reader.readAsText(file);
+      }
+    } catch (err) {
+      console.error('File parsing error in modal:', err);
+      if (statusEl) {
+        statusEl.innerText = `❌ Lỗi đọc tệp: ${err.message}`;
+        statusEl.className = 'text-xs text-rose-500 font-semibold px-1';
+      }
+    }
+
+    event.target.value = '';
+  },
+
+  async executeLessonDocGeneration() {
+    const btn = document.getElementById('btn-execute-lesson-doc');
+    const progEl = document.getElementById('lesson-doc-progress-status');
+    const origText = btn ? btn.innerHTML : '';
+
+    const modalTitle = document.getElementById('lesson-doc-modal-title')?.value?.trim() || '';
+    const modalOverview = document.getElementById('lesson-doc-modal-overview')?.value?.trim() || '';
+    const modalDuration = document.getElementById('lesson-doc-modal-duration')?.value?.trim() || '45 minutes';
+    const grade = document.getElementById('lesson-doc-modal-grade')?.innerText?.trim() || 'Grade 10';
+    const docText = document.getElementById('lesson-doc-extracted-text')?.value?.trim() || '';
+    const imgData = this._uploadedLessonImage;
+
+    const titleVi = document.getElementById('meta-title-vi')?.value?.trim() || modalTitle || 'Tổng và hiệu của hai vectơ';
+    const titleEn = document.getElementById('meta-title-en')?.value?.trim() || this.currentLesson?.meta?.titleEn || 'Addition and Subtraction of Vectors';
+
+    try {
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="animate-spin text-sm">⏳</span> <span>Đang tổng hợp & soạn bài...</span>`;
+      }
+      if (progEl) {
+        progEl.className = 'text-xs font-semibold text-indigo-700 animate-pulse';
+        progEl.innerText = 'Đang phân tích tài liệu và cấu trúc hóa bài giảng khoa học...';
+      }
+
+      const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('ai-api-key')?.value?.trim() || '';
+      const preferredModel = localStorage.getItem('gemini_selected_model') || 'gemini-2.5-flash';
+
+      const generated = await AIGenerator.generateScientificLesson({
+        titleVi,
+        titleEn,
+        grade,
+        overviewVi: modalOverview || document.getElementById('meta-overview-vi')?.value?.trim() || '',
+        overviewEn: document.getElementById('meta-overview-en')?.value?.trim() || '',
+        duration: modalDuration,
+        documentText: docText,
+        imageBase64: imgData ? imgData.base64 : '',
+        imageMime: imgData ? imgData.mimeType : 'image/png',
+        apiKey,
+        preferredModel,
+        onProgress: (status) => {
+          if (progEl) progEl.innerText = status;
+        }
+      });
+
+      this.currentLesson = generated;
+      this.saveLessonToStorage(true);
+      this.renderAll();
+      this.closeLessonDocumentUploaderModal();
+
+      const modelInfo = generated.meta?.generatedByModel ? ` (${generated.meta.generatedByModel})` : '';
+      this.showToast(`✨ Đã hoàn thành soạn bài giảng từ tài liệu & mục tiêu bài học!${modelInfo}`);
+      window.scrollTo({ top: 100, behavior: 'smooth' });
+    } catch (err) {
+      console.error('Error executing doc lesson generation:', err);
+      if (progEl) {
+        progEl.className = 'text-xs font-semibold text-rose-600';
+        progEl.innerText = `Lỗi: ${err.message}`;
+      }
+      this.showToast(`Lỗi tạo bài giảng: ${err.message}`, 'error');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    }
   }
 };
 
