@@ -36,7 +36,7 @@ var App = window.App = {
     this.initCanvasGrapher();
     this.renderMyExamsTable('all');
     if (window.UserGuide) window.UserGuide.init();
-    this.switchTab('my-exams');
+    this.switchTab('scaffolding-tutor');
   },
 
   loadLessonFromStorage() {

@@ -108,7 +108,7 @@
       
       <!-- Group 0: TỔNG QUAN -->
       <div class="sidebar-section-title">TỔNG QUAN</div>
-      <button onclick="App.switchTab('my-exams')" id="side-nav-my-exams" class="sidebar-link active" title="Danh sách đã tạo">
+      <button onclick="App.switchTab('my-exams')" id="side-nav-my-exams" class="sidebar-link" title="Danh sách đã tạo">
         <span class="sidebar-icon text-lg">📊</span>
         <span class="sidebar-text">Danh sách đã tạo</span>
       </button>
@@ -127,7 +127,7 @@
         <span class="sidebar-icon text-lg">👁️</span>
         <span class="sidebar-text">Làm bài tương tác</span>
       </button>
-      <button onclick="App.switchTab('scaffolding-tutor')" id="side-nav-scaffolding-tutor" class="sidebar-link" title="Gia sư giàn giáo ZPD">
+      <button onclick="App.switchTab('scaffolding-tutor')" id="side-nav-scaffolding-tutor" class="sidebar-link active" title="Gia sư giàn giáo ZPD">
         <span class="sidebar-icon text-lg text-amber-500">🪜</span>
         <span class="sidebar-text">Gia sư giàn giáo ZPD</span>
       </button>
@@ -224,7 +224,7 @@
           ☰
         </button>
         <div class="flex items-center gap-2 text-xs sm:text-sm font-medium">
-          <span id="breadcrumb-active" class="font-bold text-slate-800">Danh sách đã tạo</span>
+          <span id="breadcrumb-active" class="font-bold text-slate-800">Gia sư giàn giáo ZPD</span>
         </div>
       </div>
 
@@ -308,7 +308,7 @@
       <!-- ============================================================ -->
       <!-- TAB 0: DANH SÁCH ĐÃ TẠO (CREATED LIBRARY & EXAMS DASHBOARD) -->
       <!-- ============================================================ -->
-      <div id="panel-my-exams" class="space-y-6">
+      <div id="panel-my-exams" class="space-y-6 hidden">
         
         <!-- Header -->
         <div class="flex flex-wrap items-center justify-between gap-4">
@@ -775,7 +775,7 @@
       <!-- ============================================================ -->
       <!-- TAB 4: GIA SƯ GIÀN GIÁO (BILINGUAL MATH SCAFFOLDING TUTOR) -->
       <!-- ============================================================ -->
-      <div id="panel-scaffolding-tutor" class="space-y-8 hidden">
+      <div id="panel-scaffolding-tutor" class="space-y-8">
         
         <!-- Top Banner -->
         <section class="glass-card p-6 sm:p-7 space-y-3">
@@ -1497,13 +1497,13 @@
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261017_08"></script>
-  <script src="js/ai-generator.js?v=20261017_08"></script>
-  <script src="js/exporter.js?v=20261017_08"></script>
-  <script src="js/quiz.js?v=20261017_08"></script>
-  <script src="js/scaffolding-tutor.js?v=20261017_08"></script>
-  <script src="js/bilingual-helper.js?v=20261017_08"></script>
-  <script src="js/guide.js?v=20261017_08"></script>
-  <script src="js/app.js?v=20261017_08"></script>
+  <script src="js/data.js?v=20261017_09"></script>
+  <script src="js/ai-generator.js?v=20261017_09"></script>
+  <script src="js/exporter.js?v=20261017_09"></script>
+  <script src="js/quiz.js?v=20261017_09"></script>
+  <script src="js/scaffolding-tutor.js?v=20261017_09"></script>
+  <script src="js/bilingual-helper.js?v=20261017_09"></script>
+  <script src="js/guide.js?v=20261017_09"></script>
+  <script src="js/app.js?v=20261017_09"></script>
 </body>
 </html>
