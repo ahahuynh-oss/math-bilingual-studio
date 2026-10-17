@@ -137,12 +137,29 @@ header .text-white,
 
 /* Light soothing badges and pill buttons */
 .glass-card .bg-slate-800,
-#app-main-content .bg-slate-800,
+.glass-card .bg-slate-800\/80,
+.glass-card .bg-slate-800\/90,
+.glass-card .bg-slate-700,
+.glass-card .bg-slate-700\/80,
 .glass-card .bg-slate-850,
-#app-main-content .bg-slate-850 {
+.glass-card .bg-slate-900,
+.glass-card .bg-slate-900\/60,
+#app-main-content .bg-slate-800,
+#app-main-content .bg-slate-800\/80,
+#app-main-content .bg-slate-800\/90,
+#app-main-content .bg-slate-700,
+#app-main-content .bg-slate-700\/80,
+#app-main-content .bg-slate-850,
+#app-main-content .bg-slate-900,
+#app-main-content .bg-slate-900\/60 {
   background-color: #f1f5f9 !important;
-  color: #334155 !important;
+  color: #1e293b !important;
   border-color: #cbd5e1 !important;
+}
+
+.glass-card .text-slate-400,
+#app-main-content .text-slate-400 {
+  color: #334155 !important;
 }
 
 .glass-card .border-slate-800,

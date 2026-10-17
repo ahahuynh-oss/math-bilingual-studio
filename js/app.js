@@ -1440,12 +1440,16 @@ var App = window.App = {
     }
 
     container.innerHTML = questions.map((q, idx) => `
-      <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-800 space-y-4">
+      <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-4">
         <!-- Question Top Bar -->
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div class="flex items-center gap-2">
-            <span class="px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-400 font-bold text-xs">Câu ${idx + 1}</span>
-            <span class="px-2 py-0.5 rounded bg-slate-800 text-[11px] text-slate-300 font-medium capitalize">
+            <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 font-bold text-xs border border-indigo-200 shadow-2xs">Câu ${idx + 1}</span>
+            <span class="px-3 py-1 rounded-lg text-xs font-bold border shadow-2xs ${
+              q.type === 'true-false-4' ? 'bg-teal-50 text-teal-800 border-teal-200' :
+              (q.type === 'multiple-choice' ? 'bg-indigo-50 text-indigo-800 border-indigo-200' :
+              'bg-purple-50 text-purple-800 border-purple-200')
+            }">
               ${q.type === 'multiple-choice' ? 'Trắc nghiệm 4 lựa chọn' : (q.type === 'true-false-4' ? 'Đúng/Sai 4 Mệnh đề' : 'Điền đáp án')}
             </span>
           </div>
@@ -1470,11 +1474,11 @@ var App = window.App = {
         <!-- Question Stems -->
         <div class="space-y-2">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Nội dung câu hỏi (English - có hỗ trợ $LaTeX$):</label>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Nội dung câu hỏi (English - có hỗ trợ $LaTeX$):</label>
             <textarea rows="2" oninput="App.updateQuestionField(${idx}, 'stemEn', this.value)" class="w-full p-3 glass-input rounded-xl text-xs sm:text-sm font-medium">${q.stemEn || ''}</textarea>
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Dịch nghĩa đề bài (Tiếng Việt):</label>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Dịch nghĩa đề bài (Tiếng Việt):</label>
             <textarea rows="2" oninput="App.updateQuestionField(${idx}, 'stemVi', this.value)" class="w-full p-3 glass-input rounded-xl text-xs">${q.stemVi || ''}</textarea>
           </div>
         </div>
@@ -1483,8 +1487,8 @@ var App = window.App = {
         ${this.renderQuestionSpecificEditor(q, idx)}
 
         <!-- Explanation -->
-        <div class="pt-3 border-t border-slate-800/80 space-y-2">
-          <label class="block text-[11px] font-semibold text-indigo-400 uppercase">Hướng dẫn giải chi tiết (Solutions & LaTeX explanations):</label>
+        <div class="pt-3 border-t border-slate-100 space-y-2">
+          <label class="block text-[11px] font-bold text-indigo-700 uppercase">Hướng dẫn giải chi tiết (Solutions & LaTeX explanations):</label>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             <textarea rows="2" oninput="App.updateQuestionField(${idx}, 'explanationEn', this.value)" placeholder="Explanation in English..." class="p-3 glass-input rounded-xl text-xs">${q.explanationEn || ''}</textarea>
             <textarea rows="2" oninput="App.updateQuestionField(${idx}, 'explanationVi', this.value)" placeholder="Giải thích chi tiết tiếng Việt..." class="p-3 glass-input rounded-xl text-xs">${q.explanationVi || ''}</textarea>
@@ -1498,12 +1502,12 @@ var App = window.App = {
     if (q.type === 'multiple-choice') {
       return `
         <div class="space-y-2.5">
-          <span class="block text-[11px] font-semibold text-slate-400 uppercase">4 Phương án trả lời (Chọn radio để đặt đáp án đúng):</span>
+          <span class="block text-[11px] font-bold text-slate-700 uppercase">4 Phương án trả lời (Chọn radio để đặt đáp án đúng):</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             ${q.options.map((opt, optIdx) => `
-              <div class="p-3 rounded-xl border ${opt.isCorrect ? 'border-emerald-500/80 bg-emerald-950/20' : 'border-slate-800 bg-slate-900/60'} flex items-center gap-2">
-                <input type="radio" name="correct-radio-${qIdx}" ${opt.isCorrect ? 'checked' : ''} onchange="App.setCorrectMCOption(${qIdx}, '${opt.id}')" class="w-4 h-4 text-emerald-500">
-                <span class="font-bold text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">${opt.id}</span>
+              <div class="p-3 rounded-xl border ${opt.isCorrect ? 'border-emerald-300 bg-emerald-50/70' : 'border-slate-200 bg-slate-50/70'} flex items-center gap-2">
+                <input type="radio" name="correct-radio-${qIdx}" ${opt.isCorrect ? 'checked' : ''} onchange="App.setCorrectMCOption(${qIdx}, '${opt.id}')" class="w-4 h-4 text-emerald-600">
+                <span class="font-bold text-xs px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs">${opt.id}</span>
                 <input type="text" value="${opt.text || ''}" oninput="App.updateMCOptionText(${qIdx}, ${optIdx}, this.value)" class="flex-1 px-2.5 py-1 glass-input rounded-lg text-xs" placeholder="Nội dung phương án...">
               </div>
             `).join('')}
@@ -1513,18 +1517,18 @@ var App = window.App = {
     } else if (q.type === 'true-false-4') {
       return `
         <div class="space-y-2.5">
-          <span class="block text-[11px] font-semibold text-slate-400 uppercase">4 Mệnh đề Đúng / Sai (a, b, c, d):</span>
+          <span class="block text-[11px] font-bold text-slate-700 uppercase">4 Mệnh đề Đúng / Sai (a, b, c, d):</span>
           <div class="space-y-2">
             ${q.propositions.map((p, pIdx) => `
-              <div class="p-3 rounded-xl border border-slate-800 bg-slate-900/60 space-y-2">
+              <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
                 <div class="flex items-center justify-between">
-                  <span class="font-bold text-xs text-indigo-400">Mệnh đề ${p.id})</span>
+                  <span class="font-bold text-xs text-indigo-800">Mệnh đề ${p.id})</span>
                   <div class="flex items-center gap-3 text-xs">
-                    <label class="flex items-center gap-1 cursor-pointer ${p.isCorrect ? 'text-emerald-400 font-bold' : 'text-slate-400'}">
+                    <label class="flex items-center gap-1 cursor-pointer ${p.isCorrect ? 'text-emerald-700 font-bold' : 'text-slate-600'}">
                       <input type="radio" name="tf-truth-${qIdx}-${p.id}" ${p.isCorrect ? 'checked' : ''} onchange="App.updatePropositionTruth(${qIdx}, ${pIdx}, true)">
                       Đúng
                     </label>
-                    <label class="flex items-center gap-1 cursor-pointer ${!p.isCorrect ? 'text-rose-400 font-bold' : 'text-slate-400'}">
+                    <label class="flex items-center gap-1 cursor-pointer ${!p.isCorrect ? 'text-rose-700 font-bold' : 'text-slate-600'}">
                       <input type="radio" name="tf-truth-${qIdx}-${p.id}" ${!p.isCorrect ? 'checked' : ''} onchange="App.updatePropositionTruth(${qIdx}, ${pIdx}, false)">
                       Sai
                     </label>
@@ -1543,15 +1547,15 @@ var App = window.App = {
       return `
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Đáp án đúng chuẩn:</label>
-            <input type="text" value="${q.correctAnswer || ''}" oninput="App.updateQuestionField(${qIdx}, 'correctAnswer', this.value)" placeholder="Ví dụ: 3 hoặc -0.5..." class="w-full px-3 py-1.5 glass-input rounded-lg font-mono text-sm text-emerald-400 font-bold">
+            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Đáp án đúng chuẩn:</label>
+            <input type="text" value="${q.correctAnswer || ''}" oninput="App.updateQuestionField(${qIdx}, 'correctAnswer', this.value)" placeholder="Ví dụ: 3 hoặc -0.5..." class="w-full px-3 py-1.5 glass-input rounded-lg font-mono text-sm text-emerald-700 font-bold">
           </div>
           <div>
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Dung sai cho phép ($\pm$ tolerance):</label>
+            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Dung sai cho phép ($\pm$ tolerance):</label>
             <input type="number" step="0.001" value="${q.tolerance || 0.01}" oninput="App.updateQuestionField(${qIdx}, 'tolerance', parseFloat(this.value))" class="w-full px-3 py-1.5 glass-input rounded-lg font-mono text-xs">
           </div>
           <div>
-            <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Đáp án tương đương (phân cách dấu phẩy):</label>
+            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Đáp án tương đương (phân cách dấu phẩy):</label>
             <input type="text" value="${(q.acceptableAnswers || []).join(', ')}" oninput="App.updateQuestionField(${qIdx}, 'acceptableAnswers', this.value.split(',').map(s=>s.trim()))" placeholder="3, 3.0, +3" class="w-full px-3 py-1.5 glass-input rounded-lg font-mono text-xs">
           </div>
         </div>

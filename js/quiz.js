@@ -104,16 +104,16 @@ const QuizEngine = {
       const isAns = this.isQuestionAnswered(q);
       if (isAns) answeredCount++;
 
-      let badgeClass = 'bg-slate-800 text-slate-400 border border-slate-700 hover:border-slate-500';
+      let badgeClass = 'bg-slate-100 text-slate-700 border border-slate-300 hover:bg-slate-200 hover:border-slate-400 font-semibold shadow-2xs';
       if (this.isSubmitted) {
         // Show pass/fail color in palette after submission
         const result = this.evalQuestion(q);
         if (result.scorePercent === 1) {
-          badgeClass = 'bg-emerald-600/30 text-emerald-400 border border-emerald-500 font-bold';
+          badgeClass = 'bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold';
         } else if (result.scorePercent > 0) {
-          badgeClass = 'bg-amber-600/30 text-amber-400 border border-amber-500 font-bold';
+          badgeClass = 'bg-amber-50 text-amber-800 border border-amber-300 font-bold';
         } else {
-          badgeClass = 'bg-rose-600/30 text-rose-400 border border-rose-500 font-bold';
+          badgeClass = 'bg-rose-50 text-rose-800 border border-rose-300 font-bold';
         }
       } else if (isAns) {
         badgeClass = 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/20';
@@ -303,19 +303,23 @@ const QuizEngine = {
           <!-- Question Header -->
           <div class="flex items-start justify-between gap-3">
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-1 rounded-lg bg-indigo-600/20 text-indigo-400 font-bold text-xs border border-indigo-500/30">
+              <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-800 font-bold text-xs border border-indigo-200 shadow-2xs">
                 Câu ${idx + 1}
               </span>
-              <span class="text-xs text-slate-400 font-medium">
+              <span class="text-xs text-slate-600 font-semibold">
                 [${q.points} điểm]
               </span>
               ${this.isSubmitted ? `
-                <span class="text-xs font-bold px-2 py-0.5 rounded ${evalResult.scorePercent === 1 ? 'bg-emerald-500/20 text-emerald-400' : (evalResult.scorePercent > 0 ? 'bg-amber-500/20 text-amber-400' : 'bg-rose-500/20 text-rose-400')}">
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-lg border ${evalResult.scorePercent === 1 ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : (evalResult.scorePercent > 0 ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-rose-50 text-rose-800 border-rose-200')}">
                   ${evalResult.earned.toFixed(2)} / ${evalResult.maxPoints} đ
                 </span>
               ` : ''}
             </div>
-            <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-md">
+            <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-lg border shadow-2xs ${
+              q.type === 'true-false-4' ? 'bg-teal-50 text-teal-800 border-teal-200' :
+              (q.type === 'multiple-choice' ? 'bg-indigo-50 text-indigo-800 border-indigo-200' :
+              'bg-purple-50 text-purple-800 border-purple-200')
+            }">
               ${q.type === 'multiple-choice' ? 'Trắc nghiệm ABCD' : (q.type === 'true-false-4' ? 'Đúng/Sai 4 Mệnh đề' : 'Điền đáp án')}
             </span>
           </div>
@@ -456,7 +460,7 @@ const QuizEngine = {
                       </label>
                     </td>
                     ${(this.isSubmitted || this.isTeacherMode) ? `
-                      <td class="p-3 text-center font-bold text-xs ${prop.isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                      <td class="p-3 text-center font-bold text-xs ${prop.isCorrect ? 'text-emerald-700' : 'text-rose-700'}">
                         ${prop.isCorrect ? 'Đúng' : 'Sai'}
                       </td>
                     ` : ''}
@@ -471,7 +475,7 @@ const QuizEngine = {
       const userVal = this.userAnswers[q.id] || '';
       return `
         <div class="space-y-3 max-w-md">
-          <label class="block text-xs font-medium text-slate-300">
+          <label class="block text-xs font-bold text-slate-700">
             Nhập kết quả tính toán của bạn:
           </label>
           <div class="relative">
@@ -481,15 +485,15 @@ const QuizEngine = {
               ${this.isSubmitted ? 'disabled' : ''}
               oninput="QuizEngine.setShortAnswer('${q.id}', this.value)"
               placeholder="Ví dụ: 3, -1/2, hoặc 0.75..." 
-              class="w-full px-4 py-3 rounded-xl glass-input text-white font-mono text-sm pr-20">
+              class="w-full px-4 py-3 rounded-xl glass-input text-slate-900 font-mono text-sm pr-20">
             <span class="absolute right-3 top-3 text-xs text-slate-500 pointer-events-none font-mono">
               Value
             </span>
           </div>
           ${(this.isSubmitted || this.isTeacherMode) ? `
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-700 text-xs flex items-center justify-between">
-              <span class="text-slate-400">Đáp án chính xác:</span>
-              <span class="font-bold text-emerald-400 font-mono text-sm">${q.correctAnswer}</span>
+            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs flex items-center justify-between">
+              <span class="text-emerald-900 font-semibold">Đáp án chính xác:</span>
+              <span class="font-bold text-emerald-700 font-mono text-sm">${q.correctAnswer}</span>
             </div>
           ` : ''}
         </div>
