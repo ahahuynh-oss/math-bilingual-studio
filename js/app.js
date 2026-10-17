@@ -675,7 +675,7 @@ var App = window.App = {
     if (filtered.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="8" class="py-12 text-center text-slate-400 text-sm">
+          <td colspan="3" class="py-12 text-center text-slate-400 text-sm">
             <div class="text-3xl mb-2">📁</div>
             <p class="font-medium">Chưa có bài giảng hoặc đề thi nào thuộc mục này.</p>
             <p class="text-xs text-slate-400 mt-1">Hãy bấm "Soạn bài mới" hoặc dùng "AI Studio" để tự động tạo!</p>
@@ -693,17 +693,23 @@ var App = window.App = {
           : 'bg-sky-50 text-sky-700 border-sky-200';
 
       const detailInfo = [];
+      if (item.questionCount) detailInfo.push(`${item.questionCount} câu`);
       if (item.conceptCount) detailInfo.push(`${item.conceptCount} lý thuyết`);
       if (item.vocabCount) detailInfo.push(`${item.vocabCount} thuật ngữ`);
       const detailStr = detailInfo.length > 0 ? detailInfo.join(' • ') : 'Song ngữ Anh - Việt';
 
       return `
         <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100 group">
-          <td class="py-3.5 px-4 font-semibold text-slate-800 text-xs sm:text-sm max-w-xs sm:max-w-md">
-            <div class="line-clamp-2 hover:text-indigo-600 cursor-pointer font-bold" onclick="App.openExamFromList('${item.id}')" title="Nhấp để mở bài làm">
-              ${item.title}
+          <td class="py-3.5 px-4 font-semibold text-slate-800 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold border ${gradeColor}">
+                ${item.grade || 'Toán THPT'}
+              </span>
+              <span class="line-clamp-2 hover:text-indigo-600 cursor-pointer font-bold text-slate-900" onclick="App.openExamFromList('${item.id}')" title="Nhấp để mở bài làm">
+                ${item.title}
+              </span>
             </div>
-            <div class="text-[11px] text-slate-400 font-normal mt-0.5 flex items-center gap-2">
+            <div class="text-[11px] text-slate-400 font-normal flex items-center gap-2 flex-wrap">
               <span class="text-teal-600 font-medium">Song ngữ Anh - Việt</span>
               <span>•</span>
               <span>${detailStr}</span>
@@ -712,59 +718,25 @@ var App = window.App = {
             </div>
           </td>
 
-          <td class="py-3.5 px-3 whitespace-nowrap">
-            <span class="px-2 py-1 rounded bg-slate-100 text-slate-700 font-mono text-[11px] font-bold border border-slate-200">
-              ${item.code}
-            </span>
-          </td>
-
-          <td class="py-3.5 px-3 text-slate-400 whitespace-nowrap">
-            <div class="flex items-center gap-1.5">
-              <button onclick="App.copyExamLink('${item.code}')" class="p-1.5 hover:text-indigo-600 rounded-lg hover:bg-slate-100 text-xs transition-colors" title="Sao chép liên kết đề">
-                📋
-              </button>
-              <button onclick="App.openExamFromList('${item.id}')" class="p-1.5 hover:text-indigo-600 rounded-lg hover:bg-slate-100 text-xs transition-colors" title="Mở trực tiếp">
-                ↗
-              </button>
-            </div>
-          </td>
-
-          <td class="py-3.5 px-3 whitespace-nowrap">
-            <div class="badge-status-open">
-              ${item.status || 'Đang mở'}
-            </div>
-            <div class="text-[10px] text-slate-400 mt-0.5">${item.schedule || 'Tự do'}</div>
-          </td>
-
-          <td class="py-3.5 px-3 whitespace-nowrap">
-            <span class="px-2 py-0.5 rounded text-[11px] font-semibold border ${gradeColor}">
-              ${item.grade || 'Khối 12'}
-            </span>
-          </td>
-
-          <td class="py-3.5 px-3 text-center text-xs font-bold text-slate-700 whitespace-nowrap">
-            ${item.questionCount || 0} câu
-          </td>
-
           <td class="py-3.5 px-3 text-center text-[11px] text-slate-500 whitespace-nowrap">
             ${item.updatedAt || 'Vừa xong'}
           </td>
 
           <td class="py-3.5 px-4 text-right whitespace-nowrap">
             <div class="flex items-center justify-end gap-1.5">
-              <button onclick="App.openExamFromList('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all" title="Làm bài tương tác / Xem trước">
+              <button onclick="App.openExamFromList('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all cursor-pointer" title="Làm bài tương tác / Xem trước">
                 👁️ <span>Mở</span>
               </button>
-              <button onclick="App.editExamFromList('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all" title="Chỉnh sửa bài giảng & đề thi">
+              <button onclick="App.editExamFromList('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all cursor-pointer" title="Chỉnh sửa bài giảng & đề thi">
                 ✏️ <span>Sửa</span>
               </button>
-              <button onclick="App.openScaffoldForExam('${item.scaffoldKey || item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-all" title="Gia sư giàn giáo nhận thức ZPD">
+              <button onclick="App.openScaffoldForExam('${item.scaffoldKey || item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition-all cursor-pointer" title="Gia sư giàn giáo nhận thức ZPD">
                 🪜
               </button>
-              <button onclick="App.exportWordForExam('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all" title="Xuất file Microsoft Word (.doc)">
+              <button onclick="App.exportWordForExam('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all cursor-pointer" title="Xuất file Microsoft Word (.doc)">
                 📄
               </button>
-              <button onclick="App.deleteExamFromList('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 transition-all" title="Xóa khỏi danh sách đã tạo">
+              <button onclick="App.deleteExamFromList('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer" title="Xóa khỏi danh sách đã tạo">
                 🗑️
               </button>
             </div>
