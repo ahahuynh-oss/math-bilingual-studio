@@ -582,7 +582,7 @@
               <span class="text-base text-blue-600">📄</span>
               <span>Xuất Word (.doc / .docx)</span>
             </button>
-            <button onclick="App.exportStandaloneHTML()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer" title="Xuất file HTML độc lập chạy offline">
+            <button onclick="App.exportStandaloneHTML()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer" title="Xuất file HTML độc lập chạy offline">
               <span class="text-base">🚀</span>
               <span>Export Standalone HTML</span>
             </button>
@@ -667,7 +667,7 @@
               <span class="text-base text-blue-600">📄</span>
               <span>Xuất Word (.doc / .docx)</span>
             </button>
-            <button onclick="App.exportStandaloneHTML()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-xs hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer" title="Xuất bài kiểm tra HTML độc lập cho học sinh làm bài">
+            <button onclick="App.exportStandaloneHTML()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 hover:border-purple-300 shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer" title="Xuất bài kiểm tra HTML độc lập cho học sinh làm bài">
               <span class="text-base">🚀</span>
               <span>Export Standalone HTML</span>
             </button>
@@ -1322,7 +1322,7 @@
 
         <div class="flex justify-end gap-2.5 pt-2">
           <button onclick="App.closeAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Đóng</button>
-          <button id="btn-run-ocr-ai" onclick="App.generateWithGeminiVisionAI()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5">
+          <button id="btn-run-ocr-ai" onclick="App.generateWithGeminiVisionAI()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all cursor-pointer flex items-center gap-1.5">
             <span>📸 Quét Ảnh & Tự Động Sinh Đề Thi Chuẩn</span>
           </button>
         </div>
@@ -1448,7 +1448,7 @@
 
       <div class="flex justify-end gap-2.5 pt-2 border-t border-slate-100">
         <button onclick="App.closeBrandingModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Hủy</button>
-        <button onclick="App.saveBrandingFromModal()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5">
+        <button onclick="App.saveBrandingFromModal()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all cursor-pointer flex items-center gap-1.5">
           <span>💾 Lưu Thông Tin Nhận Diện</span>
         </button>
       </div>
@@ -1481,7 +1481,7 @@
         </button>
         <div class="flex items-center gap-2">
           <button onclick="App.closeTestMatrixModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Đóng</button>
-          <button onclick="Exporter.exportWordDocument(App.currentLesson, { includeSolutions: true }); App.closeTestMatrixModal()" class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5">
+          <button onclick="Exporter.exportWordDocument(App.currentLesson, { includeSolutions: true }); App.closeTestMatrixModal()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all cursor-pointer flex items-center gap-1.5">
             <span>📥 Xuất Đề Kèm Ma Trận Sang Word (.doc)</span>
           </button>
         </div>
@@ -1493,13 +1493,13 @@
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261017_10"></script>
-  <script src="js/ai-generator.js?v=20261017_10"></script>
-  <script src="js/exporter.js?v=20261017_10"></script>
-  <script src="js/quiz.js?v=20261017_10"></script>
-  <script src="js/scaffolding-tutor.js?v=20261017_10"></script>
-  <script src="js/bilingual-helper.js?v=20261017_10"></script>
-  <script src="js/guide.js?v=20261017_10"></script>
-  <script src="js/app.js?v=20261017_10"></script>
+  <script src="js/data.js?v=20261017_11"></script>
+  <script src="js/ai-generator.js?v=20261017_11"></script>
+  <script src="js/exporter.js?v=20261017_11"></script>
+  <script src="js/quiz.js?v=20261017_11"></script>
+  <script src="js/scaffolding-tutor.js?v=20261017_11"></script>
+  <script src="js/bilingual-helper.js?v=20261017_11"></script>
+  <script src="js/guide.js?v=20261017_11"></script>
+  <script src="js/app.js?v=20261017_11"></script>
 </body>
 </html>

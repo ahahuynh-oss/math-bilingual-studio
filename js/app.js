@@ -2450,13 +2450,13 @@ var App = window.App = {
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left border-collapse border border-slate-300">
             <thead>
-              <tr class="bg-indigo-900 text-white text-center font-bold">
-                <th rowspan="2" class="border border-slate-300 p-2.5">Phần Thi & Định Dạng</th>
-                <th colspan="2" class="border border-slate-300 p-2 bg-emerald-700">1. Nhận biết (NB)</th>
-                <th colspan="2" class="border border-slate-300 p-2 bg-blue-700">2. Thông hiểu (TH)</th>
-                <th colspan="2" class="border border-slate-300 p-2 bg-amber-700">3. Vận dụng (VD)</th>
-                <th colspan="2" class="border border-slate-300 p-2 bg-rose-700">4. Vận dụng cao (VDC)</th>
-                <th colspan="2" class="border border-slate-300 p-2 bg-purple-800">Tổng Cộng</th>
+              <tr class="bg-indigo-50 text-indigo-900 text-center font-bold">
+                <th rowspan="2" class="border border-slate-300 p-2.5 bg-slate-100 text-slate-800">Phần Thi & Định Dạng</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-emerald-50 text-emerald-900">1. Nhận biết (NB)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-blue-50 text-blue-900">2. Thông hiểu (TH)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-amber-50 text-amber-900">3. Vận dụng (VD)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-rose-50 text-rose-900">4. Vận dụng cao (VDC)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-purple-50 text-purple-900">Tổng Cộng</th>
               </tr>
               <tr class="bg-slate-100 text-slate-800 text-center font-semibold">
                 <th class="border border-slate-300 p-1.5">Số câu</th>
