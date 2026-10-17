@@ -192,6 +192,11 @@
     </div>
   </aside>
 
+  <!-- DRAGGABLE RESIZER FOR WORKSPACE / SIDEBAR WIDTH -->
+  <div id="sidebar-resizer" class="hidden lg:flex sidebar-resizer items-center justify-center" title="Kéo sang trái/phải để thu nhỏ hoặc mở rộng giao diện làm việc (Nhấp đúp để đặt lại mặc định 260px)">
+    <div class="sidebar-resizer-handle"></div>
+  </div>
+
   <!-- ============================================================== -->
   <!-- MAIN WORKSPACE CONTAINER -->
   <!-- ============================================================== -->
@@ -215,8 +220,6 @@
           ☰
         </button>
         <div class="flex items-center gap-2 text-xs sm:text-sm font-medium">
-          <span class="text-slate-400 hover:text-slate-600 cursor-pointer" onclick="App.switchTab('my-exams')">Giáo viên</span>
-          <span class="text-slate-300">›</span>
           <span id="breadcrumb-active" class="font-bold text-slate-800">Danh sách đã tạo</span>
         </div>
       </div>
@@ -234,6 +237,24 @@
         <!-- Bilingual Display Toggle -->
         <button id="btn-toggle-bilingual" onclick="App.toggleBilingualDisplay()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all flex items-center gap-1 cursor-pointer">
           🇻🇳 <span class="hidden md:inline">Dịch:</span> <strong>Bật</strong>
+        </button>
+
+        <!-- Kéo to / nhỏ kích thước giao diện làm việc (Workspace Zoom Slider) -->
+        <div class="flex items-center gap-1 sm:gap-1.5 px-2 py-1 rounded-xl bg-slate-100/90 hover:bg-slate-150 border border-slate-200 text-xs text-slate-700 transition-all shadow-2xs" title="Kéo thanh trượt để phóng to hoặc thu nhỏ toàn bộ giao diện làm việc">
+          <span class="text-slate-500 font-bold text-xs flex items-center gap-1 select-none">
+            <span>🔍</span>
+            <span class="hidden md:inline text-[11px] text-slate-600 font-semibold">Cỡ:</span>
+          </span>
+          <button onclick="App.adjustZoom(-5)" class="w-5 h-5 rounded hover:bg-white text-slate-600 font-bold flex items-center justify-center text-xs transition-colors cursor-pointer border border-transparent hover:border-slate-200" title="Thu nhỏ (-5%)">−</button>
+          <input type="range" id="workspace-zoom-slider" min="75" max="130" step="5" value="100" oninput="App.setZoom(this.value)" class="w-14 sm:w-20 h-1.5 bg-slate-300 rounded-lg appearance-none cursor-ew-resize accent-indigo-600" title="Kéo để phóng to / thu nhỏ giao diện">
+          <button onclick="App.adjustZoom(5)" class="w-5 h-5 rounded hover:bg-white text-slate-600 font-bold flex items-center justify-center text-xs transition-colors cursor-pointer border border-transparent hover:border-slate-200" title="Phóng to (+5%)">+</button>
+          <button id="workspace-zoom-label" onclick="App.resetZoom()" class="font-mono text-[11px] font-bold text-indigo-700 px-1 py-0.5 rounded hover:bg-indigo-50 transition-colors cursor-pointer" title="Nhấp đúp hoặc bấm để đặt lại kích thước 100%">100%</button>
+        </div>
+
+        <!-- Nút Tràn màn hình / Toàn màn hình -->
+        <button id="btn-toggle-fullwidth" onclick="App.toggleFullWidth()" class="hidden lg:flex px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-indigo-700 hover:bg-indigo-50 border border-slate-200 transition-all items-center gap-1 cursor-pointer shadow-2xs" title="Mở rộng không gian làm việc toàn màn hình (Tràn viền)">
+          <span id="fullwidth-icon">⤢</span>
+          <span id="fullwidth-text" class="hidden 2xl:inline">Tràn viền</span>
         </button>
 
         <!-- Giới thiệu phương pháp sư phạm Scaffolding -->
@@ -282,7 +303,7 @@
     <!-- ============================================================== -->
     <!-- MAIN WORKSPACE CONTENT -->
     <!-- ============================================================== -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
+    <main id="app-workspace-main" class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full transition-all">
 
       <!-- ============================================================ -->
       <!-- TAB 0: DANH SÁCH ĐÃ TẠO (CREATED LIBRARY & EXAMS DASHBOARD) -->

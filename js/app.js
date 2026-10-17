@@ -19,6 +19,7 @@ var App = window.App = {
     this.loadCreatedLibrary();
     this.syncCurrentLessonToLibrary(false);
     this.setupEventListeners();
+    this.initWorkspaceResizer();
     this.setupSpeechVoices();
     this.renderAll();
     this.initCanvasGrapher();
@@ -409,6 +410,185 @@ var App = window.App = {
         ? `<svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m11 9 3 3-3 3"/></svg>`
         : `<svg class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9-3 3 3 3"/></svg>`;
     }
+  },
+
+  // Draggable sidebar resizer & Workspace scaling
+  currentZoom: 100,
+  isFullWidth: false,
+
+  initWorkspaceResizer() {
+    const resizer = document.getElementById('sidebar-resizer');
+    const sidebar = document.getElementById('app-sidebar');
+
+    // Load saved sidebar width
+    try {
+      const savedWidth = localStorage.getItem('math_studio_sidebar_w');
+      if (savedWidth) {
+        const w = parseInt(savedWidth);
+        if (w >= 180 && w <= 500) {
+          document.documentElement.style.setProperty('--sidebar-w', `${w}px`);
+        }
+      }
+    } catch (e) {
+      console.warn('Could not read sidebar width from localStorage:', e);
+    }
+
+    // Load saved zoom
+    try {
+      const savedZoom = localStorage.getItem('math_studio_zoom_level');
+      if (savedZoom) {
+        this.setZoom(parseInt(savedZoom), false);
+      }
+    } catch (e) {
+      console.warn('Could not read zoom level from localStorage:', e);
+    }
+
+    // Load saved fullwidth preference
+    try {
+      const savedFullWidth = localStorage.getItem('math_studio_full_width');
+      if (savedFullWidth === '1') {
+        this.toggleFullWidth(true);
+      }
+    } catch (e) {
+      console.warn('Could not read fullwidth preference from localStorage:', e);
+    }
+
+    if (!resizer || !sidebar) return;
+
+    let isDragging = false;
+    let startX = 0;
+    let startWidth = 260;
+
+    const onMouseDown = (e) => {
+      if (e.button !== 0) return; // Only primary mouse button
+      isDragging = true;
+      startX = e.clientX;
+      startWidth = sidebar.getBoundingClientRect().width;
+      
+      document.body.classList.add('is-resizing');
+      resizer.classList.add('is-dragging');
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+      e.preventDefault();
+    };
+
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      let newWidth = startWidth + (e.clientX - startX);
+
+      // Auto un-collapse if dragged open from collapsed state
+      if (this.isSidebarCollapsed && newWidth > 110) {
+        this.isSidebarCollapsed = false;
+        sidebar.classList.remove('sidebar-collapsed');
+        const btn = document.getElementById('btn-toggle-sidebar');
+        if (btn) {
+          btn.setAttribute('title', 'Thu gọn thanh bên');
+          btn.innerHTML = `<svg class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m14 9-3 3 3 3"/></svg>`;
+        }
+      }
+
+      // Auto snap to collapsed if dragged very small
+      if (newWidth < 120) {
+        if (!this.isSidebarCollapsed) {
+          this.toggleSidebarCollapse();
+        }
+        return;
+      }
+
+      // Constrain sidebar width between 180px and 500px
+      newWidth = Math.max(180, Math.min(500, newWidth));
+      document.documentElement.style.setProperty('--sidebar-w', `${newWidth}px`);
+    };
+
+    const onMouseUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      document.body.classList.remove('is-resizing');
+      resizer.classList.remove('is-dragging');
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+
+      const currentW = sidebar.getBoundingClientRect().width;
+      if (!this.isSidebarCollapsed && currentW >= 180) {
+        localStorage.setItem('math_studio_sidebar_w', Math.round(currentW));
+      }
+    };
+
+    resizer.addEventListener('mousedown', onMouseDown);
+
+    // Double click to reset to standard 260px
+    resizer.addEventListener('dblclick', () => {
+      document.documentElement.style.setProperty('--sidebar-w', '260px');
+      localStorage.setItem('math_studio_sidebar_w', 260);
+      if (this.isSidebarCollapsed) {
+        this.toggleSidebarCollapse();
+      }
+      this.showToast('Đã đặt lại kích thước thanh bên chuẩn (260px)');
+    });
+  },
+
+  setZoom(val, showNotice = false) {
+    const zoom = Math.min(130, Math.max(75, parseInt(val) || 100));
+    this.currentZoom = zoom;
+    const mainContent = document.getElementById('app-workspace-main');
+    if (mainContent) {
+      mainContent.style.zoom = (zoom / 100);
+      document.documentElement.style.setProperty('--app-zoom', (zoom / 100));
+    }
+    const slider = document.getElementById('workspace-zoom-slider');
+    if (slider && parseInt(slider.value) !== zoom) {
+      slider.value = zoom;
+    }
+    const label = document.getElementById('workspace-zoom-label');
+    if (label) {
+      label.textContent = `${zoom}%`;
+    }
+    localStorage.setItem('math_studio_zoom_level', zoom);
+    if (showNotice) {
+      this.showToast(`Kích thước giao diện làm việc: ${zoom}%`);
+    }
+  },
+
+  adjustZoom(delta) {
+    const current = this.currentZoom || 100;
+    this.setZoom(current + delta, true);
+  },
+
+  resetZoom() {
+    this.setZoom(100, true);
+    this.showToast('Đã đặt lại kích thước giao diện 100%');
+  },
+
+  toggleFullWidth(silent = false) {
+    this.isFullWidth = !this.isFullWidth;
+    const main = document.getElementById('app-workspace-main');
+    const btn = document.getElementById('btn-toggle-fullwidth');
+    const icon = document.getElementById('fullwidth-icon');
+    const text = document.getElementById('fullwidth-text');
+    if (main) {
+      if (this.isFullWidth) {
+        main.classList.remove('max-w-7xl');
+        main.classList.add('max-w-full', 'px-6', 'lg:px-10');
+        if (!silent) this.showToast('Đã mở rộng giao diện làm việc toàn màn hình');
+      } else {
+        main.classList.add('max-w-7xl');
+        main.classList.remove('max-w-full', 'px-6', 'lg:px-10');
+        if (!silent) this.showToast('Đã chuyển về độ rộng tiêu chuẩn');
+      }
+    }
+    if (btn) {
+      btn.classList.toggle('bg-indigo-50', this.isFullWidth);
+      btn.classList.toggle('text-indigo-700', this.isFullWidth);
+      btn.classList.toggle('border-indigo-300', this.isFullWidth);
+    }
+    if (icon) {
+      icon.textContent = this.isFullWidth ? '⤡' : '⤢';
+    }
+    if (text) {
+      text.textContent = this.isFullWidth ? 'Thu gọn viền' : 'Tràn viền';
+    }
+    localStorage.setItem('math_studio_full_width', this.isFullWidth ? '1' : '0');
   },
 
   updateBreadcrumb(tabName) {
