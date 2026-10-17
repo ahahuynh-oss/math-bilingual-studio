@@ -533,6 +533,7 @@ NGUYÊN TẮC BẮT BUỘC:
         statusEl.className = 'text-xs text-emerald-400 font-semibold';
         statusEl.innerText = '✅ Phân tích giàn giáo nhận thức thành công!';
       }
+      this.saveCurrentProblemToLibrary(true, problemText);
     } else {
       this.currentData = this.presets["problem-126-asymptotes"].data;
       this.resetAccordionDefaults();
@@ -540,6 +541,67 @@ NGUYÊN TẮC BẮT BUỘC:
       if (statusEl) {
         statusEl.className = 'text-xs text-amber-400 font-semibold';
         statusEl.innerText = '⚠️ Đã sử dụng bộ dữ liệu giàn giáo chuẩn sư phạm.';
+      }
+    }
+  },
+
+  generateAI() {
+    return this.handleAnalyzeClick();
+  },
+
+  saveCurrentProblemToLibrary(auto = false, rawText = '') {
+    if (!this.currentData) {
+      if (!auto && window.App && window.App.showToast) {
+        window.App.showToast('Chưa có dữ liệu giàn giáo để lưu!', 'warning');
+      }
+      return;
+    }
+
+    const inputVal = rawText || (document.getElementById('scaffold-problem-input')?.value || '').trim();
+    const firstVocab = this.currentData.bilingual_vocabulary?.[0]?.vietnamese_term || 'Bài toán giàn giáo';
+    const firstVocabEn = this.currentData.bilingual_vocabulary?.[0]?.english_term || 'Scaffolding Problem';
+
+    // Determine Grade
+    let grade = 'Khối 12';
+    if (/lớp 10|khối 10|oxy|vectơ|vecto|tam giác/i.test(inputVal)) grade = 'Khối 10';
+    else if (/lớp 11|khối 11|giới hạn|lim/i.test(inputVal)) grade = 'Khối 11';
+    else if (/lớp 12|khối 12|đạo hàm|tiệm cận|tích phân/i.test(inputVal)) grade = 'Khối 12';
+
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    let titleVi = inputVal.length > 5 ? inputVal.slice(0, 75) : `Chuyên đề: ${firstVocab}`;
+    let titleEn = firstVocabEn;
+    let fullTitle = `${grade}: ${titleVi} (${titleEn})`;
+
+    const entryId = 'scaffold-' + Date.now();
+    const entry = {
+      id: entryId,
+      code: Math.random().toString(36).substring(2, 8).toUpperCase(),
+      title: fullTitle,
+      titleVi: titleVi,
+      titleEn: titleEn,
+      grade: grade,
+      category: 'scaffolding', // Tự động gắn nhãn giàn giáo
+      status: 'Đang mở',
+      schedule: 'Tự do',
+      questionCount: 1,
+      conceptCount: 1,
+      vocabCount: (this.currentData.bilingual_vocabulary || []).length,
+      takenCount: 1,
+      updatedAt: timeStr,
+      rawInput: inputVal,
+      scaffoldData: JSON.parse(JSON.stringify(this.currentData))
+    };
+
+    if (window.App && window.App.createdLibrary) {
+      window.App.createdLibrary.unshift(entry);
+      window.App.saveCreatedLibrary();
+      if (window.App.activeTab === 'scaffold-library') {
+        window.App.renderScaffoldLibraryTable(window.App.scaffoldFilter || 'all');
+      }
+      if (window.App.showToast) {
+        window.App.showToast(auto ? '✅ Tự động lưu bài tập vào "Bài tập đã tạo" của Giàn giáo!' : '💾 Đã lưu bài tập vào "Bài tập đã tạo" của Giàn giáo!');
       }
     }
   },

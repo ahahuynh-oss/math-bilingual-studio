@@ -35,6 +35,8 @@ var App = window.App = {
     this.renderAll();
     this.initCanvasGrapher();
     this.renderMyExamsTable('all');
+    this.renderScaffoldLibraryTable('all');
+    this.updateTreeMenuUI();
     if (window.UserGuide) window.UserGuide.init();
     this.switchTab('scaffolding-tutor');
   },
@@ -224,9 +226,59 @@ var App = window.App = {
     el.dispatchEvent(new Event('input', { bubbles: true }));
   },
 
+  treeState: {
+    lesson: true,
+    scaffold: true
+  },
+
+  toggleTreeMenu(treeName) {
+    this.treeState[treeName] = !this.treeState[treeName];
+    this.updateTreeMenuUI();
+  },
+
+  expandTree(treeName) {
+    this.treeState[treeName] = true;
+    this.updateTreeMenuUI();
+  },
+
+  updateTreeMenuUI() {
+    ['lesson', 'scaffold'].forEach(name => {
+      const parent = document.getElementById(`side-tree-parent-${name}`);
+      const children = document.getElementById(`side-tree-children-${name}`);
+      const arrow = document.getElementById(`side-tree-arrow-${name}`);
+      const isOpen = this.treeState[name];
+      if (children) {
+        if (isOpen) {
+          children.classList.remove('hidden');
+        } else {
+          children.classList.add('hidden');
+        }
+      }
+      if (parent) {
+        if (isOpen) {
+          parent.classList.add('open');
+        } else {
+          parent.classList.remove('open');
+        }
+      }
+      if (arrow) {
+        arrow.style.transform = isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
+      }
+    });
+  },
+
   LIBRARY_STORAGE_KEY: 'math_bilingual_studio_created_library',
   myExamsFilter: 'all',
+  scaffoldFilter: 'all',
   createdLibrary: [],
+
+  getLectureItems() {
+    return this.createdLibrary.filter(item => item.category !== 'scaffolding');
+  },
+
+  getScaffoldingItems() {
+    return this.createdLibrary.filter(item => item.category === 'scaffolding');
+  },
 
   loadCreatedLibrary() {
     try {
@@ -234,6 +286,16 @@ var App = window.App = {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
+          // Normalize and categorize existing items
+          parsed.forEach(item => {
+            if (!item.category) {
+              if (item.scaffoldKey || (item.id && (item.id.startsWith('grade-') || item.id.startsWith('scaffold-'))) || item.scaffoldData) {
+                item.category = 'scaffolding';
+              } else {
+                item.category = 'lecture';
+              }
+            }
+          });
           this.createdLibrary = parsed;
           return;
         }
@@ -264,6 +326,7 @@ var App = window.App = {
         titleVi: 'Đạo hàm & Cực trị hàm số',
         titleEn: 'Derivatives and Extrema of Functions',
         grade: 'Khối 12',
+        category: 'lecture',
         status: 'Đang mở',
         schedule: 'Tự do',
         questionCount: 22,
@@ -281,6 +344,7 @@ var App = window.App = {
         titleVi: 'Hàm phân thức & Tiệm cận',
         titleEn: 'Rational Functions & Asymptotes',
         grade: 'Khối 12',
+        category: 'scaffolding',
         status: 'Đang mở',
         schedule: 'Theo lịch',
         questionCount: 50,
@@ -297,6 +361,7 @@ var App = window.App = {
         titleVi: 'Giới hạn hàm số dạng vô định 0/0',
         titleEn: 'Limits of Functions (0/0 Indeterminate Form)',
         grade: 'Khối 11',
+        category: 'scaffolding',
         status: 'Đang mở',
         schedule: 'Tự do',
         questionCount: 22,
@@ -313,6 +378,7 @@ var App = window.App = {
         titleVi: 'Tọa độ Oxy, Trọng tâm & Tích vô hướng',
         titleEn: 'Vectors & Coordinate Geometry in Oxy',
         grade: 'Khối 10',
+        category: 'scaffolding',
         status: 'Đang mở',
         schedule: 'Tự do',
         questionCount: 22,
@@ -329,6 +395,7 @@ var App = window.App = {
         titleVi: 'Vectơ & Hình học Không gian Oxyz',
         titleEn: 'Vectors & Analytic Geometry in 3D Space',
         grade: 'Khối 12',
+        category: 'lecture',
         status: 'Đang mở',
         schedule: 'Tự do',
         questionCount: 22,
@@ -346,6 +413,7 @@ var App = window.App = {
         titleVi: 'Tích phân Xác định & Diện tích Hình phẳng',
         titleEn: 'Definite Integrals & Planar Area',
         grade: 'Khối 12',
+        category: 'lecture',
         status: 'Đang mở',
         schedule: 'Tự do',
         questionCount: 22,
@@ -362,6 +430,7 @@ var App = window.App = {
         titleVi: 'Xác suất Cổ điển & Biến cố Độc lập',
         titleEn: 'Classical Probability & Independent Events',
         grade: 'Khối 11',
+        category: 'lecture',
         status: 'Đang mở',
         schedule: 'Tự do',
         questionCount: 25,
@@ -378,6 +447,7 @@ var App = window.App = {
         titleVi: 'Số phức & Biểu diễn hình học',
         titleEn: 'Complex Numbers & Geometric Representations',
         grade: 'Khối 12',
+        category: 'lecture',
         status: 'Đang mở',
         schedule: 'Theo lịch',
         questionCount: 30,
@@ -434,6 +504,7 @@ var App = window.App = {
       titleVi: vi,
       titleEn: en,
       grade: grade,
+      category: 'lecture', // Tự động tích hợp vào danh mục Bài giảng
       status: 'Đang mở',
       schedule: 'Tự do',
       questionCount: totalQuestions,
@@ -456,8 +527,12 @@ var App = window.App = {
 
     this.saveCreatedLibrary();
 
-    if (rerender && this.activeTab === 'my-exams') {
-      this.renderMyExamsTable(this.myExamsFilter || 'all');
+    if (rerender) {
+      if (this.activeTab === 'my-exams') {
+        this.renderMyExamsTable(this.myExamsFilter || 'all');
+      } else if (this.activeTab === 'scaffold-library') {
+        this.renderScaffoldLibraryTable(this.scaffoldFilter || 'all');
+      }
     }
   },
 
@@ -682,7 +757,7 @@ var App = window.App = {
     const title = this.currentLesson?.meta?.titleVi || this.currentLesson?.meta?.titleEn || 'Bài học';
     switch (tabName) {
       case 'my-exams':
-        el.innerText = 'Danh sách đã tạo';
+        el.innerText = 'Soạn bài giảng › Danh sách đã tạo';
         break;
       case 'builder-lesson':
         el.innerText = `Soạn bài giảng › ${title}`;
@@ -694,18 +769,25 @@ var App = window.App = {
         el.innerText = `Làm bài tương tác › ${title}`;
         break;
       case 'scaffolding-tutor':
-        el.innerText = 'Gia sư giàn giáo nhận thức (ZPD)';
+        el.innerText = 'Gia sư giàn giáo ZPD › Không gian tương tác';
+        break;
+      case 'scaffold-library':
+        el.innerText = 'Gia sư giàn giáo ZPD › Bài tập đã tạo';
         break;
       case 'user-guide':
         el.innerText = 'Hướng dẫn cho giáo viên & học sinh';
         break;
       default:
-        el.innerText = 'Danh sách đã tạo';
+        el.innerText = 'Bilingual Math Scaffolding Studio';
     }
   },
 
   filterExams(grade) {
     this.renderMyExamsTable(grade);
+  },
+
+  filterScaffoldExams(grade) {
+    this.renderScaffoldLibraryTable(grade);
   },
 
   renderMyExamsTable(gradeFilter = 'all') {
@@ -714,11 +796,14 @@ var App = window.App = {
     const countLabel = document.getElementById('my-exams-count-label');
     if (!tbody) return;
 
-    // Real-time dynamic counts across all categories
-    const countAll = this.createdLibrary.length;
-    const count12 = this.createdLibrary.filter(item => (item.grade || '').includes('12')).length;
-    const count11 = this.createdLibrary.filter(item => (item.grade || '').includes('11')).length;
-    const count10 = this.createdLibrary.filter(item => (item.grade || '').includes('10')).length;
+    // Filter only lecture & quiz items for Bài giảng
+    const lectureItems = this.getLectureItems();
+
+    // Real-time dynamic counts across lecture items
+    const countAll = lectureItems.length;
+    const count12 = lectureItems.filter(item => (item.grade || '').includes('12')).length;
+    const count11 = lectureItems.filter(item => (item.grade || '').includes('11')).length;
+    const count10 = lectureItems.filter(item => (item.grade || '').includes('10')).length;
 
     const elAll = document.getElementById('filter-count-all');
     const el12 = document.getElementById('filter-count-Khối12');
@@ -730,9 +815,9 @@ var App = window.App = {
     if (el11) el11.innerText = count11;
     if (el10) el10.innerText = count10;
 
-    let filtered = this.createdLibrary;
+    let filtered = lectureItems;
     if (gradeFilter !== 'all') {
-      filtered = this.createdLibrary.filter(item => (item.grade || '') === gradeFilter || (item.grade || '').includes(gradeFilter.replace('Khối ', '')));
+      filtered = lectureItems.filter(item => (item.grade || '') === gradeFilter || (item.grade || '').includes(gradeFilter.replace('Khối ', '')));
     }
 
     if (countLabel) {
@@ -827,6 +912,165 @@ var App = window.App = {
     }).join('');
   },
 
+  renderScaffoldLibraryTable(gradeFilter = 'all') {
+    this.scaffoldFilter = gradeFilter;
+    const tbody = document.getElementById('scaffold-library-tbody');
+    const countLabel = document.getElementById('scaffold-library-count-label');
+    if (!tbody) return;
+
+    // Filter only scaffolding items for Giàn giáo
+    const scaffoldItems = this.getScaffoldingItems();
+
+    const countAll = scaffoldItems.length;
+    const count12 = scaffoldItems.filter(item => (item.grade || '').includes('12')).length;
+    const count11 = scaffoldItems.filter(item => (item.grade || '').includes('11')).length;
+    const count10 = scaffoldItems.filter(item => (item.grade || '').includes('10')).length;
+
+    const elAll = document.getElementById('filter-scaffold-count-all');
+    const el12 = document.getElementById('filter-scaffold-count-Khối12');
+    const el11 = document.getElementById('filter-scaffold-count-Khối11');
+    const el10 = document.getElementById('filter-scaffold-count-Khối10');
+
+    if (elAll) elAll.innerText = countAll;
+    if (el12) el12.innerText = count12;
+    if (el11) el11.innerText = count11;
+    if (el10) el10.innerText = count10;
+
+    let filtered = scaffoldItems;
+    if (gradeFilter !== 'all') {
+      filtered = scaffoldItems.filter(item => (item.grade || '') === gradeFilter || (item.grade || '').includes(gradeFilter.replace('Khối ', '')));
+    }
+
+    if (countLabel) {
+      countLabel.innerText = `${filtered.length} bài tập giàn giáo ZPD đã tạo (Tự động cập nhật)`;
+    }
+
+    const filters = ['all', 'Khối 12', 'Khối 11', 'Khối 10'];
+    filters.forEach(f => {
+      const btnId = 'filter-scaffold-grade-' + (f === 'all' ? 'all' : f.replace(/\s+/g, ''));
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        if (f === gradeFilter) {
+          btn.className = 'w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-bold bg-amber-50 text-amber-800 flex items-center justify-between border border-amber-200/60 shadow-xs transition-all';
+        } else {
+          btn.className = 'w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all';
+        }
+      }
+    });
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" class="py-12 text-center text-slate-400 text-sm">
+            <div class="text-3xl mb-2">🪜</div>
+            <p class="font-medium">Chưa có bài tập giàn giáo nào thuộc mục này.</p>
+            <p class="text-xs text-slate-400 mt-1">Hãy bấm "Tạo bài tập giàn giáo mới" hoặc phân tích bài toán bằng AI để tự động thêm!</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(item => {
+      const gradeColor = (item.grade || '').includes('12') 
+        ? 'bg-amber-50 text-amber-700 border-amber-200' 
+        : (item.grade || '').includes('11') 
+          ? 'bg-purple-50 text-purple-700 border-purple-200' 
+          : 'bg-sky-50 text-sky-700 border-sky-200';
+
+      const vocabCount = item.vocabCount || (item.scaffoldData?.bilingual_vocabulary?.length) || 4;
+
+      return `
+        <tr class="hover:bg-amber-50/40 transition-colors border-b border-slate-100 group">
+          <td class="py-3.5 px-4 font-semibold text-slate-800 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold border ${gradeColor}">
+                ${item.grade || 'Toán THPT'}
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                Mô hình 4 Nấc ZPD
+              </span>
+              <span class="line-clamp-2 hover:text-amber-700 cursor-pointer font-bold text-slate-900" onclick="App.openScaffoldItem('${item.id}')" title="Nhấp để mở bài tập giàn giáo">
+                ${item.title || item.titleVi || 'Bài tập giàn giáo ZPD'}
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-500 font-normal flex items-center gap-2 flex-wrap">
+              <span class="text-amber-700 font-semibold">Giàn giáo nhận thức</span>
+              <span>•</span>
+              <span>${vocabCount} thuật ngữ song ngữ</span>
+              <span>•</span>
+              <span class="text-teal-600 font-medium">Gợi ý Nấc 1 & Nấc 2</span>
+              <span>•</span>
+              <span class="text-indigo-600 font-mono text-[10px]">MathJax 3</span>
+            </div>
+          </td>
+
+          <td class="py-3.5 px-3 text-center text-[11px] text-slate-500 whitespace-nowrap">
+            ${item.updatedAt || 'Vừa xong'}
+          </td>
+
+          <td class="py-3.5 px-4 text-right whitespace-nowrap">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="App.openScaffoldItem('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all cursor-pointer" title="Mở không gian giàn giáo nhận thức ZPD">
+                🪜 <span>Mở</span>
+              </button>
+              <button onclick="App.exportWordForScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all cursor-pointer" title="Xuất file Word (.doc) giàn giáo">
+                📄 <span>Word</span>
+              </button>
+              <button onclick="App.printScaffoldItem('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all cursor-pointer" title="In phiếu bài tập A4">
+                🖨️
+              </button>
+              <button onclick="App.deleteExamFromList('${item.id}')" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer" title="Xóa khỏi bài tập đã tạo">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  },
+
+  openScaffoldItem(id) {
+    const item = this.createdLibrary.find(e => e.id === id);
+    if (!item) return;
+
+    if (item.scaffoldKey && window.ScaffoldingTutor && window.ScaffoldingTutor.presets[item.scaffoldKey]) {
+      window.ScaffoldingTutor.selectPreset(item.scaffoldKey);
+    } else if (item.scaffoldData && window.ScaffoldingTutor) {
+      window.ScaffoldingTutor.currentData = JSON.parse(JSON.stringify(item.scaffoldData));
+      const input = document.getElementById('scaffold-problem-input');
+      if (input && item.rawInput) {
+        input.value = item.rawInput;
+      }
+      window.ScaffoldingTutor.switchInputMode('custom');
+      window.ScaffoldingTutor.render();
+    }
+    this.switchTab('scaffolding-tutor');
+    this.showToast('🪜 Đã nạp bài tập giàn giáo: ' + (item.titleVi || item.title));
+  },
+
+  exportWordForScaffoldItem(id) {
+    const item = this.createdLibrary.find(e => e.id === id);
+    if (!item) return;
+    this.openScaffoldItem(id);
+    setTimeout(() => {
+      if (window.ScaffoldingTutor && window.ScaffoldingTutor.exportWord) {
+        window.ScaffoldingTutor.exportWord();
+      }
+    }, 200);
+  },
+
+  printScaffoldItem(id) {
+    const item = this.createdLibrary.find(e => e.id === id);
+    if (!item) return;
+    this.openScaffoldItem(id);
+    setTimeout(() => {
+      if (window.ScaffoldingTutor && window.ScaffoldingTutor.exportWorksheet) {
+        window.ScaffoldingTutor.exportWorksheet();
+      }
+    }, 200);
+  },
+
   openExamFromList(examId) {
     const item = this.createdLibrary.find(e => e.id === examId);
     if (!item) return;
@@ -887,14 +1131,15 @@ var App = window.App = {
 
   deleteExamFromList(examId) {
     const item = this.createdLibrary.find(e => e.id === examId);
-    const title = item ? item.title : 'bài này';
-    if (!confirm(`Bạn có chắc chắn muốn xóa "${title}" khỏi Danh sách đã tạo không?`)) {
+    const title = item ? item.title : 'mục này';
+    if (!confirm(`Bạn có chắc chắn muốn xóa "${title}" khỏi danh sách đã tạo không?`)) {
       return;
     }
     this.createdLibrary = this.createdLibrary.filter(e => e.id !== examId);
     this.saveCreatedLibrary();
     this.renderMyExamsTable(this.myExamsFilter || 'all');
-    this.showToast('Đã xóa thành công khỏi Danh sách đã tạo!');
+    this.renderScaffoldLibraryTable(this.scaffoldFilter || 'all');
+    this.showToast('Đã xóa thành công khỏi danh sách đã tạo!');
   },
 
   openScaffoldForExam(scaffoldKey) {
@@ -938,8 +1183,17 @@ var App = window.App = {
   switchTab(tabName) {
     this.activeTab = tabName;
 
+    // Auto-expand tree menu containing this tab
+    const lessonTabs = ['my-exams', 'builder-lesson', 'builder-quiz'];
+    const scaffoldTabs = ['scaffolding-tutor', 'scaffold-library'];
+    if (lessonTabs.includes(tabName)) {
+      this.expandTree('lesson');
+    } else if (scaffoldTabs.includes(tabName)) {
+      this.expandTree('scaffold');
+    }
+
     // Update panels
-    const tabs = ['my-exams', 'builder-lesson', 'builder-quiz', 'interactive-preview', 'scaffolding-tutor', 'user-guide'];
+    const tabs = ['my-exams', 'builder-lesson', 'builder-quiz', 'interactive-preview', 'scaffolding-tutor', 'scaffold-library', 'user-guide'];
     tabs.forEach(t => {
       const panel = document.getElementById(`panel-${t}`);
       if (panel) {
@@ -950,10 +1204,10 @@ var App = window.App = {
         }
       }
 
-      // Sidebar links
+      // Sidebar links & sub-links
       const sideLink = document.getElementById(`side-nav-${t}`);
       if (sideLink) {
-        if (t === tabName || (t === 'my-exams' && tabName === 'my-exams')) {
+        if (t === tabName) {
           sideLink.classList.add('active');
         } else {
           sideLink.classList.remove('active');
@@ -969,6 +1223,8 @@ var App = window.App = {
 
     if (tabName === 'my-exams') {
       this.renderMyExamsTable(this.myExamsFilter || 'all');
+    } else if (tabName === 'scaffold-library') {
+      this.renderScaffoldLibraryTable(this.scaffoldFilter || 'all');
     } else if (tabName === 'interactive-preview') {
       this.renderInteractivePreview();
     } else if (tabName === 'scaffolding-tutor') {

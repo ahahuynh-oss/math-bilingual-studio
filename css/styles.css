@@ -286,6 +286,89 @@ mjx-container[jax="CHTML"][display="true"] {
   padding-left: 0.75rem;
 }
 
+/* Sidebar Tree / Accordion Menu */
+.sidebar-tree-parent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  transition: all 0.18s ease;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  user-select: none;
+}
+
+.sidebar-tree-parent:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.sidebar-tree-parent.open {
+  background-color: #f8fafc;
+  color: #4338ca;
+}
+
+.sidebar-tree-arrow {
+  display: inline-block;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.sidebar-tree-parent.open .sidebar-tree-arrow {
+  transform: rotate(90deg);
+  color: #4f46e5;
+}
+
+.sidebar-tree-children {
+  margin-left: 0.9rem;
+  padding-left: 0.65rem;
+  border-left: 2px solid #e2e8f0;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar-tree-children.hidden {
+  display: none !important;
+}
+
+.sidebar-sub-link {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebar-sub-link:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.sidebar-sub-link.active {
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+  font-weight: 700 !important;
+}
+
 /* Modern status badges */
 .badge-status-open {
   background-color: #ecfdf5;

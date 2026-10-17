@@ -106,30 +106,59 @@
     <!-- Navigation Links -->
     <div class="sidebar-nav-scroll px-3 py-4 space-y-1 overflow-y-auto flex-1">
       
-      <!-- Group 0: TỔNG QUAN -->
-      <div class="sidebar-section-title">TỔNG QUAN</div>
-      <button onclick="App.switchTab('my-exams')" id="side-nav-my-exams" class="sidebar-link" title="Danh sách đã tạo">
-        <span class="sidebar-icon text-lg">📊</span>
-        <span class="sidebar-text">Danh sách đã tạo</span>
-      </button>
+      <!-- Group: GIẢNG DẠY & HỌC TẬP (CÂY THƯ MỤC) -->
+      <div class="sidebar-section-title">GIẢNG DẠY & HỌC TẬP</div>
+      
+      <!-- Mục mẹ 1: Soạn bài giảng (Cây thư mục) -->
+      <div class="sidebar-tree-wrapper">
+        <button onclick="App.toggleTreeMenu('lesson')" id="side-tree-parent-lesson" class="sidebar-tree-parent open" title="Soạn bài giảng (Nhấp để mở/thu gọn cây thư mục)">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="sidebar-icon text-lg">📝</span>
+            <span class="sidebar-text font-bold truncate">Soạn bài giảng</span>
+          </div>
+          <span id="side-tree-arrow-lesson" class="sidebar-tree-arrow">▾</span>
+        </button>
+        <div id="side-tree-children-lesson" class="sidebar-tree-children">
+          <button onclick="App.switchTab('my-exams')" id="side-nav-my-exams" class="sidebar-sub-link" title="Danh sách bài giảng & đề thi đã tạo">
+            <span class="text-sm">📁</span>
+            <span class="sidebar-text truncate">Danh sách đã tạo</span>
+          </button>
+          <button onclick="App.switchTab('builder-lesson')" id="side-nav-builder-lesson" class="sidebar-sub-link" title="Biên soạn bài giảng">
+            <span class="text-sm">✍️</span>
+            <span class="sidebar-text truncate">Soạn bài giảng mới</span>
+          </button>
+          <button onclick="App.switchTab('builder-quiz')" id="side-nav-builder-quiz" class="sidebar-sub-link" title="Soạn đề thi (Quiz)">
+            <span class="text-sm">🎯</span>
+            <span class="sidebar-text truncate">Soạn đề thi (Quiz)</span>
+          </button>
+        </div>
+      </div>
 
-      <!-- Group 1: GIẢNG DẠY -->
-      <div class="sidebar-section-title">GIẢNG DẠY</div>
-      <button onclick="App.switchTab('builder-lesson')" id="side-nav-builder-lesson" class="sidebar-link" title="Soạn bài giảng">
-        <span class="sidebar-icon text-lg">📝</span>
-        <span class="sidebar-text">Soạn bài giảng</span>
-      </button>
-      <button onclick="App.switchTab('builder-quiz')" id="side-nav-builder-quiz" class="sidebar-link" title="Soạn đề thi (Quiz)">
-        <span class="sidebar-icon text-lg">🎯</span>
-        <span class="sidebar-text">Soạn đề thi (Quiz)</span>
-      </button>
+      <!-- Mục mẹ 2: Gia sư giàn giáo ZPD (Cây thư mục) -->
+      <div class="sidebar-tree-wrapper">
+        <button onclick="App.toggleTreeMenu('scaffold')" id="side-tree-parent-scaffold" class="sidebar-tree-parent open" title="Gia sư giàn giáo ZPD (Nhấp để mở/thu gọn cây thư mục)">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="sidebar-icon text-lg text-amber-500">🪜</span>
+            <span class="sidebar-text font-bold truncate">Gia sư giàn giáo ZPD</span>
+          </div>
+          <span id="side-tree-arrow-scaffold" class="sidebar-tree-arrow">▾</span>
+        </button>
+        <div id="side-tree-children-scaffold" class="sidebar-tree-children">
+          <button onclick="App.switchTab('scaffolding-tutor')" id="side-nav-scaffolding-tutor" class="sidebar-sub-link active" title="Không gian tương tác giàn giáo ZPD">
+            <span class="text-sm">🎯</span>
+            <span class="sidebar-text truncate">Không gian giàn giáo ZPD</span>
+          </button>
+          <button onclick="App.switchTab('scaffold-library')" id="side-nav-scaffold-library" class="sidebar-sub-link" title="Kho bài tập giàn giáo ZPD đã tạo">
+            <span class="text-sm">📁</span>
+            <span class="sidebar-text truncate">Bài tập đã tạo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Item 3: Làm bài tương tác -->
       <button onclick="App.switchTab('interactive-preview')" id="side-nav-interactive-preview" class="sidebar-link" title="Làm bài tương tác">
         <span class="sidebar-icon text-lg">👁️</span>
         <span class="sidebar-text">Làm bài tương tác</span>
-      </button>
-      <button onclick="App.switchTab('scaffolding-tutor')" id="side-nav-scaffolding-tutor" class="sidebar-link active" title="Gia sư giàn giáo ZPD">
-        <span class="sidebar-icon text-lg text-amber-500">🪜</span>
-        <span class="sidebar-text">Gia sư giàn giáo ZPD</span>
       </button>
 
       <!-- Group 2: CÔNG CỤ -->
@@ -310,13 +339,13 @@
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div class="flex items-center flex-wrap gap-2">
-              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Danh sách đã tạo</h1>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Danh sách đã tạo (Bài giảng & Đề thi)</h1>
               <span class="inline-title-speaker inline-flex items-center gap-1 select-none">
-                <button onclick="App.speakText('Created Library and Exams Dashboard', 1.0)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh: Created Library and Exams Dashboard">🔊</button>
-                <button onclick="App.speakText('Created Library and Exams Dashboard', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.75x)">🐢</button>
+                <button onclick="App.speakText('Created Lessons and Exams Dashboard', 1.0)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh: Created Lessons and Exams Dashboard">🔊</button>
+                <button onclick="App.speakText('Created Lessons and Exams Dashboard', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.75x)">🐢</button>
               </span>
             </div>
-            <p id="my-exams-count-label" class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Tự động đồng bộ các bài giảng & đề thi đã soạn</p>
+            <p id="my-exams-count-label" class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Tự động đồng bộ các bài giảng lý thuyết & đề thi đã soạn</p>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="App.openAIGeneratorModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer">
@@ -802,6 +831,9 @@
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2">
+              <button onclick="ScaffoldingTutor.saveCurrentProblemToLibrary()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 shadow-xs transition-all flex items-center gap-2 cursor-pointer" title="Lưu bài tập này vào mục Bài tập đã tạo của Giàn giáo">
+                💾 <span>Lưu Vào "Bài Tập Đã Tạo"</span>
+              </button>
               <button onclick="ScaffoldingTutor.exportWorksheet()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs transition-all flex items-center gap-2" title="In phiếu bài tập khổ A4">
                 🖨️ <span>In Phiếu Học Tập</span>
               </button>
@@ -883,6 +915,89 @@
         <section id="scaffold-results-container" class="space-y-6">
           <!-- Rendered via js/scaffolding-tutor.js -->
         </section>
+
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- TAB: BÀI TẬP ĐÃ TẠO (GIÀN GIÁO ZPD SCAFFOLD LIBRARY)         -->
+      <!-- ============================================================ -->
+      <div id="panel-scaffold-library" class="space-y-6 hidden">
+        
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center flex-wrap gap-2">
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Bài tập đã tạo (Giàn giáo ZPD)</h1>
+              <span class="inline-title-speaker inline-flex items-center gap-1 select-none">
+                <button onclick="App.speakText('Scaffolding Exercises Library', 1.0)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80 cursor-pointer" title="Phát âm tiếng Anh: Scaffolding Exercises Library">🔊</button>
+                <button onclick="App.speakText('Scaffolding Exercises Library', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.75x)">🐢</button>
+              </span>
+            </div>
+            <p id="scaffold-library-count-label" class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Tự động đồng bộ các bài tập phân cấp nhận thức ZPD đã tạo</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="App.switchTab('scaffolding-tutor'); ScaffoldingTutor.switchInputMode('custom');" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 hover:border-amber-300 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer">
+              ➕ <span>Tạo bài tập giàn giáo mới</span>
+            </button>
+            <button onclick="App.switchTab('scaffolding-tutor')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer">
+              🎯 <span>Không gian giàn giáo ZPD</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2 Columns Layout Matching Sample Screenshot -->
+        <div class="flex flex-col lg:flex-row gap-6 items-start">
+          
+          <!-- Left Filter Card -->
+          <div class="w-full lg:w-60 glass-card p-3 space-y-1 shrink-0">
+            <button onclick="App.filterScaffoldExams('all')" id="filter-scaffold-grade-all" class="w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-bold bg-amber-50 text-amber-800 flex items-center justify-between border border-amber-200/60 shadow-xs transition-all">
+              <span class="flex items-center gap-2">
+                <span>🪜</span> <span>Tất cả bài tập</span>
+              </span>
+              <span id="filter-scaffold-count-all" class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">0</span>
+            </button>
+
+            <button onclick="App.filterScaffoldExams('Khối 12')" id="filter-scaffold-grade-Khối12" class="w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all">
+              <span class="flex items-center gap-2">
+                <span>📙</span> <span>Khối 12</span>
+              </span>
+              <span id="filter-scaffold-count-Khối12" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">0</span>
+            </button>
+
+            <button onclick="App.filterScaffoldExams('Khối 11')" id="filter-scaffold-grade-Khối11" class="w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all">
+              <span class="flex items-center gap-2">
+                <span>📗</span> <span>Khối 11</span>
+              </span>
+              <span id="filter-scaffold-count-Khối11" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">0</span>
+            </button>
+
+            <button onclick="App.filterScaffoldExams('Khối 10')" id="filter-scaffold-grade-Khối10" class="w-full px-3.5 py-2.5 rounded-xl text-left text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 flex items-center justify-between transition-all">
+              <span class="flex items-center gap-2">
+                <span>📘</span> <span>Khối 10</span>
+              </span>
+              <span id="filter-scaffold-count-Khối10" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">0</span>
+            </button>
+          </div>
+
+          <!-- Right Table Card -->
+          <div class="flex-1 min-w-0 w-full glass-card overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead>
+                  <tr class="border-b border-slate-200 bg-slate-50/70 text-slate-500 uppercase text-[10px] tracking-wider font-bold">
+                    <th class="py-3.5 px-4">TÊN BÀI TẬP GIÀN GIÁO ZPD</th>
+                    <th class="py-3.5 px-3 text-center">CẬP NHẬT</th>
+                    <th class="py-3.5 px-4 text-right">CHẾ ĐỘ / THAO TÁC</th>
+                  </tr>
+                </thead>
+                <tbody id="scaffold-library-tbody">
+                  <!-- Rendered dynamically by App.renderScaffoldLibraryTable() -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
 
       </div>
 
@@ -1501,13 +1616,13 @@
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261017_14"></script>
-  <script src="js/ai-generator.js?v=20261017_14"></script>
-  <script src="js/exporter.js?v=20261017_14"></script>
-  <script src="js/quiz.js?v=20261017_14"></script>
-  <script src="js/scaffolding-tutor.js?v=20261017_14"></script>
-  <script src="js/bilingual-helper.js?v=20261017_14"></script>
-  <script src="js/guide.js?v=20261017_14"></script>
-  <script src="js/app.js?v=20261017_14"></script>
+  <script src="js/data.js?v=20261018_1"></script>
+  <script src="js/ai-generator.js?v=20261018_1"></script>
+  <script src="js/exporter.js?v=20261018_1"></script>
+  <script src="js/quiz.js?v=20261018_1"></script>
+  <script src="js/scaffolding-tutor.js?v=20261018_1"></script>
+  <script src="js/bilingual-helper.js?v=20261018_1"></script>
+  <script src="js/guide.js?v=20261018_1"></script>
+  <script src="js/app.js?v=20261018_1"></script>
 </body>
 </html>
