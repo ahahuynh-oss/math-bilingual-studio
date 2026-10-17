@@ -156,6 +156,7 @@ const SAMPLE_LESSONS = [
         {
           id: "q1",
           type: "multiple-choice",
+          level: "TH",
           points: 2.5,
           stemEn: "What are the coordinates of the local maximum point of the function $f(x) = -x^3 + 3x + 2$?",
           stemVi: "Tọa độ điểm cực đại của đồ thị hàm số $f(x) = -x^3 + 3x + 2$ là:",
@@ -171,6 +172,7 @@ const SAMPLE_LESSONS = [
         {
           id: "q2",
           type: "true-false-4",
+          level: "NB",
           points: 4.0,
           stemEn: "Consider the function $f(x) = x^4 - 2x^2 + 3$ defined on $\\mathbb{R}$. Determine whether each of the following statements is True (Đúng) or False (Sai):",
           stemVi: "Cho hàm số $f(x) = x^4 - 2x^2 + 3$ xác định trên $\\mathbb{R}$. Xét tính Đúng / Sai của các mệnh đề sau:",
@@ -212,6 +214,7 @@ const SAMPLE_LESSONS = [
         {
           id: "q3",
           type: "short-answer",
+          level: "VD",
           points: 3.5,
           stemEn: "Let $f(x) = \\frac{1}{3}x^3 - 2x^2 + 3x + 1$. Find the product of the two critical points $x_1$ and $x_2$ of $f(x)$.",
           stemVi: "Cho hàm số $f(x) = \\frac{1}{3}x^3 - 2x^2 + 3x + 1$. Tính tích hai điểm cực trị $x_1 \\cdot x_2$ của hàm số đã cho.",

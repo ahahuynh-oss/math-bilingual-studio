@@ -1338,6 +1338,153 @@ JSON Schema:
     lessonData.examples = Array.isArray(lessonData.examples) ? lessonData.examples : [];
     lessonData.quiz = lessonData.quiz || { titleVi: "Đề Kiểm Tra Đánh Giá", timeMinutes: 20, questions: [] };
     lessonData.quiz.questions = Array.isArray(lessonData.quiz.questions) ? lessonData.quiz.questions : [];
+    // Ensure cognitive level for every question
+    lessonData.quiz.questions.forEach((q, idx) => {
+      if (!q.level) {
+        q.level = idx === 0 ? 'NB' : (idx === 1 ? 'TH' : (idx % 2 === 0 ? 'VD' : 'VDC'));
+      }
+    });
+    return lessonData;
+  },
+
+  /**
+   * Gemini Vision Multimodal OCR: Transcribe math worksheets/textbook photos directly into bilingual lessons & quizzes
+   */
+  async generateWithGeminiVision(apiKey, imageBase64, mimeType = 'image/jpeg', customPrompt = '', preferredModel = 'gemini-2.5-flash', onProgress = null) {
+    if (!apiKey) throw new Error('Vui lòng nhập Google Gemini API Key để quét ảnh OCR.');
+    if (!imageBase64) throw new Error('Chưa có dữ liệu hình ảnh để phân tích.');
+
+    const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z0-9+.-]+;base64,/, '');
+
+    let modelsToTry = [];
+    if (preferredModel && preferredModel !== 'auto') {
+      modelsToTry.push(preferredModel);
+    }
+    const visionFallbacks = [
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+      'gemini-1.5-flash',
+      'gemini-1.5-pro',
+      'gemini-3.8-flash'
+    ];
+    visionFallbacks.forEach(m => {
+      if (!modelsToTry.includes(m)) modelsToTry.push(m);
+    });
+
+    const systemInstruction = `You are an expert Bilingual Mathematics Educator and Optical Character Recognition (OCR) specialist.
+Analyze the attached image of a mathematics exam paper, textbook page, or handwritten/printed math worksheet.
+Tasks:
+1. Accurately transcribe all mathematical formulas and expressions into valid LaTeX.
+2. Structure the content into an interactive bilingual (English - Vietnamese) lesson and quiz adhering strictly to the JSON schema below.
+3. For each question, classify its cognitive level into:
+   - "NB": Nhận biết (Recognition / Knowledge)
+   - "TH": Thông hiểu (Comprehension / Understanding)
+   - "VD": Vận dụng (Application)
+   - "VDC": Vận dụng cao (Higher-Order / Advanced problem solving)
+JSON Schema:
+{
+  "meta": { "titleEn": "...", "titleVi": "...", "grade": "...", "duration": "45 minutes", "overviewEn": "...", "overviewVi": "..." },
+  "concepts": [ { "id": "c1", "titleEn": "...", "titleVi": "...", "latex": "...", "descEn": "...", "descVi": "...", "notesEn": "...", "notesVi": "..." } ],
+  "vocabulary": [ { "id": "v1", "term": "...", "ipa": "...", "pos": "noun", "meaningVi": "...", "exampleEn": "...", "exampleVi": "..." } ],
+  "examples": [ { "id": "ex1", "titleEn": "...", "titleVi": "...", "problemEn": "...", "problemVi": "...", "steps": [ { "stepNum": 1, "titleEn": "...", "titleVi": "...", "latex": "...", "explanationEn": "...", "explanationVi": "..." } ] } ],
+  "visualizer": { "type": "canvas-interactive", "formulaDisplay": "..." },
+  "quiz": {
+    "titleEn": "...", "titleVi": "...", "timeMinutes": 20,
+    "questions": [
+      { "id": "q1", "type": "multiple-choice", "level": "TH", "points": 2.5, "stemEn": "...", "stemVi": "...", "options": [ { "id": "A", "text": "...", "isCorrect": true }, { "id": "B", "text": "...", "isCorrect": false }, { "id": "C", "text": "...", "isCorrect": false }, { "id": "D", "text": "...", "isCorrect": false } ], "explanationEn": "...", "explanationVi": "..." },
+      { "id": "q2", "type": "true-false-4", "level": "NB", "points": 4.0, "stemEn": "...", "stemVi": "...", "propositions": [ { "id": "a", "textEn": "...", "textVi": "...", "isCorrect": true, "explanationEn": "...", "explanationVi": "..." }, { "id": "b", "textEn": "...", "textVi": "...", "isCorrect": false, "explanationEn": "...", "explanationVi": "..." }, { "id": "c", "textEn": "...", "textVi": "...", "isCorrect": true, "explanationEn": "...", "explanationVi": "..." }, { "id": "d", "textEn": "...", "textVi": "...", "isCorrect": false, "explanationEn": "...", "explanationVi": "..." } ], "explanationEn": "...", "explanationVi": "..." },
+      { "id": "q3", "type": "short-answer", "level": "VD", "points": 3.5, "stemEn": "...", "stemVi": "...", "correctAnswer": "...", "acceptableAnswers": ["..."], "tolerance": 0.01, "explanationEn": "...", "explanationVi": "..." }
+    ]
+  }
+}`;
+
+    const body = {
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              inline_data: {
+                mime_type: mimeType,
+                data: cleanBase64
+              }
+            },
+            {
+              text: `${systemInstruction}\n\nTask: Perform OCR on the attached image, extract all questions & math content into a bilingual lesson and exam quiz. Teacher notes: ${customPrompt || 'Tự động nhận diện công thức LaTeX và cấu trúc thành đề kiểm tra song ngữ chuẩn Bộ GD&ĐT.'}`
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        responseMimeType: "application/json",
+        temperature: 0.2
+      }
+    };
+
+    let lastError = null;
+    let rawJSON = null;
+    let successfulModel = null;
+
+    for (const model of modelsToTry) {
+      try {
+        if (typeof onProgress === 'function') onProgress(model);
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          const errMsg = errData.error?.message || `HTTP ${response.status}`;
+          throw new Error(`[${model}] ${errMsg}`);
+        }
+
+        const data = await response.json();
+        rawJSON = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawJSON) {
+          successfulModel = model;
+          break;
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn(`Vision model ${model} failed:`, err.message);
+      }
+    }
+
+    if (!rawJSON) {
+      throw new Error(lastError ? lastError.message : 'Không nhận diện được nội dung từ hình ảnh.');
+    }
+
+    let cleanJSON = rawJSON.trim();
+    if (cleanJSON.startsWith('```json')) cleanJSON = cleanJSON.substring(7);
+    else if (cleanJSON.startsWith('```')) cleanJSON = cleanJSON.substring(3);
+    if (cleanJSON.endsWith('```')) cleanJSON = cleanJSON.substring(0, cleanJSON.length - 3);
+    cleanJSON = cleanJSON.trim();
+
+    const jsonMatch = cleanJSON.match(/\{[\s\S]*\}/);
+    if (jsonMatch) cleanJSON = jsonMatch[0];
+
+    const lessonData = JSON.parse(cleanJSON);
+    lessonData.id = `lesson-ocr-${Date.now()}`;
+    lessonData.meta = lessonData.meta || {};
+    lessonData.meta.titleEn = lessonData.meta.titleEn || "OCR Bilingual Math Lesson";
+    lessonData.meta.titleVi = lessonData.meta.titleVi || "Bài Giảng OCR Từ Hình Ảnh";
+    lessonData.meta.generatedByModel = successfulModel;
+    lessonData.concepts = Array.isArray(lessonData.concepts) ? lessonData.concepts : [];
+    lessonData.vocabulary = Array.isArray(lessonData.vocabulary) ? lessonData.vocabulary : [];
+    lessonData.examples = Array.isArray(lessonData.examples) ? lessonData.examples : [];
+    lessonData.quiz = lessonData.quiz || { titleVi: "Đề Kiểm Tra OCR", timeMinutes: 20, questions: [] };
+    lessonData.quiz.questions = Array.isArray(lessonData.quiz.questions) ? lessonData.quiz.questions : [];
+    
+    // Ensure cognitive level
+    lessonData.quiz.questions.forEach((q, idx) => {
+      if (!q.level) {
+        q.level = idx === 0 ? 'NB' : (idx === 1 ? 'TH' : (idx % 2 === 0 ? 'VD' : 'VDC'));
+      }
+    });
+
     return lessonData;
   }
 };

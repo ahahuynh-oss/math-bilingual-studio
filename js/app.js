@@ -12,10 +12,21 @@ var App = window.App = {
   lastFocusedInput: null,
   mathJaxDebounceTimer: null,
   canvasGrapher: null,
+  currentOCRImage: null,
+  teacherBranding: {
+    department: "SỞ GD&ĐT TP. HỒ CHÍ MINH",
+    school: "TRƯỜNG THPT CHUYÊN",
+    subject: "TỔ TOÁN - TIN HỌC",
+    teacherName: "Cô Huỳnh Thị Hà",
+    grade: "Khối 12",
+    academicYear: "2025 - 2026",
+    examType: "BÀI KIỂM TRA ĐÁNH GIÁ ĐỊNH KỲ"
+  },
 
   init() {
     window.App = this;
     this.loadLessonFromStorage();
+    this.loadTeacherBranding();
     this.loadCreatedLibrary();
     this.syncCurrentLessonToLibrary(false);
     this.setupEventListeners();
@@ -69,6 +80,59 @@ var App = window.App = {
     }, 2800);
   },
 
+  loadTeacherBranding() {
+    try {
+      const saved = localStorage.getItem('math_studio_teacher_branding');
+      if (saved) {
+        this.teacherBranding = Object.assign(this.teacherBranding, JSON.parse(saved));
+      }
+    } catch (e) {
+      console.warn('Could not load teacher branding:', e);
+    }
+  },
+
+  saveTeacherBranding(data) {
+    if (data) {
+      this.teacherBranding = Object.assign(this.teacherBranding, data);
+    }
+    localStorage.setItem('math_studio_teacher_branding', JSON.stringify(this.teacherBranding));
+    this.showToast('Đã lưu thông tin trường & giáo viên thành công!');
+  },
+
+  openBrandingModal() {
+    this.loadTeacherBranding();
+    const b = this.teacherBranding;
+    const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    setVal('brand-input-department', b.department);
+    setVal('brand-input-school', b.school);
+    setVal('brand-input-subject', b.subject);
+    setVal('brand-input-teacher', b.teacherName);
+    setVal('brand-input-grade', b.grade);
+    setVal('brand-input-year', b.academicYear);
+    setVal('brand-input-exam', b.examType);
+    const m = document.getElementById('modal-teacher-branding');
+    if (m) m.classList.remove('hidden');
+  },
+
+  closeBrandingModal() {
+    const m = document.getElementById('modal-teacher-branding');
+    if (m) m.classList.add('hidden');
+  },
+
+  saveBrandingFromModal() {
+    const getVal = (id) => document.getElementById(id)?.value?.trim() || '';
+    this.saveTeacherBranding({
+      department: getVal('brand-input-department'),
+      school: getVal('brand-input-school'),
+      subject: getVal('brand-input-subject'),
+      teacherName: getVal('brand-input-teacher'),
+      grade: getVal('brand-input-grade'),
+      academicYear: getVal('brand-input-year'),
+      examType: getVal('brand-input-exam')
+    });
+    this.closeBrandingModal();
+  },
+
   setupEventListeners() {
     // Track focused inputs for LaTeX helper
     document.addEventListener('focusin', (e) => {
@@ -94,6 +158,23 @@ var App = window.App = {
         }
       });
     }
+
+    // Listen for image paste (Ctrl + V) for instant OCR
+    document.addEventListener('paste', (e) => {
+      const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+      if (!items) return;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            this.openAIGeneratorModal('ocr');
+            this.processOCRImageFile(file);
+            this.showToast('Đã nhận ảnh chụp từ bộ nhớ đệm (Ctrl + V)!');
+            break;
+          }
+        }
+      }
+    });
   },
 
   setupSpeechVoices() {
@@ -1368,12 +1449,21 @@ var App = window.App = {
               ${q.type === 'multiple-choice' ? 'Trắc nghiệm 4 lựa chọn' : (q.type === 'true-false-4' ? 'Đúng/Sai 4 Mệnh đề' : 'Điền đáp án')}
             </span>
           </div>
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-1.5 text-xs text-slate-400">
-              <span>Điểm:</span>
-              <input type="number" step="0.5" value="${q.points}" onchange="App.updateQuestionField(${idx}, 'points', parseFloat(this.value))" class="w-16 px-2 py-1 glass-input rounded text-center text-xs font-bold text-white">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div class="flex items-center gap-1 text-xs text-slate-500">
+              <span class="font-semibold text-slate-600">Mức độ:</span>
+              <select onchange="App.updateQuestionField(${idx}, 'level', this.value)" class="px-2 py-1 rounded-lg border border-slate-300 text-xs font-bold text-slate-800 bg-white shadow-2xs">
+                <option value="NB" ${(q.level || 'TH') === 'NB' ? 'selected' : ''}>🟢 Nhận biết (NB)</option>
+                <option value="TH" ${(q.level || 'TH') === 'TH' ? 'selected' : ''}>🔵 Thông hiểu (TH)</option>
+                <option value="VD" ${(q.level || 'TH') === 'VD' ? 'selected' : ''}>🟠 Vận dụng (VD)</option>
+                <option value="VDC" ${(q.level || 'TH') === 'VDC' ? 'selected' : ''}>🔴 Vận dụng cao (VDC)</option>
+              </select>
             </div>
-            <button onclick="App.deleteQuestion(${idx})" class="text-slate-500 hover:text-rose-400 text-xs transition-colors">🗑️ Xóa</button>
+            <div class="flex items-center gap-1 text-xs text-slate-500">
+              <span class="font-semibold text-slate-600">Điểm:</span>
+              <input type="number" step="0.25" value="${q.points}" onchange="App.updateQuestionField(${idx}, 'points', parseFloat(this.value))" class="w-16 px-2 py-1 rounded-lg border border-slate-300 text-center text-xs font-bold text-slate-800 bg-white shadow-2xs">
+            </div>
+            <button onclick="App.deleteQuestion(${idx})" class="text-slate-400 hover:text-rose-600 text-xs transition-colors cursor-pointer" title="Xóa câu hỏi">🗑️ Xóa</button>
           </div>
         </div>
 
@@ -1478,7 +1568,8 @@ var App = window.App = {
       newQ = {
         id: `q-${Date.now()}`,
         type: 'multiple-choice',
-        points: 2.5,
+        level: 'TH',
+        points: 0.25,
         stemEn: "Evaluate the derivative of $f(x) = x^3 - 3x$ at $x = 2$.",
         stemVi: "Tính giá trị của đạo hàm $f'(2)$ biết $f(x) = x^3 - 3x$.",
         options: [
@@ -1494,7 +1585,8 @@ var App = window.App = {
       newQ = {
         id: `q-${Date.now()}`,
         type: 'true-false-4',
-        points: 4.0,
+        level: 'TH',
+        points: 1.0,
         stemEn: "Let $f(x) = x^3 - 3x^2 + 2$. Determine whether each statement is True or False:",
         stemVi: "Cho hàm số $f(x) = x^3 - 3x^2 + 2$. Xét tính Đúng / Sai của các mệnh đề sau:",
         propositions: [
@@ -1510,7 +1602,8 @@ var App = window.App = {
       newQ = {
         id: `q-${Date.now()}`,
         type: 'short-answer',
-        points: 3.5,
+        level: 'VD',
+        points: 0.5,
         stemEn: "Calculate the slope of the tangent line to $y = x^2$ at $x = 3$.",
         stemVi: "Tính hệ số góc của tiếp tuyến với parabol $y = x^2$ tại điểm có hoành độ $x = 3$.",
         correctAnswer: "6",
@@ -2126,8 +2219,10 @@ var App = window.App = {
     // Load saved gemini key and model if any
     const savedKey = localStorage.getItem('math_studio_gemini_api_key');
     const keyInput = document.getElementById('ai-gemini-key');
-    if (keyInput && savedKey) {
-      keyInput.value = savedKey;
+    const ocrKeyInput = document.getElementById('ai-ocr-gemini-key');
+    if (savedKey) {
+      if (keyInput) keyInput.value = savedKey;
+      if (ocrKeyInput) ocrKeyInput.value = savedKey;
     }
     const savedModel = localStorage.getItem('math_studio_gemini_model');
     const modelSelect = document.getElementById('ai-gemini-model');
@@ -2142,7 +2237,18 @@ var App = window.App = {
   },
 
   switchAIGeneratorTab(tab) {
-    const tabs = ['curriculum', 'document', 'gemini'];
+    const tabs = ['curriculum', 'document', 'gemini', 'ocr'];
+    // Sync API key between tabs if user typed in one
+    const geminiKey = document.getElementById('ai-gemini-key')?.value?.trim();
+    const ocrKey = document.getElementById('ai-ocr-gemini-key')?.value?.trim();
+    const commonKey = geminiKey || ocrKey || localStorage.getItem('math_studio_gemini_api_key');
+    if (commonKey) {
+      const gK = document.getElementById('ai-gemini-key');
+      const oK = document.getElementById('ai-ocr-gemini-key');
+      if (gK && !gK.value) gK.value = commonKey;
+      if (oK && !oK.value) oK.value = commonKey;
+    }
+
     tabs.forEach(t => {
       const panel = document.getElementById(`ai-tab-panel-${t}`);
       const btn = document.getElementById(`ai-tab-btn-${t}`);
@@ -2155,6 +2261,314 @@ var App = window.App = {
           btn.className = 'px-4 py-2 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center gap-1.5 border border-transparent cursor-pointer';
         }
       }
+    });
+  },
+
+  handleOCRImageUpload(event) {
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      this.processOCRImageFile(file);
+    }
+  },
+
+  handleOCRImageDrop(event) {
+    event.preventDefault();
+    const dt = event.dataTransfer;
+    if (dt && dt.files && dt.files[0]) {
+      this.processOCRImageFile(dt.files[0]);
+    }
+  },
+
+  processOCRImageFile(file) {
+    if (!file.type || !file.type.startsWith('image/')) {
+      alert('Vui lòng chọn hoặc kéo thả tệp hình ảnh (PNG, JPG, JPEG, WebP)!');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      const base64Data = dataUrl.split(',')[1];
+      this.currentOCRImage = {
+        name: file.name,
+        size: (file.size / 1024).toFixed(1) + ' KB',
+        mimeType: file.type || 'image/jpeg',
+        dataBase64: base64Data,
+        dataUrl: dataUrl
+      };
+      this.renderOCRImagePreview();
+    };
+    reader.readAsDataURL(file);
+  },
+
+  renderOCRImagePreview() {
+    const container = document.getElementById('ai-ocr-preview-container');
+    const imgEl = document.getElementById('ai-ocr-preview-img');
+    const nameEl = document.getElementById('ai-ocr-preview-name');
+    const dropzone = document.getElementById('ai-ocr-dropzone');
+    if (!this.currentOCRImage) {
+      if (container) container.classList.add('hidden');
+      if (dropzone) dropzone.classList.remove('hidden');
+      return;
+    }
+    if (imgEl) imgEl.src = this.currentOCRImage.dataUrl;
+    if (nameEl) nameEl.innerText = `${this.currentOCRImage.name} (${this.currentOCRImage.size})`;
+    if (container) container.classList.remove('hidden');
+    if (dropzone) dropzone.classList.add('hidden');
+  },
+
+  clearOCRImage() {
+    this.currentOCRImage = null;
+    const input = document.getElementById('ai-ocr-file-input');
+    if (input) input.value = '';
+    this.renderOCRImagePreview();
+  },
+
+  async generateWithGeminiVisionAI() {
+    const keyInput = document.getElementById('ai-ocr-gemini-key') || document.getElementById('ai-gemini-key');
+    let apiKey = keyInput?.value?.trim() || localStorage.getItem('math_studio_gemini_api_key');
+    if (!apiKey) {
+      apiKey = prompt('Vui lòng nhập Google Gemini API Key để quét và nhận diện ảnh đề thi:');
+      if (!apiKey) return;
+      if (keyInput) keyInput.value = apiKey;
+    }
+    localStorage.setItem('math_studio_gemini_api_key', apiKey);
+
+    if (!this.currentOCRImage || !this.currentOCRImage.dataBase64) {
+      alert('Vui lòng chọn hoặc kéo thả ảnh chụp đề thi/trang SGK trước khi quét!');
+      return;
+    }
+
+    const modelSelect = document.getElementById('ai-ocr-model');
+    const preferredModel = modelSelect ? modelSelect.value : 'gemini-2.5-flash';
+    const customPrompt = document.getElementById('ai-ocr-prompt')?.value?.trim() || '';
+    const statusEl = document.getElementById('ai-ocr-status');
+    const btn = document.getElementById('btn-run-ocr-ai');
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="inline-block animate-spin mr-1.5">🌀</span> Đang OCR Công Thức & Dịch Song Ngữ...`;
+    }
+    if (statusEl) {
+      statusEl.className = 'text-xs text-indigo-700 font-semibold p-2.5 bg-indigo-50 rounded-xl border border-indigo-200';
+      statusEl.innerHTML = `Đang gửi ảnh chụp lên Gemini Vision (Model: ${preferredModel}) để nhận diện công thức LaTeX và trích xuất cấu trúc đề thi 4 mức độ...`;
+    }
+
+    try {
+      const generated = await window.AIGenerator.generateWithGeminiVision(
+        apiKey,
+        this.currentOCRImage.dataBase64,
+        this.currentOCRImage.mimeType,
+        customPrompt,
+        preferredModel,
+        (currentModel) => {
+          if (statusEl) {
+            statusEl.innerText = `Đang phân tích hình ảnh và công thức với mô hình Google: ${currentModel}...`;
+          }
+        }
+      );
+
+      this.currentLesson = generated;
+      this.saveLessonToStorage(true);
+      this.renderAll();
+      this.closeAIGeneratorModal();
+      const modelUsed = generated.meta?.generatedByModel ? ` (Model: ${generated.meta.generatedByModel})` : '';
+      this.showToast(`AI Vision đã quét ảnh và tạo đề thi song ngữ thành công!${modelUsed}`);
+      this.switchTab('interactive-preview');
+    } catch (err) {
+      console.error('Gemini Vision OCR Error:', err);
+      if (statusEl) {
+        statusEl.className = 'text-xs text-rose-600 font-semibold p-3 bg-rose-50 rounded-xl border border-rose-200';
+        statusEl.innerHTML = `⚠️ Lỗi quét ảnh: ${err.message}. Gợi ý: Kiểm tra API Key hoặc chọn mô hình gemini-2.5-flash / gemini-1.5-flash.`;
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<span>📸 Quét Ảnh & Tự Động Sinh Đề Thi Chuẩn</span>`;
+      }
+    }
+  },
+
+  calculateTestMatrix(quiz) {
+    const questions = quiz?.questions || [];
+    const matrix = {
+      part1: { nbCount: 0, nbPts: 0, thCount: 0, thPts: 0, vdCount: 0, vdPts: 0, vdcCount: 0, vdcPts: 0, totalCount: 0, totalPts: 0 },
+      part2: { nbCount: 0, nbPts: 0, thCount: 0, thPts: 0, vdCount: 0, vdPts: 0, vdcCount: 0, vdcPts: 0, totalCount: 0, totalPts: 0 },
+      part3: { nbCount: 0, nbPts: 0, thCount: 0, thPts: 0, vdCount: 0, vdPts: 0, vdcCount: 0, vdcPts: 0, totalCount: 0, totalPts: 0 },
+      totals: { nbCount: 0, nbPts: 0, thCount: 0, thPts: 0, vdCount: 0, vdPts: 0, vdcCount: 0, vdcPts: 0, grandCount: 0, grandPts: 0, nbPct: 0, thPct: 0, vdPct: 0, vdcPct: 0 }
+    };
+
+    questions.forEach(q => {
+      let pKey = 'part1';
+      if (q.type === 'true-false-4') pKey = 'part2';
+      else if (q.type === 'short-answer') pKey = 'part3';
+
+      const lvl = (q.level || 'TH').toUpperCase();
+      const pts = typeof q.points === 'number' ? q.points : (parseFloat(q.points) || (pKey === 'part1' ? 0.25 : pKey === 'part2' ? 1.0 : 0.5));
+
+      if (lvl === 'NB') {
+        matrix[pKey].nbCount++;
+        matrix[pKey].nbPts += pts;
+      } else if (lvl === 'VD') {
+        matrix[pKey].vdCount++;
+        matrix[pKey].vdPts += pts;
+      } else if (lvl === 'VDC') {
+        matrix[pKey].vdcCount++;
+        matrix[pKey].vdcPts += pts;
+      } else {
+        matrix[pKey].thCount++;
+        matrix[pKey].thPts += pts;
+      }
+
+      matrix[pKey].totalCount++;
+      matrix[pKey].totalPts += pts;
+    });
+
+    ['nb', 'th', 'vd', 'vdc'].forEach(k => {
+      matrix.totals[`${k}Count`] = matrix.part1[`${k}Count`] + matrix.part2[`${k}Count`] + matrix.part3[`${k}Count`];
+      matrix.totals[`${k}Pts`] = matrix.part1[`${k}Pts`] + matrix.part2[`${k}Pts`] + matrix.part3[`${k}Pts`];
+    });
+
+    matrix.totals.grandCount = matrix.part1.totalCount + matrix.part2.totalCount + matrix.part3.totalCount;
+    matrix.totals.grandPts = matrix.part1.totalPts + matrix.part2.totalPts + matrix.part3.totalPts;
+
+    if (matrix.totals.grandPts > 0) {
+      matrix.totals.nbPct = Math.round((matrix.totals.nbPts / matrix.totals.grandPts) * 100);
+      matrix.totals.thPct = Math.round((matrix.totals.thPts / matrix.totals.grandPts) * 100);
+      matrix.totals.vdPct = Math.round((matrix.totals.vdPts / matrix.totals.grandPts) * 100);
+      matrix.totals.vdcPct = Math.round((matrix.totals.vdcPts / matrix.totals.grandPts) * 100);
+    }
+
+    return matrix;
+  },
+
+  openTestMatrixModal() {
+    const quiz = this.currentLesson?.quiz || { questions: [] };
+    const m = this.calculateTestMatrix(quiz);
+    const container = document.getElementById('test-matrix-table-container');
+    if (container) {
+      container.innerHTML = `
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse border border-slate-300">
+            <thead>
+              <tr class="bg-indigo-900 text-white text-center font-bold">
+                <th rowspan="2" class="border border-slate-300 p-2.5">Phần Thi & Định Dạng</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-emerald-700">1. Nhận biết (NB)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-blue-700">2. Thông hiểu (TH)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-amber-700">3. Vận dụng (VD)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-rose-700">4. Vận dụng cao (VDC)</th>
+                <th colspan="2" class="border border-slate-300 p-2 bg-purple-800">Tổng Cộng</th>
+              </tr>
+              <tr class="bg-slate-100 text-slate-800 text-center font-semibold">
+                <th class="border border-slate-300 p-1.5">Số câu</th>
+                <th class="border border-slate-300 p-1.5">Điểm</th>
+                <th class="border border-slate-300 p-1.5">Số câu</th>
+                <th class="border border-slate-300 p-1.5">Điểm</th>
+                <th class="border border-slate-300 p-1.5">Số câu</th>
+                <th class="border border-slate-300 p-1.5">Điểm</th>
+                <th class="border border-slate-300 p-1.5">Số câu</th>
+                <th class="border border-slate-300 p-1.5">Điểm</th>
+                <th class="border border-slate-300 p-1.5">Số câu</th>
+                <th class="border border-slate-300 p-1.5">Điểm</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover:bg-slate-50">
+                <td class="border border-slate-300 p-2 font-bold text-slate-800">Phần I: Trắc nghiệm 4 lựa chọn</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-emerald-700">${m.part1.nbCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part1.nbPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-blue-700">${m.part1.thCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part1.thPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-amber-700">${m.part1.vdCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part1.vdPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-rose-700">${m.part1.vdcCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part1.vdcPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-bold text-indigo-900 bg-indigo-50/50">${m.part1.totalCount}</td>
+                <td class="border border-slate-300 p-2 text-center font-bold text-indigo-900 bg-indigo-50/50">${m.part1.totalPts.toFixed(2)}</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="border border-slate-300 p-2 font-bold text-slate-800">Phần II: Đúng / Sai (4 mệnh đề)</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-emerald-700">${m.part2.nbCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part2.nbPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-blue-700">${m.part2.thCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part2.thPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-amber-700">${m.part2.vdCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part2.vdPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-rose-700">${m.part2.vdcCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part2.vdcPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-bold text-indigo-900 bg-indigo-50/50">${m.part2.totalCount}</td>
+                <td class="border border-slate-300 p-2 text-center font-bold text-indigo-900 bg-indigo-50/50">${m.part2.totalPts.toFixed(2)}</td>
+              </tr>
+              <tr class="hover:bg-slate-50">
+                <td class="border border-slate-300 p-2 font-bold text-slate-800">Phần III: Điền đáp số ngắn</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-emerald-700">${m.part3.nbCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part3.nbPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-blue-700">${m.part3.thCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part3.thPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-amber-700">${m.part3.vdCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part3.vdPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-semibold text-rose-700">${m.part3.vdcCount}</td>
+                <td class="border border-slate-300 p-2 text-center text-slate-700">${m.part3.vdcPts.toFixed(2)}</td>
+                <td class="border border-slate-300 p-2 text-center font-bold text-indigo-900 bg-indigo-50/50">${m.part3.totalCount}</td>
+                <td class="border border-slate-300 p-2 text-center font-bold text-indigo-900 bg-indigo-50/50">${m.part3.totalPts.toFixed(2)}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-indigo-50 font-bold text-indigo-950">
+                <td class="border border-slate-300 p-2 font-extrabold uppercase">TỔNG SỐ CÂU</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-emerald-800 font-extrabold">${m.totals.nbCount} câu</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-blue-800 font-extrabold">${m.totals.thCount} câu</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-amber-800 font-extrabold">${m.totals.vdCount} câu</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-rose-800 font-extrabold">${m.totals.vdcCount} câu</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-purple-900 font-black text-sm">${m.totals.grandCount} CÂU</td>
+              </tr>
+              <tr class="bg-slate-100 font-bold text-slate-900">
+                <td class="border border-slate-300 p-2 font-extrabold uppercase">TỔNG ĐIỂM</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-emerald-800 font-bold">${m.totals.nbPts.toFixed(2)} đ</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-blue-800 font-bold">${m.totals.thPts.toFixed(2)} đ</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-amber-800 font-bold">${m.totals.vdPts.toFixed(2)} đ</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-rose-800 font-bold">${m.totals.vdcPts.toFixed(2)} đ</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-purple-900 font-black text-sm">${m.totals.grandPts.toFixed(2)} ĐIỂM</td>
+              </tr>
+              <tr class="bg-amber-50 font-bold text-amber-950">
+                <td class="border border-slate-300 p-2 font-extrabold uppercase">TỈ LỆ % ĐIỂM SỐ</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-emerald-700 font-extrabold text-sm">${m.totals.nbPct}%</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-blue-700 font-extrabold text-sm">${m.totals.thPct}%</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-amber-700 font-extrabold text-sm">${m.totals.vdPct}%</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-rose-700 font-extrabold text-sm">${m.totals.vdcPct}%</td>
+                <td colspan="2" class="border border-slate-300 p-2 text-center text-purple-900 font-black text-sm">100%</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span>ℹ️</span>
+            <span>Khung chuẩn Bộ GD&ĐT khuyến nghị: <strong>40% Nhận biết</strong> • <strong>30% Thông hiểu</strong> • <strong>20% Vận dụng</strong> • <strong>10% Vận dụng cao</strong>.</span>
+          </div>
+          <span class="px-2 py-1 rounded bg-indigo-100 text-indigo-800 font-bold text-[11px]">GDPT 2018</span>
+        </div>
+      `;
+    }
+    const modal = document.getElementById('modal-test-matrix');
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeTestMatrixModal() {
+    const modal = document.getElementById('modal-test-matrix');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  copyTestMatrixSummary() {
+    const quiz = this.currentLesson?.quiz || { questions: [] };
+    const m = this.calculateTestMatrix(quiz);
+    const text = `BẢNG MA TRẬN ĐỀ THI (CHUẨN BỘ GIÁO DỤC VÀ ĐÀO TẠO)\n` +
+      `Môn: Toán (Bilingual) - Tổng: ${m.totals.grandCount} câu (${m.totals.grandPts.toFixed(2)} điểm)\n` +
+      `- 1. Nhận biết (NB): ${m.totals.nbCount} câu (${m.totals.nbPts.toFixed(2)} đ - ${m.totals.nbPct}%)\n` +
+      `- 2. Thông hiểu (TH): ${m.totals.thCount} câu (${m.totals.thPts.toFixed(2)} đ - ${m.totals.thPct}%)\n` +
+      `- 3. Vận dụng (VD): ${m.totals.vdCount} câu (${m.totals.vdPts.toFixed(2)} đ - ${m.totals.vdPct}%)\n` +
+      `- 4. Vận dụng cao (VDC): ${m.totals.vdcCount} câu (${m.totals.vdcPts.toFixed(2)} đ - ${m.totals.vdcPct}%)\n`;
+    navigator.clipboard.writeText(text).then(() => {
+      this.showToast('Đã sao chép tóm tắt ma trận đề thi vào bộ nhớ tạm!');
     });
   },
 

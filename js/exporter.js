@@ -66,6 +66,16 @@ const Exporter = {
     const currentScaffold = (window.ScaffoldingTutor && window.ScaffoldingTutor.currentData) ? window.ScaffoldingTutor.currentData : null;
     const serializedCurrentScaffold = JSON.stringify(currentScaffold).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 
+    const branding = window.App?.teacherBranding || {
+      department: "SỞ GD&ĐT TP. HỒ CHÍ MINH",
+      school: "TRƯỜNG THPT CHUYÊN",
+      subject: "TỔ TOÁN - TIN HỌC",
+      teacherName: "Cô Huỳnh Thị Hà",
+      grade: "Khối 12",
+      academicYear: "2025 - 2026",
+      examType: "BÀI KIỂM TRA ĐÁNH GIÁ ĐỊNH KỲ"
+    };
+
     const htmlContent = `<!DOCTYPE html>
 <html lang="vi" class="scroll-smooth">
 <head>
@@ -160,9 +170,9 @@ const Exporter = {
           🎓
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Math Bilingual Studio (Offline Standalone)</span>
-            <span class="text-xs text-slate-500 hidden sm:inline">• ${lesson.meta.grade || 'Toán song ngữ THPT'}</span>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">${branding.school}</span>
+            <span class="text-xs text-slate-500 hidden sm:inline">• ${branding.subject} • GV: ${branding.teacherName} • ${branding.grade}</span>
           </div>
           <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
             <span>${lesson.meta.titleEn}</span>
@@ -1313,10 +1323,13 @@ const Exporter = {
     `).join('');
 
     const questionItems = (lesson.quiz.questions || []).map((q, qIndex) => {
+      const levelLabel = q.level === 'NB' ? 'Nhận biết' : q.level === 'TH' ? 'Thông hiểu' : q.level === 'VD' ? 'Vận dụng' : q.level === 'VDC' ? 'Vận dụng cao' : '';
+      const levelTag = levelLabel ? ` [${levelLabel}]` : '';
+
       let qHtml = `
         <div style="margin-bottom: 16pt; page-break-inside: avoid;">
           <div style="font-weight: bold; margin-bottom: 3pt;">
-            Câu ${qIndex + 1} (${q.points} điểm): ${this.formatMathForWord(q.stemEn)}
+            Câu ${qIndex + 1} (${q.points} điểm)${levelTag}: ${this.formatMathForWord(q.stemEn)}
           </div>
           <div style="font-style: italic; color: #444; margin-bottom: 6pt; font-size: 11pt;">
             Dịch nghĩa: ${q.stemVi}
@@ -1396,6 +1409,120 @@ const Exporter = {
       return qHtml;
     }).join('');
 
+    const branding = window.App?.teacherBranding || {
+      department: "SỞ GD&ĐT TP. HỒ CHÍ MINH",
+      school: "TRƯỜNG THPT CHUYÊN",
+      subject: "TỔ TOÁN - TIN HỌC",
+      teacherName: "Cô Huỳnh Thị Hà",
+      grade: "Khối 12",
+      academicYear: "2025 - 2026",
+      examType: "BÀI KIỂM TRA ĐÁNH GIÁ ĐỊNH KỲ"
+    };
+
+    // Prepare MOET Test Matrix table if solutions/teacher mode
+    let matrixWordHtml = '';
+    if (includeSolutions && window.App?.calculateTestMatrix) {
+      const m = window.App.calculateTestMatrix(lesson.quiz);
+      if (m) {
+        matrixWordHtml = `
+          <div class="section-title" style="background-color: #fef3c7; border-left: 4px solid #b45309; color: #78350f;">
+            BẢNG MA TRẬN ĐỀ THI THEO CHUẨN BỘ GIÁO DỤC VÀ ĐÀO TẠO (GDPT 2018)
+          </div>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 16pt; font-size: 10pt;">
+            <thead>
+              <tr style="background-color: #1e3a8a; color: #fff; text-align: center; font-weight: bold;">
+                <th rowspan="2" style="border: 1px solid #555; padding: 4px;">Dạng Thức / Phần Thi</th>
+                <th colspan="2" style="border: 1px solid #555; padding: 4px;">1. Nhận biết (NB)</th>
+                <th colspan="2" style="border: 1px solid #555; padding: 4px;">2. Thông hiểu (TH)</th>
+                <th colspan="2" style="border: 1px solid #555; padding: 4px;">3. Vận dụng (VD)</th>
+                <th colspan="2" style="border: 1px solid #555; padding: 4px;">4. Vận dụng cao (VDC)</th>
+                <th colspan="2" style="border: 1px solid #555; padding: 4px;">Tổng Cộng</th>
+              </tr>
+              <tr style="background-color: #e2e8f0; color: #000; text-align: center; font-weight: bold; font-size: 9pt;">
+                <th style="border: 1px solid #555; padding: 3px;">Số câu</th>
+                <th style="border: 1px solid #555; padding: 3px;">Điểm</th>
+                <th style="border: 1px solid #555; padding: 3px;">Số câu</th>
+                <th style="border: 1px solid #555; padding: 3px;">Điểm</th>
+                <th style="border: 1px solid #555; padding: 3px;">Số câu</th>
+                <th style="border: 1px solid #555; padding: 3px;">Điểm</th>
+                <th style="border: 1px solid #555; padding: 3px;">Số câu</th>
+                <th style="border: 1px solid #555; padding: 3px;">Điểm</th>
+                <th style="border: 1px solid #555; padding: 3px;">Số câu</th>
+                <th style="border: 1px solid #555; padding: 3px;">Điểm</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="border: 1px solid #555; padding: 4px; font-weight: bold;">Phần I: Trắc nghiệm 4 lựa chọn</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.nbCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.nbPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.thCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.thPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.vdCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.vdPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.vdcCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part1.vdcPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center; font-weight: bold; background-color: #f1f5f9;">${m.part1.totalCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center; font-weight: bold; background-color: #f1f5f9;">${m.part1.totalPts.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #555; padding: 4px; font-weight: bold;">Phần II: Đúng / Sai (4 mệnh đề)</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.nbCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.nbPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.thCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.thPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.vdCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.vdPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.vdcCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part2.vdcPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center; font-weight: bold; background-color: #f1f5f9;">${m.part2.totalCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center; font-weight: bold; background-color: #f1f5f9;">${m.part2.totalPts.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid #555; padding: 4px; font-weight: bold;">Phần III: Điền đáp số ngắn</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.nbCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.nbPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.thCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.thPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.vdCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.vdPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.vdcCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center;">${m.part3.vdcPts.toFixed(2)}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center; font-weight: bold; background-color: #f1f5f9;">${m.part3.totalCount}</td>
+                <td style="border: 1px solid #555; padding: 4px; text-align: center; font-weight: bold; background-color: #f1f5f9;">${m.part3.totalPts.toFixed(2)}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr style="background-color: #e0e7ff; font-weight: bold;">
+                <td style="border: 1px solid #555; padding: 4px;">TỔNG SỐ CÂU</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.nbCount} câu</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.thCount} câu</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.vdCount} câu</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.vdcCount} câu</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center; font-size: 11pt; color: #1e3a8a;">${m.totals.grandCount} CÂU</td>
+              </tr>
+              <tr style="background-color: #f1f5f9; font-weight: bold;">
+                <td style="border: 1px solid #555; padding: 4px;">TỔNG ĐIỂM SỐ</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.nbPts.toFixed(2)} đ</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.thPts.toFixed(2)} đ</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.vdPts.toFixed(2)} đ</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.vdcPts.toFixed(2)} đ</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center; font-size: 11pt; color: #1e3a8a;">${m.totals.grandPts.toFixed(2)} ĐIỂM</td>
+              </tr>
+              <tr style="background-color: #fef3c7; font-weight: bold;">
+                <td style="border: 1px solid #555; padding: 4px;">TỶ LỆ PHẦN TRĂM (%)</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.nbPct}%</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.thPct}%</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.vdPct}%</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center;">${m.totals.vdcPct}%</td>
+                <td colspan="2" style="border: 1px solid #555; padding: 4px; text-align: center; font-size: 11pt; color: #b45309;">100%</td>
+              </tr>
+            </tfoot>
+          </table>
+        `;
+      }
+    }
+
     const wordHtml = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
@@ -1444,37 +1571,44 @@ const Exporter = {
 <body>
   <div class="Section1">
     
-    <!-- Top Exam Header Table -->
-    <table style="width: 100%; margin-bottom: 12pt;">
+    <!-- MOET Official 2-Column Header Table -->
+    <table style="width: 100%; margin-bottom: 10pt; border: none;">
       <tr>
-        <td style="width: 60%; vertical-align: top;">
-          <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase;">MATH BILINGUAL ACADEMY / PHÒNG ĐÀO TẠO</div>
-          <div style="font-size: 13.5pt; font-weight: bold; text-transform: uppercase; margin-top: 3pt;">${lesson.quiz.titleEn}</div>
-          <div style="font-size: 11pt; font-style: italic;">${lesson.quiz.titleVi}</div>
-          <div style="font-size: 11pt; margin-top: 8pt; line-height: 1.5;">
-            Họ và tên học sinh (Student Name): ....................................................<br>
-            Lớp (Class): ......................... &nbsp;&nbsp;&nbsp; Ngày (Date): ............................<br>
-            Thời gian làm bài: <strong>${lesson.quiz.timeMinutes || 20} phút</strong> (Không kể thời gian phát đề)
-          </div>
+        <td style="width: 48%; vertical-align: top; text-align: center; line-height: 1.35;">
+          <div style="font-size: 10pt; font-weight: bold; text-transform: uppercase;">${branding.department}</div>
+          <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #1e3a8a;">${branding.school}</div>
+          <div style="font-size: 10pt; font-weight: bold;">${branding.subject}</div>
+          <div style="font-size: 9.5pt; font-style: italic; margin-top: 2pt;">Giáo viên biên soạn: <strong>${branding.teacherName}</strong></div>
+          <div style="width: 80px; border-bottom: 1px solid #000; margin: 3pt auto 0 auto;"></div>
         </td>
-        <td style="width: 40%; vertical-align: top; text-align: right;">
-          <div style="display: inline-block; text-align: center;">
-            <table style="border: 1.5px solid #000; width: 180px; text-align: center;">
-              <tr>
-                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; font-size: 9.5pt;">ĐIỂM (SCORE)</td>
-                <td style="border: 1px solid #000; padding: 4px; font-weight: bold; font-size: 9.5pt;">LỜI PHÊ GIÁO VIÊN</td>
-              </tr>
-              <tr>
-                <td style="border: 1px solid #000; height: 60px;"></td>
-                <td style="border: 1px solid #000; height: 60px;"></td>
-              </tr>
-            </table>
-          </div>
+        <td style="width: 52%; vertical-align: top; text-align: center; line-height: 1.35;">
+          <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase;">${branding.examType} - NĂM HỌC ${branding.academicYear}</div>
+          <div style="font-size: 11pt; font-weight: bold; text-transform: uppercase; color: #b91c1c;">MÔN: TOÁN (BILINGUAL) - ${branding.grade}</div>
+          <div style="font-size: 10pt; font-style: italic;">${lesson.quiz.titleEn} (${lesson.quiz.titleVi})</div>
+          <div style="font-size: 9.5pt; margin-top: 2pt;">Thời gian làm bài: <strong>${lesson.quiz.timeMinutes || 20} phút</strong> (Không kể thời gian phát đề)</div>
+          <div style="width: 100px; border-bottom: 1px solid #000; margin: 3pt auto 0 auto;"></div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Student Name & Scores Box -->
+    <table style="width: 100%; margin-bottom: 12pt; border: 1.5px solid #000;">
+      <tr>
+        <td style="width: 65%; padding: 6px 10px; font-size: 11pt; line-height: 1.7; vertical-align: top;">
+          Họ và tên học sinh: .............................................................. Lớp: ...................<br>
+          Số báo danh: .................................................. Mã đề thi: <strong>101</strong>
+        </td>
+        <td style="width: 35%; border-left: 1.5px solid #000; padding: 4px; text-align: center; vertical-align: top;">
+          <div style="font-size: 9pt; font-weight: bold;">ĐIỂM SỐ & NHẬN XÉT CỦA GIÁO VIÊN</div>
+          <div style="height: 40px;"></div>
         </td>
       </tr>
     </table>
 
     <div style="border-top: 1.5px solid #000; margin: 8pt 0 14pt 0;"></div>
+
+    <!-- MOET Matrix Table (For Teacher Edition) -->
+    ${matrixWordHtml}
 
     <!-- Key Vocabulary Section -->
     <div class="section-title">PHẦN I: THUẬT NGỮ TOÁN HỌC TRỌNG TÂM (KEY VOCABULARY)</div>
