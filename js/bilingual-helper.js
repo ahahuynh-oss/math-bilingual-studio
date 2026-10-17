@@ -112,31 +112,303 @@ const BilingualHelper = {
     }
   },
 
-  cleanLatexForSpeech(text) {
+  parseLatexFormula(formula, isVi) {
+    if (!formula) return '';
+    let s = ' ' + String(formula).trim() + ' ';
+
+    // 0. Clean formatting, environments, and text wrappers
+    s = s.replace(/\\text\{([^}]+)\}/g, ' $1 ')
+         .replace(/\\mathrm\{([^}]+)\}/g, ' $1 ')
+         .replace(/\\mathbf\{([^}]+)\}/g, ' $1 ')
+         .replace(/\\mathit\{([^}]+)\}/g, ' $1 ')
+         .replace(/\\displaystyle/g, ' ')
+         .replace(/\\left|\\right/g, ' ')
+         .replace(/\\quad|\\qquad|\\,|\\;|\\!/g, ' ');
+
+    // 1. Double bars norm \| \vec{u} \| or magnitude |\vec{u}| or absolute value |x|
+    if (isVi) {
+      s = s.replace(/\\\|\s*([^\\|]+?)\s*\\\|/g, ' độ dài của $1 ')
+           .replace(/\|\s*([^|]+?)\s*\|/g, (m, inner) => {
+             if (/[a-zA-Z]{2,}|vec|[uvabw]/i.test(inner)) {
+               return ' độ dài của ' + inner + ' ';
+             }
+             return ' giá trị tuyệt đối của ' + inner + ' ';
+           });
+    } else {
+      s = s.replace(/\\\|\s*([^\\|]+?)\s*\\\|/g, ' magnitude of $1 ')
+           .replace(/\|\s*([^|]+?)\s*\|/g, (m, inner) => {
+             if (/[a-zA-Z]{2,}|vec|[uvabw]/i.test(inner)) {
+               return ' magnitude of ' + inner + ' ';
+             }
+             return ' absolute value of ' + inner + ' ';
+           });
+    }
+
+    // 2. Vectors (\vec, \overrightarrow)
+    if (isVi) {
+      s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' vectơ không ')
+           .replace(/\\vec\{([A-Za-z0-9]+)\}/g, (m, v) => ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' ')
+           .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, (m, v) => ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' ');
+    } else {
+      s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' zero vector ')
+           .replace(/\\vec\{([A-Za-z0-9]+)\}/g, (m, v) => ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' ')
+           .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, (m, v) => ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' ');
+    }
+
+    // 3. Dot product & Cross product
+    if (isVi) {
+      s = s.replace(/\\cdot/g, ' nhân vô hướng ')
+           .replace(/\\times/g, ' nhân có hướng ');
+    } else {
+      s = s.replace(/\\cdot/g, ' dot ')
+           .replace(/\\times/g, ' times ');
+    }
+
+    // 4. Fractions: \frac{num}{den} or \dfrac{num}{den} (loop to resolve nested)
+    for (let iter = 0; iter < 3; iter++) {
+      if (!s.includes('frac')) break;
+      if (isVi) {
+        s = s.replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 trên $2 ');
+      } else {
+        s = s.replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 over $2 ');
+      }
+    }
+
+    // 5. Radicals / Roots: \sqrt[n]{x} and \sqrt{x}
+    for (let iter = 0; iter < 2; iter++) {
+      if (!s.includes('sqrt')) break;
+      if (isVi) {
+        s = s.replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' căn bậc $1 của $2 ')
+             .replace(/\\sqrt\{([^{}]+)\}/g, ' căn bậc hai của $1 ');
+      } else {
+        s = s.replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' $1 root of $2 ')
+             .replace(/\\sqrt\{([^{}]+)\}/g, ' square root of $1 ');
+      }
+    }
+
+    // 6. Limits: \lim_{x \to a}
+    if (isVi) {
+      s = s.replace(/\\lim_\{([^}]+)\}/g, (m, sub) => {
+        const cleanSub = sub.replace(/\\to|\\rightarrow/g, ' tiến tới ')
+                            .replace(/\\infty/g, ' vô cực ')
+                            .replace(/\+/g, ' dương ')
+                            .replace(/-/g, ' âm ');
+        return ' giới hạn khi ' + cleanSub + ' ';
+      });
+    } else {
+      s = s.replace(/\\lim_\{([^}]+)\}/g, (m, sub) => {
+        const cleanSub = sub.replace(/\\to|\\rightarrow/g, ' approaches ')
+                            .replace(/\\infty/g, ' infinity ')
+                            .replace(/\+/g, ' positive ')
+                            .replace(/-/g, ' negative ');
+        return ' limit as ' + cleanSub + ' ';
+      });
+    }
+
+    // 7. Integrals: \int_{a}^{b} or \int
+    if (isVi) {
+      s = s.replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, ' tích phân từ $1 đến $2 của ')
+           .replace(/\\int/g, ' nguyên hàm của ');
+    } else {
+      s = s.replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, ' integral from $1 to $2 of ')
+           .replace(/\\int/g, ' integral of ');
+    }
+
+    // 8. Derivatives: f'(x), f''(x), y', y''
+    if (isVi) {
+      s = s.replace(/f'''\(x\)/g, ' f ba phẩy x ')
+           .replace(/f''\(x\)/g, ' f hai phẩy x ')
+           .replace(/f'\(x\)/g, ' f phẩy x ')
+           .replace(/y''/g, ' y hai phẩy ')
+           .replace(/y'/g, ' y phẩy ')
+           .replace(/f\(x\)/g, ' f của x ')
+           .replace(/g\(x\)/g, ' g của x ');
+    } else {
+      s = s.replace(/f'''\(x\)/g, ' f triple prime of x ')
+           .replace(/f''\(x\)/g, ' f double prime of x ')
+           .replace(/f'\(x\)/g, ' f prime of x ')
+           .replace(/y''/g, ' y double prime ')
+           .replace(/y'/g, ' y prime ')
+           .replace(/f\(x\)/g, ' f of x ')
+           .replace(/g\(x\)/g, ' g of x ');
+    }
+
+    // 9. Exponents: ^2, ^3, ^{n}, ^n
+    if (isVi) {
+      s = s.replace(/\^2\b|\^\{2\}/g, ' bình phương ')
+           .replace(/\^3\b|\^\{3\}/g, ' lập phương ')
+           .replace(/\^\{-1\}|\^-1\b/g, ' mũ trừ 1 ')
+           .replace(/\^\{([^}]+)\}/g, ' mũ $1 ')
+           .replace(/\^([a-zA-Z0-9]+)/g, ' mũ $1 ');
+    } else {
+      s = s.replace(/\^2\b|\^\{2\}/g, ' squared ')
+           .replace(/\^3\b|\^\{3\}/g, ' cubed ')
+           .replace(/\^\{-1\}|\^-1\b/g, ' to the power of negative 1 ')
+           .replace(/\^\{([^}]+)\}/g, ' to the power of $1 ')
+           .replace(/\^([a-zA-Z0-9]+)/g, ' to the power of $1 ');
+    }
+
+    // 10. Subscripts: _{1}, _1, _{n}, _n
+    if (isVi) {
+      s = s.replace(/_\{0\}|_0/g, ' không ')
+           .replace(/_\{([^}]+)\}/g, ' $1 ')
+           .replace(/_([a-zA-Z0-9])/g, ' $1 ');
+    } else {
+      s = s.replace(/_\{0\}|_0/g, ' sub zero ')
+           .replace(/_\{([^}]+)\}/g, ' sub $1 ')
+           .replace(/_([a-zA-Z0-9])/g, ' sub $1 ');
+    }
+
+    // 11. Trigonometric & Logarithmic functions
+    if (isVi) {
+      s = s.replace(/\\sin\b/g, ' sin ')
+           .replace(/\\cos\b/g, ' cốt ')
+           .replace(/\\tan\b/g, ' tan ')
+           .replace(/\\cot\b/g, ' cô-tan ')
+           .replace(/\\ln\b/g, ' lô-ga-rít tự nhiên ')
+           .replace(/\\log_\{([^}]+)\}/g, ' lô-ga-rít cơ số $1 ')
+           .replace(/\\log\b/g, ' lô-ga-rít ');
+    } else {
+      s = s.replace(/\\sin\b/g, ' sine ')
+           .replace(/\\cos\b/g, ' cosine ')
+           .replace(/\\tan\b/g, ' tangent ')
+           .replace(/\\cot\b/g, ' cotangent ')
+           .replace(/\\ln\b/g, ' natural log of ')
+           .replace(/\\log_\{([^}]+)\}/g, ' log base $1 of ')
+           .replace(/\\log\b/g, ' log of ');
+    }
+
+    // 12. Relations, Logic & Sets
+    if (isVi) {
+      s = s.replace(/\\leq|\\le/g, ' nhỏ hơn hoặc bằng ')
+           .replace(/\\geq|\\ge/g, ' lớn hơn hoặc bằng ')
+           .replace(/\\neq/g, ' khác ')
+           .replace(/\\approx/g, ' xấp xỉ bằng ')
+           .replace(/\\equiv/g, ' đồng nhất với ')
+           .replace(/\\perp/g, ' vuông góc với ')
+           .replace(/\\parallel/g, ' song song với ')
+           .replace(/\\implies|\\Rightarrow/g, ' suy ra ')
+           .replace(/\\iff|\\Leftrightarrow/g, ' tương đương ')
+           .replace(/\\in/g, ' thuộc ')
+           .replace(/\\notin/g, ' không thuộc ')
+           .replace(/\\subset/g, ' tập con của ')
+           .replace(/\\cup/g, ' hợp ')
+           .replace(/\\cap/g, ' giao ')
+           .replace(/\\emptyset/g, ' tập rỗng ')
+           .replace(/\\pm/g, ' cộng trừ ')
+           .replace(/\\to|\\rightarrow/g, ' tiến tới ')
+           .replace(/\\infty/g, ' vô cực ')
+           .replace(/\\mathbb\{R\}/g, ' tập số thực R ')
+           .replace(/\\mathbb\{Z\}/g, ' tập số nguyên Z ')
+           .replace(/\\mathbb\{N\}/g, ' tập số tự nhiên N ')
+           .replace(/\\mathbb\{C\}/g, ' tập số phức C ')
+           .replace(/\\mathbb\{Q\}/g, ' tập số hữu tỉ Q ')
+           .replace(/\\Delta|\\triangle/g, ' tam giác ')
+           .replace(/\\angle|\\widehat\{([^}]+)\}/g, ' góc $1 ')
+           .replace(/\\alpha/g, ' an-pha ')
+           .replace(/\\beta/g, ' bê-ta ')
+           .replace(/\\gamma/g, ' gam-ma ')
+           .replace(/\\delta/g, ' đen-ta ')
+           .replace(/\\theta/g, ' tê-ta ')
+           .replace(/\\pi/g, ' pi ')
+           .replace(/\\sigma/g, ' xích-ma ')
+           .replace(/\\omega|\\Omega/g, ' ô-mê-ga ')
+           .replace(/=/g, ' bằng ')
+           .replace(/\+/g, ' cộng ')
+           .replace(/-/g, ' trừ ');
+    } else {
+      s = s.replace(/\\leq|\\le/g, ' is less than or equal to ')
+           .replace(/\\geq|\\ge/g, ' is greater than or equal to ')
+           .replace(/\\neq/g, ' is not equal to ')
+           .replace(/\\approx/g, ' is approximately ')
+           .replace(/\\equiv/g, ' is equivalent to ')
+           .replace(/\\perp/g, ' is perpendicular to ')
+           .replace(/\\parallel/g, ' is parallel to ')
+           .replace(/\\implies|\\Rightarrow/g, ' implies that ')
+           .replace(/\\iff|\\Leftrightarrow/g, ' if and only if ')
+           .replace(/\\in/g, ' in ')
+           .replace(/\\notin/g, ' not in ')
+           .replace(/\\subset/g, ' subset of ')
+           .replace(/\\cup/g, ' union ')
+           .replace(/\\cap/g, ' intersection ')
+           .replace(/\\emptyset/g, ' empty set ')
+           .replace(/\\pm/g, ' plus or minus ')
+           .replace(/\\to|\\rightarrow/g, ' approaches ')
+           .replace(/\\infty/g, ' infinity ')
+           .replace(/\\mathbb\{R\}/g, ' real numbers ')
+           .replace(/\\mathbb\{Z\}/g, ' integers ')
+           .replace(/\\mathbb\{N\}/g, ' natural numbers ')
+           .replace(/\\mathbb\{C\}/g, ' complex numbers ')
+           .replace(/\\mathbb\{Q\}/g, ' rational numbers ')
+           .replace(/\\Delta|\\triangle/g, ' triangle ')
+           .replace(/\\angle|\\widehat\{([^}]+)\}/g, ' angle $1 ')
+           .replace(/\\alpha/g, ' alpha ')
+           .replace(/\\beta/g, ' beta ')
+           .replace(/\\gamma/g, ' gamma ')
+           .replace(/\\delta/g, ' delta ')
+           .replace(/\\theta/g, ' theta ')
+           .replace(/\\pi/g, ' pi ')
+           .replace(/\\sigma/g, ' sigma ')
+           .replace(/\\omega|\\Omega/g, ' omega ')
+           .replace(/=/g, ' equals ')
+           .replace(/\+/g, ' plus ')
+           .replace(/-/g, ' minus ');
+    }
+
+    // 13. Strip remaining LaTeX control sequences, braces, and clean spaces
+    s = s.replace(/\\[a-zA-Z]+/g, ' ')
+         .replace(/[{}\\$]/g, ' ')
+         .replace(/\s+/g, ' ')
+         .trim();
+
+    return s;
+  },
+
+  cleanLatexForSpeech(text, forcedLang = null) {
     if (!text) return '';
-    return text
-      .replace(/\$\$[\s\S]*?\$\$/g, ' math formula ')
-      .replace(/\$([^\$]+)\$/g, (m, formula) => {
-        return ' ' + formula
-          .replace(/\\vec\{([^}]+)\}/g, 'vector $1')
-          .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 over $2')
-          .replace(/\\sqrt\{([^}]+)\}/g, 'square root of $1')
-          .replace(/\\lim_\{([^}]+)\}/g, 'limit as $1')
-          .replace(/\\int_\{([^}]+)\}\^\{([^}]+)\}/g, 'integral from $1 to $2')
-          .replace(/f'\(x\)/g, "f prime of x")
-          .replace(/f''\(x\)/g, "f double prime of x")
-          .replace(/f\(x\)/g, "f of x")
-          .replace(/\\cdot/g, ' dot ')
-          .replace(/\\perp/g, ' is perpendicular to ')
-          .replace(/\\pm/g, ' plus or minus ')
-          .replace(/\\Delta/g, ' delta ')
-          .replace(/\\infty/g, ' infinity ')
-          .replace(/\\in/g, ' in ')
-          .replace(/\\mathbb\{R\}/g, ' real numbers ')
-          .replace(/[\\_{}^]/g, ' ') + ' ';
-      })
-      .replace(/\s+/g, ' ')
-      .trim();
+    let str = String(text);
+    // Remove HTML markup
+    str = str.replace(/<[^>]*>/g, ' ');
+
+    // Determine language (Vietnamese vs English)
+    const isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
+                 (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(str));
+
+    // 1. Process block math $$ ... $$
+    str = str.replace(/\$\$([\s\S]*?)\$\$/g, (m, formula) => {
+      return ' ' + this.parseLatexFormula(formula, isVi) + ' ';
+    });
+
+    // 2. Process inline math $ ... $
+    str = str.replace(/\$([^\$]+)\$/g, (m, formula) => {
+      return ' ' + this.parseLatexFormula(formula, isVi) + ' ';
+    });
+
+    // 3. Process raw LaTeX formulas passed without dollar delimiters (e.g. \vec, \frac, \sqrt, \int...)
+    if (/\\(vec|overrightarrow|frac|sqrt|lim|int|cdot|times|perp|parallel|pm|Delta|alpha|beta|pi|infty|mathbb)/.test(str)) {
+      str = this.parseLatexFormula(str, isVi);
+    }
+
+    return str.replace(/\s+/g, ' ').trim();
+  },
+
+  getBestVoice(isVi) {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return null;
+
+    if (isVi) {
+      // Look for natural Vietnamese voice (Microsoft HoaiMy, NamMinh, Google Tiếng Việt...)
+      const viVoice = voices.find(v => {
+        const l = (v.lang || '').replace('_', '-').toLowerCase();
+        const n = (v.name || '').toLowerCase();
+        return l.startsWith('vi') || n.includes('vietnam') || n.includes('tiếng việt') || n.includes('hoaimy') || n.includes('namminh');
+      });
+      if (viVoice) return viVoice;
+    }
+
+    // Default to best natural female English voice
+    return this.getBestFemaleVoice();
   },
 
   getBestFemaleVoice() {
@@ -186,28 +458,31 @@ const BilingualHelper = {
     return voices[0];
   },
 
-  speak(text, rate = 1.0) {
+  speak(text, rate = 1.0, forcedLang = null) {
     if (!('speechSynthesis' in window)) {
       alert('Trình duyệt hiện tại không hỗ trợ Web Speech API.');
       return;
     }
-    const clean = this.cleanLatexForSpeech(text);
+    const isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
+                 (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(text));
+
+    const clean = this.cleanLatexForSpeech(text, isVi ? 'vi' : 'en');
     if (!clean) return;
 
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(clean);
-    utter.lang = 'en-US';
+    utter.lang = isVi ? 'vi-VN' : 'en-US';
     utter.rate = rate; // 1.0 is standard, 0.72 is slow practice
 
-    // Select standard natural female voice
-    const femaleVoice = this.getBestFemaleVoice();
-    if (femaleVoice) utter.voice = femaleVoice;
+    // Select standard natural voice matching language
+    const voice = this.getBestVoice(isVi);
+    if (voice) utter.voice = voice;
 
     window.speechSynthesis.speak(utter);
   },
 
-  speakSlow(text) {
-    this.speak(text, 0.72);
+  speakSlow(text, forcedLang = null) {
+    this.speak(text, 0.72, forcedLang);
   },
 
   async translate(text) {

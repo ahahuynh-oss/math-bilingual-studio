@@ -187,24 +187,28 @@ var App = window.App = {
     }
   },
 
-  speakText(text, rate = 1.0) {
+  speakText(text, rate = 1.0, forcedLang = null) {
     if (window.BilingualHelper && window.BilingualHelper.speak) {
-      window.BilingualHelper.speak(text, rate);
+      window.BilingualHelper.speak(text, rate, forcedLang);
       return;
     }
     if (!('speechSynthesis' in window)) {
       alert('Trình duyệt không hỗ trợ Web Speech API.');
       return;
     }
+    const isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
+                 (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(text));
+    const clean = window.BilingualHelper ? window.BilingualHelper.cleanLatexForSpeech(text, isVi ? 'vi' : 'en') : text;
+
     window.speechSynthesis.cancel();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
+    const utter = new SpeechSynthesisUtterance(clean);
+    utter.lang = isVi ? 'vi-VN' : 'en-US';
     utter.rate = rate;
     window.speechSynthesis.speak(utter);
   },
 
-  speakSlow(text) {
-    this.speakText(text, 0.72);
+  speakSlow(text, forcedLang = null) {
+    this.speakText(text, 0.72, forcedLang);
   },
 
   insertLatex(snippet) {
