@@ -140,6 +140,9 @@ const Exporter = {
     .border-slate-800, .border-slate-700 {
       border-color: #e2e8f0 !important;
     }
+    .hidden { display: none !important; }
+    .cursor-pointer { cursor: pointer !important; }
+    button { cursor: pointer; }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; }
@@ -231,7 +234,7 @@ const Exporter = {
                       <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">${v.pos || 'term'}</span>
                     </div>
                   </div>
-                  <button onclick="speakTerm('${v.term.replace(/'/g, "\\'")}')" class="p-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white transition-all text-xs border border-indigo-200" title="Listen pronunciation">
+                  <button type="button" onclick="speakTerm(this)" data-term="${(v.term || '').replace(/"/g, '&quot;')}" class="p-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer" title="Listen pronunciation">
                     🔊
                   </button>
                 </div>
@@ -261,18 +264,19 @@ const Exporter = {
           ${lesson.concepts.map((c, i) => `
             <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-600 border-slate-200 bg-white shadow-xs space-y-3">
               <div class="flex items-center justify-between">
-                <h4 class="text-base font-bold text-slate-900">${i + 1}. ${c.titleEn}</h4>
-                <span class="text-xs text-indigo-700 vi-text font-semibold">${c.titleVi}</span>
+                <h4 class="text-base font-bold text-slate-900">${i + 1}. ${c.titleEn || ''}</h4>
+                <span class="text-xs text-indigo-700 vi-text font-semibold">${c.titleVi || ''}</span>
               </div>
-              <div class="text-sm text-slate-800 leading-relaxed">${c.contentEn}</div>
-              <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">${c.contentVi}</div>
+              <div class="text-sm text-slate-800 leading-relaxed">${c.descEn || c.contentEn || ''}</div>
+              <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">${c.descVi || c.contentVi || ''}</div>
+              ${(c.latex || c.formula) ? `
               <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-center latex-box overflow-x-auto text-slate-900 font-medium">
-                $${c.formula}$
-              </div>
-              ${c.pedagogicalNote ? `
+                $$${c.latex || c.formula}$$
+              </div>` : ''}
+              ${(c.notesVi || c.notesEn || c.pedagogicalNote) ? `
                 <div class="text-xs text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-2">
                   <span>💡</span>
-                  <span><strong>Lưu ý sư phạm:</strong> ${c.pedagogicalNote}</span>
+                  <span><strong>Lưu ý sư phạm:</strong> ${c.notesVi || c.notesEn || c.pedagogicalNote}</span>
                 </div>
               ` : ''}
             </div>
@@ -290,20 +294,22 @@ const Exporter = {
         </div>
 
         <div class="space-y-6">
-          ${lesson.examples.map((ex, i) => `
+          ${lesson.examples.map((ex, i) => {
+            const exampleId = ex.id || ('ex-' + (i + 1));
+            return `
             <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
                 <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
                   Example ${i + 1}
                 </span>
-                <button onclick="revealAllSteps('${ex.id}')" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">
+                <button type="button" onclick="revealAllSteps('${exampleId}')" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer">
                   Mở toàn bộ các bước giải 👁️
                 </button>
               </div>
 
               <div>
-                <p class="text-sm sm:text-base font-semibold text-slate-900 mb-1.5 latex-box">${ex.problemEn}</p>
-                <p class="text-xs text-slate-600 italic vi-text border-l-2 border-purple-400 pl-2.5">${ex.problemVi}</p>
+                <p class="text-sm sm:text-base font-semibold text-slate-900 mb-1.5 latex-box">${ex.problemEn || ex.titleEn || ''}</p>
+                <p class="text-xs text-slate-600 italic vi-text border-l-2 border-purple-400 pl-2.5">${ex.problemVi || ex.titleVi || ''}</p>
               </div>
 
               <!-- Steps Container -->
@@ -313,7 +319,6 @@ const Exporter = {
                   const stepTitleEn = st.titleEn || st.actionEn || `Step ${stepIndex}`;
                   const stepTitleVi = st.titleVi || st.actionVi || '';
                   const stepLatex = st.latex || st.mathExpression || '';
-                  const exampleId = ex.id || `ex-${sIdx + 1}`;
                   return `
                   <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
                     <div onclick="toggleStep('${exampleId}', ${stepIndex})" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer select-none">
@@ -334,7 +339,8 @@ const Exporter = {
                 }).join('')}
               </div>
             </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </section>
 
@@ -474,8 +480,8 @@ const Exporter = {
   <script>
     const LESSON_DATA = ${serializedLessonData};
     const SCAFFOLD_PRESETS = ${serializedPresets};
-    let currentScaffoldData = ${serializedCurrentScaffold} || (SCAFFOLD_PRESETS["grade-12-asymptotes"] ? SCAFFOLD_PRESETS["grade-12-asymptotes"].data : null);
-    let activeScaffoldPresetKey = "grade-12-asymptotes";
+    let currentScaffoldData = ${serializedCurrentScaffold} || (SCAFFOLD_PRESETS["grade-12-asymptotes"] ? SCAFFOLD_PRESETS["grade-12-asymptotes"].data : (Object.values(SCAFFOLD_PRESETS)[0] ? Object.values(SCAFFOLD_PRESETS)[0].data : null));
+    let activeScaffoldPresetKey = (SCAFFOLD_PRESETS["grade-12-asymptotes"] ? "grade-12-asymptotes" : Object.keys(SCAFFOLD_PRESETS)[0]) || "";
     let showVi = true;
 
     // Scaffolding UI State
@@ -497,25 +503,27 @@ const Exporter = {
       const btnScaffold = document.getElementById('tab-btn-scaffold');
       const btnQuiz = document.getElementById('tab-btn-quiz');
 
+      if (!lessonView || !scaffoldView || !quizView) return;
+
       // Hide all
       lessonView.classList.add('hidden');
       scaffoldView.classList.add('hidden');
       quizView.classList.add('hidden');
 
-      btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100';
-      btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-amber-300';
-      btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100';
+      if (btnLesson) btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer';
+      if (btnScaffold) btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-amber-300 cursor-pointer';
+      if (btnQuiz) btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer';
 
       if (tab === 'lesson') {
         lessonView.classList.remove('hidden');
-        btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs';
+        if (btnLesson) btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs cursor-pointer';
       } else if (tab === 'scaffold') {
         scaffoldView.classList.remove('hidden');
-        btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-50 text-amber-800 border border-amber-200 font-bold shadow-2xs';
+        if (btnScaffold) btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs cursor-pointer';
         renderStandaloneScaffold();
       } else {
         quizView.classList.remove('hidden');
-        btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs';
+        if (btnQuiz) btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs cursor-pointer';
         renderStandaloneQuestions();
       }
       triggerMathJax();
@@ -527,10 +535,15 @@ const Exporter = {
       elements.forEach(el => {
         el.style.display = showVi ? '' : 'none';
       });
-      document.getElementById('vi-toggle-text').innerText = showVi ? 'Dịch: Đang mở' : 'Dịch: Đang ẩn';
+      const viText = document.getElementById('vi-toggle-text');
+      if (viText) {
+        viText.innerText = showVi ? 'Dịch: Đang mở' : 'Dịch: Đang ẩn';
+      }
     }
 
-    function speakTerm(term) {
+    function speakTerm(elOrTerm) {
+      const term = (typeof elOrTerm === 'string') ? elOrTerm : (elOrTerm ? elOrTerm.getAttribute('data-term') : '');
+      if (!term) return;
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(term);
@@ -550,25 +563,25 @@ const Exporter = {
         content.classList.remove('hidden');
         if (icon) {
           icon.innerText = '➖ Ẩn bước';
-          icon.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+          icon.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs cursor-pointer';
         }
         triggerMathJax();
       } else {
         content.classList.add('hidden');
         if (icon) {
           icon.innerText = '➕ Mở bước này';
-          icon.className = 'text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+          icon.className = 'text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs cursor-pointer';
         }
       }
     }
 
     function revealAllSteps(exId) {
-      const contents = document.querySelectorAll('[id^="step-content-' + exId + '"]');
-      const icons = document.querySelectorAll('[id^="step-icon-' + exId + '"]');
+      const contents = document.querySelectorAll('[id^="step-content-' + exId + '-"]');
+      const icons = document.querySelectorAll('[id^="step-icon-' + exId + '-"]');
       contents.forEach(c => c.classList.remove('hidden'));
       icons.forEach(i => {
         i.innerText = '➖ Ẩn bước';
-        i.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs';
+        i.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs cursor-pointer';
       });
       triggerMathJax();
     }
@@ -587,17 +600,27 @@ const Exporter = {
       const p = SCAFFOLD_PRESETS[presetKey];
       if (p) {
         currentScaffoldData = p.data;
-        document.getElementById('scaffold-grade-badge').innerText = p.grade || 'Toán THPT';
+        const b = document.getElementById('scaffold-grade-badge');
+        if (b) b.innerText = p.grade || 'Toán THPT';
       }
       ['btn-pre-10', 'btn-pre-11', 'btn-pre-12'].forEach(id => {
         const b = document.getElementById(id);
         if (b) {
-          b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all';
+          b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all cursor-pointer';
         }
       });
-      if (presetKey === 'grade-10-vectors') document.getElementById('btn-pre-10').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all';
-      if (presetKey === 'grade-11-limits') document.getElementById('btn-pre-11').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all';
-      if (presetKey === 'grade-12-asymptotes') document.getElementById('btn-pre-12').className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all';
+      if (presetKey === 'grade-10-vectors') {
+        const b = document.getElementById('btn-pre-10');
+        if (b) b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all cursor-pointer';
+      }
+      if (presetKey === 'grade-11-limits') {
+        const b = document.getElementById('btn-pre-11');
+        if (b) b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all cursor-pointer';
+      }
+      if (presetKey === 'grade-12-asymptotes') {
+        const b = document.getElementById('btn-pre-12');
+        if (b) b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all cursor-pointer';
+      }
 
       setStandaloneTier(1);
     }
@@ -615,9 +638,9 @@ const Exporter = {
         const b = document.getElementById(id);
         if (b) {
           if (idx + 1 === tier) {
-            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs transition-all';
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs transition-all cursor-pointer';
           } else {
-            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all';
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all cursor-pointer';
           }
         }
       });
@@ -625,7 +648,9 @@ const Exporter = {
       renderStandaloneScaffold();
     }
 
-    function toggleScaffoldSection(secKey) {
+    function toggleScaffoldSection(secKeyOrEl) {
+      const secKey = (typeof secKeyOrEl === 'string') ? secKeyOrEl : (secKeyOrEl ? secKeyOrEl.getAttribute('data-sec') : '');
+      if (!secKey) return;
       scaffoldTiers[secKey] = !scaffoldTiers[secKey];
       renderStandaloneScaffold();
     }
@@ -645,7 +670,7 @@ const Exporter = {
 
       // 1. Bilingual Vocabulary Card
       html += '<div class="glass-card rounded-2xl border border-teal-200 bg-white overflow-hidden shadow-xs">';
-      html += '<div onclick="toggleScaffoldSection(\'vocab\')" class="p-4 bg-teal-50/70 border-b border-teal-100 flex items-center justify-between cursor-pointer hover:bg-teal-100/50 transition-colors">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="vocab" class="p-4 bg-teal-50/70 border-b border-teal-100 flex items-center justify-between cursor-pointer hover:bg-teal-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
       html += '<span class="text-teal-700 font-bold text-base">🗣️</span>';
       html += '<span class="font-bold text-sm text-slate-900">1. Thuật ngữ toán học then chốt (Key Mathematical Vocabulary)</span>';
@@ -657,14 +682,15 @@ const Exporter = {
         html += '<div class="p-4 space-y-3 bg-white">';
         html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
         (d.bilingual_vocabulary || []).forEach(v => {
+          const engSafe = (v.english_term || '').replace(/"/g, '&quot;');
           html += '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">';
           html += '<div>';
           html += '<div class="flex items-center justify-between">';
-          html += '<span class="font-bold text-slate-900 text-sm">' + v.english_term + '</span>';
-          html += '<button onclick="speakTerm(\'' + v.english_term.replace(/'/g, "\\'") + '\')" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all">🔊</button>';
+          html += '<span class="font-bold text-slate-900 text-sm">' + (v.english_term || '') + '</span>';
+          html += '<button type="button" onclick="speakTerm(this)" data-term="' + engSafe + '" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer" title="Listen pronunciation">🔊</button>';
           html += '</div>';
-          html += '<div class="text-emerald-700 font-semibold text-xs mt-1">👉 ' + v.vietnamese_term + '</div>';
-          html += '<div class="text-slate-600 text-[11px] mt-1.5 italic latex-box">' + v.context_note + '</div>';
+          html += '<div class="text-emerald-700 font-semibold text-xs mt-1">👉 ' + (v.vietnamese_term || '') + '</div>';
+          html += '<div class="text-slate-600 text-[11px] mt-1.5 italic latex-box">' + (v.context_note || '') + '</div>';
           html += '</div></div>';
         });
         html += '</div></div>';
@@ -673,7 +699,7 @@ const Exporter = {
 
       // 2. Problem Analysis Card
       html += '<div class="glass-card rounded-2xl border border-indigo-200 bg-white overflow-hidden shadow-xs">';
-      html += '<div onclick="toggleScaffoldSection(\'analysis\')" class="p-4 bg-indigo-50/70 border-b border-indigo-100 flex items-center justify-between cursor-pointer hover:bg-indigo-100/50 transition-colors">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="analysis" class="p-4 bg-indigo-50/70 border-b border-indigo-100 flex items-center justify-between cursor-pointer hover:bg-indigo-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
       html += '<span class="text-indigo-700 font-bold text-base">🔍</span>';
       html += '<span class="font-bold text-sm text-slate-900">2. Bóc tách đề bài & Trọng tâm kiến thức</span>';
@@ -687,7 +713,7 @@ const Exporter = {
 
       // 3. Tier 1 Hint Card
       html += '<div class="glass-card rounded-2xl border border-amber-200 bg-white overflow-hidden shadow-xs">';
-      html += '<div onclick="toggleScaffoldSection(\'tier1\')" class="p-4 bg-amber-50/70 border-b border-amber-100 flex items-center justify-between cursor-pointer hover:bg-amber-100/50 transition-colors">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="tier1" class="p-4 bg-amber-50/70 border-b border-amber-100 flex items-center justify-between cursor-pointer hover:bg-amber-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
       html += '<span class="text-amber-700 font-bold text-base">💡</span>';
       html += '<span class="font-bold text-sm text-slate-900">3. Giàn giáo Nấc 1: Câu hỏi gợi mở định hướng tư duy (Tier 1 Hint)</span>';
@@ -701,7 +727,7 @@ const Exporter = {
 
       // 4. Tier 2 Breakdown Card
       html += '<div class="glass-card rounded-2xl border border-blue-200 bg-white overflow-hidden shadow-xs">';
-      html += '<div onclick="toggleScaffoldSection(\'tier2\')" class="p-4 bg-blue-50/70 border-b border-blue-100 flex items-center justify-between cursor-pointer hover:bg-blue-100/50 transition-colors">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="tier2" class="p-4 bg-blue-50/70 border-b border-blue-100 flex items-center justify-between cursor-pointer hover:bg-blue-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
       html += '<span class="text-blue-700 font-bold text-base">🪜</span>';
       html += '<span class="font-bold text-sm text-slate-900">4. Giàn giáo Nấc 2: Khung tư duy chia nhỏ các bước (Tier 2 Breakdown)</span>';
@@ -722,7 +748,7 @@ const Exporter = {
 
       // 5. Common Pitfalls
       html += '<div class="glass-card rounded-2xl border border-rose-200 bg-white overflow-hidden shadow-xs">';
-      html += '<div onclick="toggleScaffoldSection(\'pitfall\')" class="p-4 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between cursor-pointer hover:bg-rose-100/50 transition-colors">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="pitfall" class="p-4 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between cursor-pointer hover:bg-rose-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
       html += '<span class="text-rose-700 font-bold text-base">⚠️</span>';
       html += '<span class="font-bold text-sm text-slate-900">5. Cảnh báo lỗi sai & Cạm bẫy thường gặp (Common Pitfalls)</span>';
@@ -736,7 +762,7 @@ const Exporter = {
 
       // 6. Full Solution Card
       html += '<div class="glass-card rounded-2xl border border-emerald-200 bg-white overflow-hidden shadow-xs">';
-      html += '<div onclick="toggleScaffoldSection(\'tier3\')" class="p-4 bg-emerald-50/70 border-b border-emerald-100 flex items-center justify-between cursor-pointer hover:bg-emerald-100/50 transition-colors">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="tier3" class="p-4 bg-emerald-50/70 border-b border-emerald-100 flex items-center justify-between cursor-pointer hover:bg-emerald-100/50 transition-colors">';
       html += '<div class="flex items-center gap-2">';
       html += '<span class="text-emerald-700 font-bold text-base">📝</span>';
       html += '<span class="font-bold text-sm text-slate-900">6. Lời giải mẫu hoàn chỉnh từng bước (Full Solution)</span>';
