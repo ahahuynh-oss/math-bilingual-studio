@@ -1486,6 +1486,400 @@ JSON Schema:
     });
 
     return lessonData;
+  },
+
+  /**
+   * Sinh tự động 01 câu hỏi đơn lẻ theo đúng loại câu hỏi và mức độ nhận thức (NB, TH, VD, VDC)
+   */
+  async generateSingleQuestionAI({ type = 'multiple-choice', level = 'TH', topic = '', grade = 'Khối 12', apiKey = '', preferredModel = 'gemini-2.5-flash' }) {
+    const levelNames = {
+      'NB': 'Nhận biết (Recall / Knowledge)',
+      'TH': 'Thông hiểu (Comprehension)',
+      'VD': 'Vận dụng (Application)',
+      'VDC': 'Vận dụng cao (High-order Analysis & Optimization)'
+    };
+
+    const levelDescriptions = {
+      'NB': 'Mức độ 1: NHẬN BIẾT - Nhận biết định nghĩa, công thức toán học cơ bản, nhận diện công thức hoặc đọc đồ thị trực tiếp mà không cần biến đổi phức tạp.',
+      'TH': 'Mức độ 2: THÔNG HIỂU - Hiểu bản chất khái niệm, áp dụng trực tiếp 1-2 công thức chuẩn để tính toán hoặc suy luận toán học 1 bước.',
+      'VD': 'Mức độ 3: VẬN DỤNG - Kết hợp 2-3 kiến thức liên hoàn, biến đổi đại số hoặc tọa độ hình học, giải phương trình/bài toán có ngữ cảnh.',
+      'VDC': 'Mức độ 4: VẬN DỤNG CAO - Phân hóa học sinh xuất sắc, chứa bài toán tham số m, cực trị min/max, tối ưu hóa thực tế hoặc hình học không gian phức tạp.'
+    };
+
+    // If Gemini API Key is provided, call Gemini
+    if (apiKey) {
+      const modelsToTry = [preferredModel, 'gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'].filter(Boolean);
+      const systemInstruction = `Bạn là Chuyên gia Khảo thí và Sư phạm Toán THPT theo Chương trình GDPT 2018 (Song ngữ Anh - Việt).
+Biên soạn CHÍNH XÁC 01 CÂU HỎI TOÁN HỌC SONG NGỮ (English & Tiếng Việt).
+- Chủ đề: ${topic || 'Toán THPT Chuẩn'} (${grade || 'THPT'})
+- Định dạng câu hỏi: ${type}
+- Mức độ nhận thức: ${level} - ${levelNames[level] || level}
+- Yêu cầu sư phạm: ${levelDescriptions[level] || ''}
+- Bắt buộc kẹp công thức toán giữa $...$ (inline) hoặc $$...$$ (display).
+- Chỉ trả về JSON hợp lệ theo đúng cấu trúc. Không có markdown thừa ngoài json block.`;
+
+      let jsonSchemaDescription = '';
+      if (type === 'multiple-choice') {
+        jsonSchemaDescription = `{
+  "stemEn": "Question stem in English with LaTeX...",
+  "stemVi": "Nội dung câu hỏi tiếng Việt có công thức LaTeX...",
+  "options": [
+    { "id": "A", "text": "$...$", "isCorrect": true },
+    { "id": "B", "text": "$...$", "isCorrect": false },
+    { "id": "C", "text": "$...$", "isCorrect": false },
+    { "id": "D", "text": "$...$", "isCorrect": false }
+  ],
+  "explanationEn": "Step-by-step solution in English...",
+  "explanationVi": "Lời giải chi tiết từng bước bằng tiếng Việt..."
+}`;
+      } else if (type === 'true-false-4') {
+        jsonSchemaDescription = `{
+  "stemEn": "General problem stem in English with LaTeX...",
+  "stemVi": "Đề bài chung bằng tiếng Việt...",
+  "propositions": [
+    { "id": "a", "textEn": "...", "textVi": "...", "isCorrect": true, "explanationEn": "...", "explanationVi": "..." },
+    { "id": "b", "textEn": "...", "textVi": "...", "isCorrect": false, "explanationEn": "...", "explanationVi": "..." },
+    { "id": "c", "textEn": "...", "textVi": "...", "isCorrect": true, "explanationEn": "...", "explanationVi": "..." },
+    { "id": "d", "textEn": "...", "textVi": "...", "isCorrect": false, "explanationEn": "...", "explanationVi": "..." }
+  ],
+  "explanationEn": "Comprehensive solution...",
+  "explanationVi": "Hướng dẫn giải chi tiết cho 4 mệnh đề..."
+}`;
+      } else {
+        jsonSchemaDescription = `{
+  "stemEn": "Question stem in English with LaTeX...",
+  "stemVi": "Nội dung câu hỏi tiếng Việt...",
+  "correctAnswer": "4",
+  "acceptableAnswers": ["4", "4.0", "+4"],
+  "tolerance": 0.01,
+  "explanationEn": "Detailed step-by-step solution in English...",
+  "explanationVi": "Lời giải chi tiết từng bước bằng tiếng Việt..."
+}`;
+      }
+
+      for (const m of modelsToTry) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                role: "user",
+                parts: [{ text: `${systemInstruction}\n\nSchema:\n${jsonSchemaDescription}\n\nHãy tạo 01 câu hỏi mức độ ${level}!` }]
+              }],
+              generationConfig: {
+                responseMimeType: "application/json",
+                temperature: 0.35
+              }
+            })
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            let rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (rawText) {
+              rawText = rawText.trim();
+              if (rawText.startsWith('```json')) rawText = rawText.substring(7);
+              if (rawText.startsWith('```')) rawText = rawText.substring(3);
+              if (rawText.endsWith('```')) rawText = rawText.substring(0, rawText.length - 3);
+              const parsed = JSON.parse(rawText.trim());
+              if (parsed && (parsed.stemEn || parsed.stemVi)) {
+                return parsed;
+              }
+            }
+          }
+        } catch (e) {
+          console.warn(`Gemini model ${m} failed for single question:`, e);
+        }
+      }
+    }
+
+    // Fallback: Smart Procedural Curriculum Generator
+    return this.generateSmartFallbackQuestion(type, level, topic, grade);
+  },
+
+  /**
+   * Kho câu hỏi mẫu thông minh đa dạng theo mức độ nhận thức (Offline / Fallback)
+   */
+  generateSmartFallbackQuestion(type, level, topic = '', grade = '') {
+    const rInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const lowerTopic = (topic + ' ' + grade).toLowerCase();
+    const isVector = lowerTopic.includes('vect') || lowerTopic.includes('hình học') || lowerTopic.includes('oxy') || lowerTopic.includes('oxz');
+    const isProb = lowerTopic.includes('xác suất') || lowerTopic.includes('thống kê') || lowerTopic.includes('prob');
+
+    // 1. DẠNG TRẮC NGHIỆM 4 LỰA CHỌN (MULTIPLE CHOICE)
+    if (type === 'multiple-choice') {
+      if (level === 'NB') {
+        if (isVector) {
+          const a = rInt(1, 5), b = rInt(-4, 4);
+          return {
+            stemEn: `In Cartesian plane $Oxy$, given point $A(${a}; ${b})$. Find the coordinates of vector $\\vec{OA}$.`,
+            stemVi: `Trong mặt phẳng tọa độ $Oxy$, cho điểm $A(${a}; ${b})$. Tọa độ của vectơ $\\vec{OA}$ là:`,
+            options: [
+              { id: "A", text: `$(${a}; ${b})$`, isCorrect: true },
+              { id: "B", text: `$(${b}; ${a})$`, isCorrect: false },
+              { id: "C", text: `$(${-a}; ${-b})$`, isCorrect: false },
+              { id: "D", text: `$(${a}; 0)$`, isCorrect: false }
+            ],
+            explanationEn: `Vector $\\vec{OA}$ with origin $O(0; 0)$ has coordinates equal to point $A$: $\\vec{OA} = (${a}; ${b})$.`,
+            explanationVi: `Vectơ có điểm đầu là gốc tọa độ $O(0; 0)$ và điểm cuối $A(${a}; ${b})$ có tọa độ chính bằng tọa độ điểm $A$: $\\vec{OA} = (${a}; ${b})$.`
+          };
+        } else if (isProb) {
+          return {
+            stemEn: `Let $A$ be an arbitrary event in sample space $\\Omega$. Which formula is correct for the probability of the complementary event $\\overline{A}$?`,
+            stemVi: `Cho $A$ là một biến cố bất kỳ trong không gian mẫu $\\Omega$. Khẳng định nào sau đây là đúng về xác suất của biến cố đối $\\overline{A}$?`,
+            options: [
+              { id: "A", text: `$P(\\overline{A}) = 1 - P(A)$`, isCorrect: true },
+              { id: "B", text: `$P(\\overline{A}) = P(A) - 1$`, isCorrect: false },
+              { id: "C", text: `$P(\\overline{A}) = 1 + P(A)$`, isCorrect: false },
+              { id: "D", text: `$P(\\overline{A}) = \\frac{1}{P(A)}$`, isCorrect: false }
+            ],
+            explanationEn: `By definition of complementary probability: $P(\\overline{A}) = 1 - P(A)$.`,
+            explanationVi: `Theo công thức xác suất của biến cố đối: $P(\\overline{A}) = 1 - P(A)$.`
+          };
+        } else {
+          const k = rInt(2, 6);
+          return {
+            stemEn: `Find an antiderivative of the function $f(x) = ${k}x^{${k-1}}$ on $\\mathbb{R}$.`,
+            stemVi: `Tìm một nguyên hàm của hàm số $f(x) = ${k}x^{${k-1}}$ trên $\\mathbb{R}$.`,
+            options: [
+              { id: "A", text: `$F(x) = x^{${k}}$`, isCorrect: true },
+              { id: "B", text: `$F(x) = ${k}x^{${k}}$`, isCorrect: false },
+              { id: "C", text: `$F(x) = x^{${k-1}}$`, isCorrect: false },
+              { id: "D", text: `$F(x) = ${k*(k-1)}x^{${k-2}}$`, isCorrect: false }
+            ],
+            explanationEn: `Using basic power rule $\\int ${k}x^{${k-1}}\\,dx = x^{${k}} + C$. Correct is A.`,
+            explanationVi: `Áp dụng công thức nguyên hàm cơ bản của lũy thừa: $\\int ${k}x^{${k-1}}\\,dx = x^{${k}} + C$. Chọn A.`
+          };
+        }
+      } else if (level === 'TH') {
+        if (isVector) {
+          const x1 = rInt(1, 4), y1 = rInt(1, 4), x2 = rInt(1, 4), y2 = rInt(-4, 0);
+          const dot = x1 * x2 + y1 * y2;
+          return {
+            stemEn: `In plane $Oxy$, given two vectors $\\vec{u} = (${x1}; ${y1})$ and $\\vec{v} = (${x2}; ${y2})$. Calculate the dot product $\\vec{u} \\cdot \\vec{v}$.`,
+            stemVi: `Trong mặt phẳng $Oxy$, cho hai vectơ $\\vec{u} = (${x1}; ${y1})$ và $\\vec{v} = (${x2}; ${y2})$. Tính tích vô hướng $\\vec{u} \\cdot \\vec{v}$.`,
+            options: [
+              { id: "A", text: `$${dot}$`, isCorrect: true },
+              { id: "B", text: `$${dot + 2}$`, isCorrect: false },
+              { id: "C", text: `$${dot - 3}$`, isCorrect: false },
+              { id: "D", text: `$${dot + 5}$`, isCorrect: false }
+            ],
+            explanationEn: `$\\vec{u} \\cdot \\vec{v} = (${x1})(${x2}) + (${y1})(${y2}) = ${dot}$.`,
+            explanationVi: `Áp dụng biểu thức tọa độ của tích vô hướng: $\\vec{u} \\cdot \\vec{v} = (${x1})(${x2}) + (${y1})(${y2}) = ${dot}$.`
+          };
+        } else {
+          const a = rInt(1, 3);
+          const val = a * 2;
+          return {
+            stemEn: `Evaluate the definite integral $I = \\int_{0}^{2} (${a}x + 1)\\,dx$.`,
+            stemVi: `Tính tích phân xác định $I = \\int_{0}^{2} (${a}x + 1)\\,dx$.`,
+            options: [
+              { id: "A", text: `$${val + 2}$`, isCorrect: true },
+              { id: "B", text: `$${val + 4}$`, isCorrect: false },
+              { id: "C", text: `$${val}$`, isCorrect: false },
+              { id: "D", text: `$${val - 1}$`, isCorrect: false }
+            ],
+            explanationEn: `$I = \\left[ \\frac{${a}x^2}{2} + x \\right]_{0}^{2} = \\frac{${a}(4)}{2} + 2 = ${val + 2}$.`,
+            explanationVi: `Nguyên hàm là $F(x) = \\frac{${a}x^2}{2} + x$. Thay cận: $F(2) - F(0) = ${val + 2}$.`
+          };
+        }
+      } else if (level === 'VD') {
+        const mVal = rInt(2, 5);
+        return {
+          stemEn: `Find all values of real parameter $m$ so that the function $y = x^3 - 3mx^2 + 12x + 1$ has two distinct critical points.`,
+          stemVi: `Tìm tất cả các giá trị thực của tham số $m$ để hàm số $y = x^3 - 3mx^2 + 12x + 1$ có hai điểm cực trị phân biệt.`,
+          options: [
+            { id: "A", text: `$m < -2$ hoặc $m > 2$`, isCorrect: true },
+            { id: "B", text: `$-2 < m < 2$`, isCorrect: false },
+            { id: "C", text: `$m > 2$`, isCorrect: false },
+            { id: "D", text: `$m \\neq 2$`, isCorrect: false }
+          ],
+          explanationEn: `Derivative $y' = 3x^2 - 6mx + 12 = 0 \\iff x^2 - 2mx + 4 = 0$. For two distinct roots, $\\Delta' = m^2 - 4 > 0 \\iff m < -2$ or $m > 2$.`,
+          explanationVi: `Ta có $y' = 3x^2 - 6mx + 12$. Hàm số có hai điểm cực trị phân biệt khi và chỉ khi phương trình $y' = 0$ có hai nghiệm phân biệt: $\\Delta' = m^2 - 4 > 0 \\iff m < -2$ hoặc $m > 2$.`
+        };
+      } else {
+        // VDC
+        return {
+          stemEn: `A manufacturer produces an open rectangular box from a square sheet of metal of side $12\\text{ cm}$ by cutting equal squares from each corner. Find the maximum volume of the box in $\\text{cm}^3$.`,
+          stemVi: `Một xưởng sản xuất cần làm một chiếc hộp hình chữ nhật không nắp từ một tấm tôn hình vuông cạnh $12\\text{ cm}$ bằng cách cắt bỏ 4 góc hình vuông cạnh $x\\text{ cm}$ rồi gập mép lên. Thể tích lớn nhất của chiếc hộp là bao nhiêu $\\text{cm}^3$?`,
+          options: [
+            { id: "A", text: `$128\\text{ cm}^3$`, isCorrect: true },
+            { id: "B", text: `$144\\text{ cm}^3$`, isCorrect: false },
+            { id: "C", text: `$96\\text{ cm}^3$`, isCorrect: false },
+            { id: "D", text: `$160\\text{ cm}^3$`, isCorrect: false }
+          ],
+          explanationEn: `Volume $V(x) = x(12 - 2x)^2 = 4x^3 - 48x^2 + 144x$ with $0 < x < 6$. $V'(x) = 12(x-2)(x-6) = 0 \\implies x = 2$. $V(2) = 2(8)^2 = 128\\text{ cm}^3$.`,
+          explanationVi: `Thể tích hộp là $V(x) = x(12 - 2x)^2 = 4x(6 - x)^2$ với $0 < x < 6$. Lấy đạo hàm $V'(x) = 12x^2 - 96x + 144 = 0 \\implies x = 2$. Giá trị thể tích lớn nhất đạt được là $V(2) = 2 \\cdot 8^2 = 128\\text{ cm}^3$.`
+        };
+      }
+    }
+
+    // 2. DẠNG ĐÚNG/SAI 4 MỆNH ĐỀ (TRUE/FALSE 4 PROPOSITIONS)
+    if (type === 'true-false-4') {
+      if (level === 'NB' || level === 'TH') {
+        const c = rInt(1, 4);
+        return {
+          stemEn: `Given function $f(x) = x^3 - 3x + ${c}$. Consider the validity of each statement:`,
+          stemVi: `Cho hàm số $f(x) = x^3 - 3x + ${c}$. Xét tính Đúng / Sai của các mệnh đề sau:`,
+          propositions: [
+            {
+              id: "a",
+              textEn: `The derivative is $f'(x) = 3x^2 - 3$.`,
+              textVi: `Đạo hàm của hàm số là $f'(x) = 3x^2 - 3$.`,
+              isCorrect: true,
+              explanationEn: `$(x^3)' = 3x^2$, $(-3x)' = -3$. True.`,
+              explanationVi: `Đạo hàm từng số hạng: $(x^3)' = 3x^2, (-3x)' = -3$. Đúng.`
+            },
+            {
+              id: "b",
+              textEn: `The equation $f'(x) = 0$ has two roots $x = \\pm 1$.`,
+              textVi: `Phương trình $f'(x) = 0$ có hai nghiệm phân biệt $x = \\pm 1$.`,
+              isCorrect: true,
+              explanationEn: `$3x^2 - 3 = 0 \\iff x^2 = 1 \\implies x = \\pm 1$. True.`,
+              explanationVi: `$3(x^2 - 1) = 0 \\implies x = \\pm 1$. Đúng.`
+            },
+            {
+              id: "c",
+              textEn: `The function is increasing on interval $(-1; 1)$.`,
+              textVi: `Hàm số đồng biến trên khoảng $(-1; 1)$.`,
+              isCorrect: false,
+              explanationEn: `On $(-1, 1)$, $f'(x) < 0$, so function is decreasing. False.`,
+              explanationVi: `Trên $(-1; 1)$, $f'(x) < 0$ nên hàm số nghịch biến. Sai.`
+            },
+            {
+              id: "d",
+              textEn: `The local maximum point is $x = -1$.`,
+              textVi: `Điểm cực đại của hàm số là $x = -1$.`,
+              isCorrect: true,
+              explanationEn: `$f'(x)$ changes sign from positive to negative across $x = -1$. True.`,
+              explanationVi: `Qua $x = -1$, $f'(x)$ đổi dấu từ dương sang âm nên $x = -1$ là điểm cực đại. Đúng.`
+            }
+          ],
+          explanationEn: `Summary: a) True, b) True, c) False, d) True.`,
+          explanationVi: `Tổng hợp: Mệnh đề a) Đúng, b) Đúng, c) Sai, d) Đúng.`
+        };
+      } else {
+        // VD / VDC
+        return {
+          stemEn: `Given rational function $y = \\frac{2x + 1}{x - 1}$ with curve $(C)$. Determine whether each statement is True or False:`,
+          stemVi: `Cho hàm số phân thức hữu tỉ $y = \\frac{2x + 1}{x - 1}$ có đồ thị $(C)$. Xét tính Đúng / Sai của các mệnh đề sau:`,
+          propositions: [
+            {
+              id: "a",
+              textEn: `The line $x = 1$ is the vertical asymptote of $(C)$.`,
+              textVi: `Đường thẳng $x = 1$ là tiệm cận đứng của đồ thị $(C)$.`,
+              isCorrect: true,
+              explanationEn: `$\\lim_{x \\to 1^+} \\frac{2x+1}{x-1} = +\\infty$. True.`,
+              explanationVi: `Vì $\\lim_{x \\to 1^+} y = +\\infty$ nên $x = 1$ là tiệm cận đứng. Đúng.`
+            },
+            {
+              id: "b",
+              textEn: `The line $y = 1$ is the horizontal asymptote of $(C)$.`,
+              textVi: `Đường thẳng $y = 1$ là tiệm cận ngang của đồ thị $(C)$.`,
+              isCorrect: false,
+              explanationEn: `$\\lim_{x \\to \\pm\\infty} \\frac{2x+1}{x-1} = 2$, horizontal asymptote is $y = 2$. False.`,
+              explanationVi: `Ta có $\\lim_{x \\to \\pm\\infty} y = 2$ nên tiệm cận ngang là $y = 2$. Sai.`
+            },
+            {
+              id: "c",
+              textEn: `The intersection point of the two asymptotes is $I(1; 2)$.`,
+              textVi: `Giao điểm của hai đường tiệm cận là $I(1; 2)$.`,
+              isCorrect: true,
+              explanationEn: `Asymptotes are $x = 1$ and $y = 2$, intersection is $I(1; 2)$. True.`,
+              explanationVi: `Hai tiệm cận $x = 1$ và $y = 2$ cắt nhau tại tâm đối xứng $I(1; 2)$. Đúng.`
+            },
+            {
+              id: "d",
+              textEn: `The product of distances from any point on $(C)$ to both asymptotes is equal to $3$.`,
+              textVi: `Tích khoảng cách từ một điểm bất kỳ trên $(C)$ đến hai đường tiệm cận luôn bằng $3$.`,
+              isCorrect: true,
+              explanationEn: `$d_1 \\cdot d_2 = |x_0 - 1| \\cdot \\left| \\frac{2x_0+1}{x_0-1} - 2 \\right| = |x_0 - 1| \\cdot \\frac{3}{|x_0 - 1|} = 3$. True.`,
+              explanationVi: `Với $M(x_0; y_0) \\in (C)$, tích khoảng cách $d_1 \\cdot d_2 = |x_0 - 1| \\cdot \\left| \\frac{3}{x_0 - 1} \\right| = 3$. Đúng.`
+            }
+          ],
+          explanationEn: `Summary: a) True, b) False, c) True, d) True.`,
+          explanationVi: `Tổng kết: a) Đúng, b) Sai, c) Đúng, d) Đúng.`
+        };
+      }
+    }
+
+    // 3. DẠNG ĐIỀN ĐÁP SỐ NGẮN (SHORT ANSWER)
+    if (level === 'NB' || level === 'TH') {
+      const u1 = rInt(1, 3), u2 = rInt(2, 5);
+      const ans = u1 * u1 + u2 * u2;
+      return {
+        stemEn: `In Cartesian plane $Oxy$, calculate the square of the magnitude of vector $\\vec{u} = (${u1}; ${u2})$.`,
+        stemVi: `Trong mặt phẳng tọa độ $Oxy$, tính bình phương độ dài của vectơ $\\vec{u} = (${u1}; ${u2})$ (tức $|\\vec{u}|^2$).`,
+        correctAnswer: `${ans}`,
+        acceptableAnswers: [`${ans}`, `${ans}.0`],
+        tolerance: 0.01,
+        explanationEn: `$|\\vec{u}|^2 = (${u1})^2 + (${u2})^2 = ${ans}$.`,
+        explanationVi: `Bình phương độ dài vectơ bằng tổng bình phương các tọa độ: $|\\vec{u}|^2 = ${u1}^2 + ${u2}^2 = ${ans}$.`
+      };
+    } else {
+      // VD / VDC
+      const p = rInt(2, 4);
+      const ans = Math.round(p * 2);
+      return {
+        stemEn: `Calculate the area of the planar region bounded by parabola $y = ${p}x - x^2$ and the $x$-axis.`,
+        stemVi: `Tính diện tích hình phẳng giới hạn bởi đường cong parabol $y = ${p}x - x^2$ và trục hoành $Ox$. (Làm tròn đến 2 chữ số thập phân).`,
+        correctAnswer: `${(Math.pow(p, 3) / 6).toFixed(2)}`,
+        acceptableAnswers: [`${(Math.pow(p, 3) / 6).toFixed(2)}`, `${Math.pow(p, 3)}/6`],
+        tolerance: 0.05,
+        explanationEn: `Roots are $x = 0, x = ${p}$. Area $S = \\int_{0}^{${p}} (${p}x - x^2)\\,dx = \\left[ \\frac{${p}x^2}{2} - \\frac{x^3}{3} \\right]_{0}^{${p}} = \\frac{${p}^3}{6} \\approx ${(Math.pow(p, 3) / 6).toFixed(2)}$.`,
+        explanationVi: `Phương trình hoành độ giao điểm $x(${p} - x) = 0 \\implies x = 0, x = ${p}$. Diện tích $S = \\int_{0}^{${p}} (${p}x - x^2)\\,dx = \\frac{${p}^3}{6} \\approx ${(Math.pow(p, 3) / 6).toFixed(2)}$.`
+      };
+    }
+  },
+
+  /**
+   * Sinh tự động TOÀN BỘ bài thi theo đúng mức độ nhận thức của từng câu đã chọn
+   */
+  async generateFullQuizAI({ questions = [], topic = '', grade = 'Khối 12', apiKey = '', preferredModel = 'gemini-2.5-flash', onProgress = null }) {
+    if (!questions || !questions.length) return [];
+    const generatedQuestions = [];
+
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      if (typeof onProgress === 'function') {
+        onProgress(i + 1, questions.length, q.level || 'TH');
+      }
+
+      try {
+        const genQ = await this.generateSingleQuestionAI({
+          type: q.type || 'multiple-choice',
+          level: q.level || 'TH',
+          topic: topic,
+          grade: grade,
+          apiKey: apiKey,
+          preferredModel: preferredModel
+        });
+
+        generatedQuestions.push({
+          ...q,
+          ...genQ,
+          id: q.id || `q-${i + 1}`,
+          type: q.type,
+          level: q.level || 'TH',
+          points: q.points || (q.type === 'true-false-4' ? 4.0 : (q.type === 'short-answer' ? 3.0 : 2.5))
+        });
+      } catch (err) {
+        console.warn(`Lỗi sinh câu hỏi ${i + 1}:`, err);
+        const fallbackQ = this.generateSmartFallbackQuestion(q.type || 'multiple-choice', q.level || 'TH', topic, grade);
+        generatedQuestions.push({
+          ...q,
+          ...fallbackQ,
+          id: q.id || `q-${i + 1}`,
+          type: q.type,
+          level: q.level || 'TH',
+          points: q.points || 2.5
+        });
+      }
+    }
+
+    return generatedQuestions;
   }
 };
 

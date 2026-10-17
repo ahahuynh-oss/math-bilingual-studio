@@ -1467,6 +1467,9 @@ var App = window.App = {
               <span class="font-semibold text-slate-600">Điểm:</span>
               <input type="number" step="0.25" value="${q.points}" onchange="App.updateQuestionField(${idx}, 'points', parseFloat(this.value))" class="w-16 px-2 py-1 rounded-lg border border-slate-300 text-center text-xs font-bold text-slate-800 bg-white shadow-2xs">
             </div>
+            <button id="btn-ai-gen-single-${idx}" onclick="App.autoGenerateSingleQuestionAI(${idx})" class="px-3 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs" title="AI tự động soạn lại câu hỏi này theo đúng mức độ ${q.level || 'TH'}">
+              <span>✨</span> <span>Soạn Tự Động (${q.level || 'TH'})</span>
+            </button>
             <button onclick="App.deleteQuestion(${idx})" class="text-slate-400 hover:text-rose-600 text-xs transition-colors cursor-pointer" title="Xóa câu hỏi">🗑️ Xóa</button>
           </div>
         </div>
@@ -1627,9 +1630,133 @@ var App = window.App = {
   },
 
   updateQuestionField(idx, field, val) {
+    if (!this.currentLesson || !this.currentLesson.quiz || !this.currentLesson.quiz.questions[idx]) return;
     this.currentLesson.quiz.questions[idx][field] = val;
     this.saveLessonToStorage();
+    if (field === 'level') {
+      const btn = document.getElementById(`btn-ai-gen-single-${idx}`);
+      if (btn) {
+        btn.innerHTML = `<span>✨</span> <span>Soạn Tự Động (${val})</span>`;
+        btn.title = `AI tự động soạn lại câu hỏi này theo đúng mức độ ${val}`;
+      }
+    }
     this.triggerMathJax();
+  },
+
+  async autoGenerateSingleQuestionAI(qIndex) {
+    if (!this.currentLesson || !this.currentLesson.quiz) return;
+    const questions = this.currentLesson.quiz.questions;
+    const q = questions[qIndex];
+    if (!q) return;
+
+    const btn = document.getElementById(`btn-ai-gen-single-${qIndex}`);
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳</span> <span>Đang soạn (${q.level || 'TH'})...</span>`;
+    }
+
+    const apiKey = localStorage.getItem('math_studio_gemini_api_key') || '';
+    const preferredModel = localStorage.getItem('math_studio_gemini_model') || 'gemini-2.5-flash';
+    const topic = this.currentLesson.meta?.titleVi || this.currentLesson.meta?.titleEn || this.currentLesson.quiz.titleVi || 'Toán THPT';
+    const grade = this.currentLesson.meta?.grade || 'Khối 12';
+
+    try {
+      this.showToast(`🤖 AI đang tự động biên soạn Câu ${qIndex + 1} theo mức độ [${q.level || 'TH'}]...`);
+      const newQ = await window.AIGenerator.generateSingleQuestionAI({
+        type: q.type || 'multiple-choice',
+        level: q.level || 'TH',
+        topic: topic,
+        grade: grade,
+        apiKey: apiKey,
+        preferredModel: preferredModel
+      });
+
+      // Preserve ID, points, type, level
+      questions[qIndex] = {
+        ...questions[qIndex],
+        ...newQ,
+        id: q.id || `q-${qIndex + 1}`,
+        type: q.type || 'multiple-choice',
+        level: q.level || 'TH',
+        points: q.points || 1.0
+      };
+
+      this.saveLessonToStorage(true);
+      this.renderQuizQuestionsEditor();
+      this.triggerMathJax();
+      this.showToast(`✅ Đã tự động soạn thành công Câu ${qIndex + 1} theo chuẩn mức độ [${q.level || 'TH'}]!`);
+    } catch (err) {
+      console.error('Lỗi khi tự động soạn câu hỏi:', err);
+      this.showToast(`⚠️ Không thể tạo câu hỏi: ${err.message}`);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  },
+
+  async autoGenerateFullQuizAI() {
+    if (!this.currentLesson) return;
+    this.currentLesson.quiz = this.currentLesson.quiz || { questions: [] };
+    let questions = this.currentLesson.quiz.questions;
+
+    if (!questions || !questions.length) {
+      const confirmInit = confirm('Chưa có câu hỏi nào trong đề thi. Bạn có muốn khởi tạo và soạn tự động 6 câu mẫu chuẩn ma trận (NB, TH, VD, VDC) không?');
+      if (confirmInit) {
+        this.currentLesson.quiz.questions = [
+          { id: 'q1', type: 'multiple-choice', level: 'NB', points: 0.25, stemEn: '', stemVi: '' },
+          { id: 'q2', type: 'multiple-choice', level: 'TH', points: 0.25, stemEn: '', stemVi: '' },
+          { id: 'q3', type: 'multiple-choice', level: 'VD', points: 0.25, stemEn: '', stemVi: '' },
+          { id: 'q4', type: 'true-false-4', level: 'TH', points: 1.0, stemEn: '', stemVi: '' },
+          { id: 'q5', type: 'true-false-4', level: 'VD', points: 1.0, stemEn: '', stemVi: '' },
+          { id: 'q6', type: 'short-answer', level: 'VDC', points: 0.5, stemEn: '', stemVi: '' }
+        ];
+        questions = this.currentLesson.quiz.questions;
+      } else {
+        return;
+      }
+    }
+
+    const btn = document.getElementById('btn-ai-gen-full-quiz');
+    const originalText = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> <span>AI Đang Soạn Tự Động Cả Bài...</span>';
+    }
+
+    const apiKey = localStorage.getItem('math_studio_gemini_api_key') || '';
+    const preferredModel = localStorage.getItem('math_studio_gemini_model') || 'gemini-2.5-flash';
+    const topic = this.currentLesson.meta?.titleVi || this.currentLesson.meta?.titleEn || this.currentLesson.quiz.titleVi || 'Toán THPT';
+    const grade = this.currentLesson.meta?.grade || 'Khối 12';
+
+    try {
+      this.showToast(`🤖 Bắt đầu AI soạn tự động cả bài thi (${questions.length} câu) theo đúng các mức độ nhận thức đã chọn...`);
+      const updatedQuestions = await window.AIGenerator.generateFullQuizAI({
+        questions: questions,
+        topic: topic,
+        grade: grade,
+        apiKey: apiKey,
+        preferredModel: preferredModel,
+        onProgress: (current, total, lvl) => {
+          this.showToast(`⏳ AI đang soạn câu ${current}/${total} (Mức độ: ${lvl})...`);
+        }
+      });
+
+      this.currentLesson.quiz.questions = updatedQuestions;
+      this.saveLessonToStorage(true);
+      this.renderQuizQuestionsEditor();
+      this.triggerMathJax();
+      this.showToast(`🎉 Đã hoàn thành soạn tự động cả bài thi (${updatedQuestions.length} câu) đúng chuẩn mức độ nhận thức!`);
+    } catch (err) {
+      console.error('Lỗi khi tự động soạn cả bài thi:', err);
+      this.showToast(`⚠️ Lỗi khi soạn cả bài: ${err.message}`);
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
   },
 
   setCorrectMCOption(qIdx, optId) {

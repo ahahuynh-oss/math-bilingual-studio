@@ -627,21 +627,24 @@
 
         <!-- Question Creation Toolbar -->
         <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
-          <div class="flex items-center gap-2.5">
-            <span class="text-xs font-bold text-slate-700">Thêm câu hỏi theo chuẩn:</span>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold text-slate-700">Công cụ ma trận & soạn bài:</span>
             <button onclick="App.openTestMatrixModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer" title="Xem bảng ma trận phân phối mức độ nhận thức theo chuẩn Bộ GD&ĐT">
-              <span>📊</span> <span>Xem Ma Trận Đề Thi</span>
+              <span>📊</span> <span>Xem Ma Trận</span>
+            </button>
+            <button id="btn-ai-gen-full-quiz" onclick="App.autoGenerateFullQuizAI()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer" title="AI tự động soạn lại toàn bộ các câu trong đề theo đúng mức độ nhận thức (NB, TH, VD, VDC) giáo viên đã chọn">
+              <span>⚡</span> <span>AI Soạn Tự Động Cả Bài (Theo Mức Độ)</span>
             </button>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button onclick="App.addQuestion('multiple-choice')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-all flex items-center gap-1.5">
-              <span>🔘</span> <span>1. Trắc nghiệm 4 Lựa chọn (ABCD)</span>
+            <button onclick="App.addQuestion('multiple-choice')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>🔘</span> <span>+ Trắc nghiệm (ABCD)</span>
             </button>
-            <button onclick="App.addQuestion('true-false-4')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 transition-all flex items-center gap-1.5">
-              <span>☑️</span> <span>2. Đúng / Sai (4 Mệnh đề THPT)</span>
+            <button onclick="App.addQuestion('true-false-4')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>☑️</span> <span>+ Đúng / Sai (4 Ý)</span>
             </button>
-            <button onclick="App.addQuestion('short-answer')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 transition-all flex items-center gap-1.5">
-              <span>✍️</span> <span>3. Điền Đáp Số Ngắn</span>
+            <button onclick="App.addQuestion('short-answer')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>✍️</span> <span>+ Điền Đáp Số</span>
             </button>
           </div>
         </div>
@@ -1476,9 +1479,14 @@
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-2.5 pt-3 border-t border-slate-100">
-        <button onclick="App.copyTestMatrixSummary()" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
-          <span>📋 Sao Chép Tóm Tắt Ma Trận</span>
-        </button>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="App.copyTestMatrixSummary()" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span>📋 Sao Chép Tóm Tắt Ma Trận</span>
+          </button>
+          <button onclick="App.autoGenerateFullQuizAI(); App.closeTestMatrixModal();" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer" title="AI tự động biên soạn nội dung mới cho tất cả các câu theo ma trận này">
+            <span>⚡ AI Soạn Cả Bài Theo Ma Trận</span>
+          </button>
+        </div>
         <div class="flex items-center gap-2">
           <button onclick="App.closeTestMatrixModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">Đóng</button>
           <button onclick="Exporter.exportWordDocument(App.currentLesson, { includeSolutions: true }); App.closeTestMatrixModal()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 shadow-2xs transition-all cursor-pointer flex items-center gap-1.5">
@@ -1493,13 +1501,13 @@
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261017_13"></script>
-  <script src="js/ai-generator.js?v=20261017_13"></script>
-  <script src="js/exporter.js?v=20261017_13"></script>
-  <script src="js/quiz.js?v=20261017_13"></script>
-  <script src="js/scaffolding-tutor.js?v=20261017_13"></script>
-  <script src="js/bilingual-helper.js?v=20261017_13"></script>
-  <script src="js/guide.js?v=20261017_13"></script>
-  <script src="js/app.js?v=20261017_13"></script>
+  <script src="js/data.js?v=20261017_14"></script>
+  <script src="js/ai-generator.js?v=20261017_14"></script>
+  <script src="js/exporter.js?v=20261017_14"></script>
+  <script src="js/quiz.js?v=20261017_14"></script>
+  <script src="js/scaffolding-tutor.js?v=20261017_14"></script>
+  <script src="js/bilingual-helper.js?v=20261017_14"></script>
+  <script src="js/guide.js?v=20261017_14"></script>
+  <script src="js/app.js?v=20261017_14"></script>
 </body>
 </html>
