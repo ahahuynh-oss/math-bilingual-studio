@@ -297,6 +297,26 @@ var App = window.App = {
       .trim();
   },
 
+  hydrateScaffoldItemData(item) {
+    if (!item) return;
+    const hasData = item.scaffoldData && typeof item.scaffoldData === 'object' && Object.keys(item.scaffoldData).length > 0;
+    if (hasData && item.rawInput) return;
+
+    const presetKey = item.scaffoldKey || item.id;
+    const preset = window.ScaffoldingTutor?.presets?.[presetKey];
+    if (preset) {
+      if (!hasData && preset.data) {
+        item.scaffoldData = JSON.parse(JSON.stringify(preset.data));
+      }
+      if (!item.rawInput && preset.rawInput) {
+        item.rawInput = preset.rawInput;
+      }
+      if (!item.vocabCount && item.scaffoldData?.bilingual_vocabulary) {
+        item.vocabCount = item.scaffoldData.bilingual_vocabulary.length;
+      }
+    }
+  },
+
   loadCreatedLibrary() {
     try {
       const saved = localStorage.getItem(this.LIBRARY_STORAGE_KEY);
@@ -327,6 +347,14 @@ var App = window.App = {
                 hasChanges = true;
               }
             }
+            // Auto hydrate scaffolding items with data from presets if missing
+            if (item.category === 'scaffolding' || item.scaffoldKey || (item.id && (item.id.startsWith('grade-') || item.id.startsWith('scaffold-')))) {
+              const hadData = item.scaffoldData && Object.keys(item.scaffoldData).length > 0 && item.rawInput;
+              this.hydrateScaffoldItemData(item);
+              if (!hadData && item.scaffoldData) {
+                hasChanges = true;
+              }
+            }
           });
           this.createdLibrary = parsed;
           if (hasChanges) {
@@ -353,7 +381,7 @@ var App = window.App = {
   getDefaultSeedLibrary() {
     const l0 = (typeof SAMPLE_LESSONS !== 'undefined' && SAMPLE_LESSONS[0]) ? JSON.parse(JSON.stringify(SAMPLE_LESSONS[0])) : null;
     const l1 = (typeof SAMPLE_LESSONS !== 'undefined' && SAMPLE_LESSONS[1]) ? JSON.parse(JSON.stringify(SAMPLE_LESSONS[1])) : null;
-    return [
+    const seeds = [
       {
         id: 'derivatives-extrema',
         code: 'P8DZW2',
@@ -493,6 +521,12 @@ var App = window.App = {
         curriculumKey: 'complex-numbers'
       }
     ];
+    seeds.forEach(item => {
+      if (item.category === 'scaffolding') {
+        this.hydrateScaffoldItemData(item);
+      }
+    });
+    return seeds;
   },
 
   syncCurrentLessonToLibrary(rerender = true) {
@@ -1071,6 +1105,7 @@ var App = window.App = {
   openScaffoldItem(id) {
     const item = this.createdLibrary.find(e => e.id === id);
     if (!item) return;
+    this.hydrateScaffoldItemData(item);
 
     if (window.ScaffoldingTutor) {
       window.ScaffoldingTutor.currentEditingId = id;
@@ -1094,6 +1129,7 @@ var App = window.App = {
   exportHtmlForScaffoldItem(id) {
     const item = this.createdLibrary.find(e => e.id === id);
     if (!item) return;
+    this.hydrateScaffoldItemData(item);
     if (window.Exporter && window.Exporter.exportScaffoldStandaloneHTML) {
       window.Exporter.exportScaffoldStandaloneHTML(item);
       this.showToast('🚀 Đã xuất file HTML độc lập cho bài tập giàn giáo: ' + (item.titleVi || item.title));
@@ -1106,6 +1142,7 @@ var App = window.App = {
       this.showToast('Không tìm thấy bài tập cần sửa!', 'warning');
       return;
     }
+    this.hydrateScaffoldItemData(item);
     this.currentEditingScaffoldId = id;
 
     // Fill modal fields
