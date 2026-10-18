@@ -1239,6 +1239,8 @@ var App = window.App = {
       if (window.UserGuide) {
         window.UserGuide.render();
       }
+    } else if (tabName === 'builder-lesson') {
+      setTimeout(() => this.drawCanvasGrapher(), 60);
     }
 
     this.triggerMathJax();
@@ -2356,122 +2358,210 @@ var App = window.App = {
   // ==========================================
   // INTERACTIVE CANVAS GRAPHER COMPONENT
   // ==========================================
+  grapherState: {
+    funcType: 'cubic',
+    a: 1,
+    b: 0,
+    c: -3
+  },
+
+  handleGrapherTypeChange(newType) {
+    this.grapherState.funcType = newType || 'cubic';
+    this.drawCanvasGrapher();
+  },
+
+  updateGrapherCoeff(coeff, value) {
+    const num = parseFloat(value);
+    if (!isNaN(num)) {
+      this.grapherState[coeff] = num;
+      const dispEl = document.getElementById(`slider-val-${coeff}`) || document.getElementById(`val-slider-${coeff}`);
+      if (dispEl) dispEl.innerText = num;
+      this.drawCanvasGrapher();
+    }
+  },
+
   initCanvasGrapher() {
-    const canvas = document.getElementById('interactive-math-canvas');
+    ['a', 'b', 'c'].forEach(coeff => {
+      const slider = document.getElementById(`slider-${coeff}`) || document.getElementById(`graph-slider-${coeff}`);
+      if (slider) {
+        this.grapherState[coeff] = parseFloat(slider.value);
+        const dispEl = document.getElementById(`slider-val-${coeff}`) || document.getElementById(`val-slider-${coeff}`);
+        if (dispEl) dispEl.innerText = slider.value;
+        slider.addEventListener('input', (e) => this.updateGrapherCoeff(coeff, e.target.value));
+      }
+    });
+
+    const typeSelect = document.getElementById('grapher-func-type');
+    if (typeSelect) {
+      this.grapherState.funcType = typeSelect.value || 'cubic';
+      typeSelect.addEventListener('change', (e) => this.handleGrapherTypeChange(e.target.value));
+    }
+
+    this.drawCanvasGrapher();
+  },
+
+  drawCanvasGrapher() {
+    const canvas = document.getElementById('interactive-canvas') || document.getElementById('interactive-math-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    // Controls
-    const sliderA = document.getElementById('graph-slider-a');
-    const sliderB = document.getElementById('graph-slider-b');
-    const sliderC = document.getElementById('graph-slider-c');
-    const displayA = document.getElementById('val-slider-a');
-    const displayB = document.getElementById('val-slider-b');
-    const displayC = document.getElementById('val-slider-c');
+    const { funcType, a, b, c } = this.grapherState;
+    const w = canvas.width;
+    const h = canvas.height;
+    const ox = w / 2;
+    const oy = h / 2;
+    const scale = 35; // px per math unit
 
-    const draw = () => {
-      const a = sliderA ? parseFloat(sliderA.value) : 1;
-      const b = sliderB ? parseFloat(sliderB.value) : -3;
-      const c = sliderC ? parseFloat(sliderC.value) : 0;
+    // Clear background
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(0, 0, w, h);
 
-      if (displayA) displayA.innerText = a;
-      if (displayB) displayB.innerText = b;
-      if (displayC) displayC.innerText = c;
-
-      const w = canvas.width;
-      const h = canvas.height;
-      const ox = w / 2;
-      const oy = h / 2;
-      const scale = 35; // px per math unit
-
-      // Clear
-      ctx.fillStyle = '#090d16';
-      ctx.fillRect(0, 0, w, h);
-
-      // Grid
-      ctx.strokeStyle = '#1e293b';
-      ctx.lineWidth = 1;
-      for (let x = ox % scale; x < w; x += scale) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-      }
-      for (let y = oy % scale; y < h; y += scale) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
-        ctx.stroke();
-      }
-
-      // Coordinate axes
-      ctx.strokeStyle = '#64748b';
-      ctx.lineWidth = 2;
+    // Subtle Grid
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    for (let x = ox % scale; x < w; x += scale) {
       ctx.beginPath();
-      ctx.moveTo(0, oy);
-      ctx.lineTo(w, oy); // X-axis
-      ctx.moveTo(ox, 0);
-      ctx.lineTo(ox, h); // Y-axis
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
       ctx.stroke();
-
-      // Plot Cubic Function f(x) = a*x^3 + b*x + c
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 3;
+    }
+    for (let y = oy % scale; y < h; y += scale) {
       ctx.beginPath();
-
-      let started = false;
-      for (let px = 0; px <= w; px += 2) {
-        const x = (px - ox) / scale;
-        const y = a * Math.pow(x, 3) + b * x + c;
-        const py = oy - y * scale;
-
-        if (py >= -200 && py <= h + 200) {
-          if (!started) {
-            ctx.moveTo(px, py);
-            started = true;
-          } else {
-            ctx.lineTo(px, py);
-          }
-        }
-      }
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
       ctx.stroke();
+    }
 
-      // Draw Critical Points (f'(x) = 3a x^2 + b = 0 => x^2 = -b / (3a))
-      if (a !== 0 && (-b / (3 * a)) >= 0) {
-        const root = Math.sqrt(-b / (3 * a));
-        const roots = [root, -root];
+    // Coordinate Axes
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, oy);
+    ctx.lineTo(w, oy); // X-axis
+    ctx.moveTo(ox, 0);
+    ctx.lineTo(ox, h); // Y-axis
+    ctx.stroke();
 
-        roots.forEach(rx => {
-          const ry = a * Math.pow(rx, 3) + b * rx + c;
-          const rpx = ox + rx * scale;
-          const rpy = oy - ry * scale;
+    // Axis labels & arrows
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillText('x', w - 12, oy - 6);
+    ctx.fillText('y', ox + 6, 12);
+    ctx.fillText('O', ox - 12, oy + 12);
 
-          if (rpx >= 0 && rpx <= w && rpy >= 0 && rpy <= h) {
-            // Draw marker
-            ctx.fillStyle = '#f43f5e';
-            ctx.beginPath();
-            ctx.arc(rpx, rpy, 6, 0, Math.PI * 2);
-            ctx.fill();
+    // Grid numbers
+    for (let i = -8; i <= 8; i++) {
+      if (i === 0) continue;
+      const px = ox + i * scale;
+      if (px > 10 && px < w - 10) {
+        ctx.fillText(i.toString(), px - 4, oy + 14);
+      }
+      const py = oy - i * scale;
+      if (py > 10 && py < h - 10) {
+        ctx.fillText(i.toString(), ox + 6, py + 3);
+      }
+    }
 
-            // Draw horizontal tangent line
-            ctx.strokeStyle = '#fb7185';
-            ctx.lineWidth = 1.5;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            ctx.moveTo(rpx - 40, rpy);
-            ctx.lineTo(rpx + 40, rpy);
-            ctx.stroke();
-            ctx.setLineDash([]);
-          }
-        });
+    // Plot Function Curve
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+
+    const f = (x) => {
+      if (funcType === 'quadratic') {
+        return a * x * x + b * x + c;
+      } else {
+        return a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x;
       }
     };
 
-    [sliderA, sliderB, sliderC].forEach(s => {
-      if (s) s.addEventListener('input', draw);
+    let started = false;
+    for (let px = 0; px <= w; px += 2) {
+      const x = (px - ox) / scale;
+      const y = f(x);
+      const py = oy - y * scale;
+
+      if (py >= -200 && py <= h + 200) {
+        if (!started) {
+          ctx.moveTo(px, py);
+          started = true;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+    }
+    ctx.stroke();
+
+    // Critical Points & Tangent Lines
+    const criticalPoints = [];
+    let formulaText = '';
+    let extremaInfo = '';
+
+    if (funcType === 'quadratic') {
+      formulaText = `y = ${a}x² ${b >= 0 ? '+ ' + b : '- ' + Math.abs(b)}x ${c >= 0 ? '+ ' + c : '- ' + Math.abs(c)}`;
+      if (a !== 0) {
+        const vx = -b / (2 * a);
+        const vy = f(vx);
+        criticalPoints.push({ x: vx, y: vy, label: a > 0 ? 'Cực tiểu' : 'Cực đại' });
+        extremaInfo = `Đỉnh parabol I(${vx.toFixed(2)}; ${vy.toFixed(2)}) • ${a > 0 ? 'Cực tiểu' : 'Cực đại'}`;
+      } else {
+        extremaInfo = 'Hàm bậc nhất y = bx + c (đường thẳng, không có cực trị)';
+      }
+    } else {
+      formulaText = `y = ${a}x³ ${b >= 0 ? '+ ' + b : '- ' + Math.abs(b)}x² ${c >= 0 ? '+ ' + c : '- ' + Math.abs(c)}x`;
+      if (a !== 0) {
+        const deltaPrime = b * b - 3 * a * c;
+        if (deltaPrime > 0) {
+          const x1 = (-b - Math.sqrt(deltaPrime)) / (3 * a);
+          const x2 = (-b + Math.sqrt(deltaPrime)) / (3 * a);
+          const y1 = f(x1);
+          const y2 = f(x2);
+          criticalPoints.push({ x: x1, y: y1, label: 'Cực trị 1' });
+          criticalPoints.push({ x: x2, y: y2, label: 'Cực trị 2' });
+          extremaInfo = `2 điểm cực trị: (${x1.toFixed(2)}; ${y1.toFixed(2)}) và (${x2.toFixed(2)}; ${y2.toFixed(2)})`;
+        } else if (deltaPrime === 0) {
+          const x0 = -b / (3 * a);
+          extremaInfo = `Điểm uốn x = ${x0.toFixed(2)} (nghiệm kép đạo hàm, hàm số đơn điệu)`;
+        } else {
+          extremaInfo = 'Hàm số đơn điệu trên ℝ (không có điểm cực trị)';
+        }
+      } else {
+        extremaInfo = 'Hàm bậc hai / suy biến';
+      }
+    }
+
+    // Render Critical Points on Canvas
+    criticalPoints.forEach(pt => {
+      const px = ox + pt.x * scale;
+      const py = oy - pt.y * scale;
+
+      if (px >= 0 && px <= w && py >= 0 && py <= h) {
+        ctx.strokeStyle = '#fb7185';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(Math.max(0, px - 60), py);
+        ctx.lineTo(Math.min(w, px + 60), py);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#fda4af';
+        ctx.font = '10px JetBrains Mono, monospace';
+        ctx.fillText(`(${pt.x.toFixed(1)}, ${pt.y.toFixed(1)})`, px + 8, py - 6);
+      }
     });
 
-    draw();
+    // Update info text below canvas
+    const infoEl = document.getElementById('grapher-info');
+    if (infoEl) {
+      infoEl.innerHTML = `<span class="text-indigo-600 font-bold">${formulaText}</span> <span class="text-slate-300">|</span> <span class="text-slate-600">${extremaInfo}</span>`;
+    }
   },
 
   // ==========================================
