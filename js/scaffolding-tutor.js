@@ -13,7 +13,7 @@ window.ScaffoldingTutor = {
     "grade-10-vectors": {
       id: "grade-10-vectors",
       grade: "Khối 10",
-      title: "Khối 10: Tọa độ, Trọng tâm & Tích vô hướng của hai vectơ trong Oxy",
+      title: "Tọa độ, Trọng tâm & Tích vô hướng của hai vectơ trong Oxy",
       rawInput: "Trong mặt phẳng tọa độ Oxy, cho tam giác ABC với A(1; 2), B(-2; 6) và C(5; 5). Tìm tọa độ trọng tâm G của tam giác ABC và tính tích vô hướng của hai vectơ AB và AC.",
       data: {
         bilingual_vocabulary: [
@@ -61,7 +61,7 @@ window.ScaffoldingTutor = {
     "grade-11-limits": {
       id: "grade-11-limits",
       grade: "Khối 11",
-      title: "Khối 11: Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)",
+      title: "Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)",
       rawInput: "Tính giới hạn của hàm số: L = lim_{x -> 2} (x^2 - 5x + 6) / (x - 2).",
       data: {
         bilingual_vocabulary: [
@@ -110,7 +110,7 @@ window.ScaffoldingTutor = {
     "grade-12-asymptotes": {
       id: "grade-12-asymptotes",
       grade: "Khối 12",
-      title: "Khối 12: Hàm phân thức & Tích khoảng cách đến hai đường tiệm cận (Bài 1.26)",
+      title: "Hàm phân thức & Tích khoảng cách đến hai đường tiệm cận (Bài 1.26)",
       rawInput: "Cho hàm số y = (x + 1)/(x - 1) có đồ thị (C). Tính tích khoảng cách từ một điểm tuỳ ý thuộc (C) đến hai đường tiệm cận của nó.",
       data: {
         bilingual_vocabulary: [
@@ -572,7 +572,13 @@ NGUYÊN TẮC BẮT BUỘC:
 
     let titleVi = inputVal.length > 5 ? inputVal.slice(0, 75) : `Chuyên đề: ${firstVocab}`;
     let titleEn = firstVocabEn;
-    let fullTitle = `${grade}: ${titleVi} (${titleEn})`;
+    if (window.App && typeof window.App.cleanItemTitle === 'function') {
+      titleVi = window.App.cleanItemTitle(titleVi);
+    }
+    let fullTitle = titleEn && titleEn !== titleVi ? `${titleVi} (${titleEn})` : titleVi;
+    if (window.App && typeof window.App.cleanItemTitle === 'function') {
+      fullTitle = window.App.cleanItemTitle(fullTitle);
+    }
 
     let existingIdx = -1;
     if (this.currentEditingId && window.App && window.App.createdLibrary) {

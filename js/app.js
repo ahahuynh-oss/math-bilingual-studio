@@ -287,13 +287,24 @@ var App = window.App = {
     return this.createdLibrary.filter(item => item.category === 'scaffolding');
   },
 
+  cleanItemTitle(title) {
+    if (!title || typeof title !== 'string') return title || '';
+    return title
+      .replace(/^Ôn\s+tập\s+Bài\s+\d+\s*[–\-—]\s*Chương\s+\d+\s*[–\-—]\s*Toán\s+\d+\s*:\s*/i, '')
+      .replace(/^Ôn\s+tập\s+Bài\s+\d+[^:]*:\s*/i, '')
+      .replace(/^(?:Khối|Lớp)\s+\d+\s*:\s*/i, '')
+      .replace(/^Ôn\s+tập\s+[^:]+:\s*/i, '')
+      .trim();
+  },
+
   loadCreatedLibrary() {
     try {
       const saved = localStorage.getItem(this.LIBRARY_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Normalize and categorize existing items
+          // Normalize, clean redundant prefixes from titles, and categorize existing items
+          let hasChanges = false;
           parsed.forEach(item => {
             if (!item.category) {
               if (item.scaffoldKey || (item.id && (item.id.startsWith('grade-') || item.id.startsWith('scaffold-'))) || item.scaffoldData) {
@@ -302,8 +313,25 @@ var App = window.App = {
                 item.category = 'lecture';
               }
             }
+            if (item.title) {
+              const cleaned = this.cleanItemTitle(item.title);
+              if (cleaned !== item.title) {
+                item.title = cleaned;
+                hasChanges = true;
+              }
+            }
+            if (item.titleVi) {
+              const cleanedVi = this.cleanItemTitle(item.titleVi);
+              if (cleanedVi !== item.titleVi) {
+                item.titleVi = cleanedVi;
+                hasChanges = true;
+              }
+            }
           });
           this.createdLibrary = parsed;
+          if (hasChanges) {
+            this.saveCreatedLibrary();
+          }
           return;
         }
       }
@@ -329,7 +357,7 @@ var App = window.App = {
       {
         id: 'derivatives-extrema',
         code: 'P8DZW2',
-        title: 'Ôn tập Bài 4 – Chương 1 – Toán 12: Đạo hàm & Cực trị hàm số (Derivatives and Extrema)',
+        title: 'Đạo hàm & Cực trị hàm số (Derivatives and Extrema)',
         titleVi: 'Đạo hàm & Cực trị hàm số',
         titleEn: 'Derivatives and Extrema of Functions',
         grade: 'Khối 12',
@@ -364,7 +392,7 @@ var App = window.App = {
       {
         id: 'grade-11-limits',
         code: '5SNKDC',
-        title: 'Ôn tập Bài 15 – Chương 5 – Toán 11: Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)',
+        title: 'Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)',
         titleVi: 'Giới hạn hàm số dạng vô định 0/0',
         titleEn: 'Limits of Functions (0/0 Indeterminate Form)',
         grade: 'Khối 11',
@@ -381,7 +409,7 @@ var App = window.App = {
       {
         id: 'grade-10-vectors',
         code: '7ZC696',
-        title: 'Ôn tập Bài 15 – Chương 5 – Toán 10: Tọa độ Oxy, Trọng tâm & Tích vô hướng (Vectors in Oxy)',
+        title: 'Tọa độ Oxy, Trọng tâm & Tích vô hướng (Vectors in Oxy)',
         titleVi: 'Tọa độ Oxy, Trọng tâm & Tích vô hướng',
         titleEn: 'Vectors & Coordinate Geometry in Oxy',
         grade: 'Khối 10',
@@ -398,7 +426,7 @@ var App = window.App = {
       {
         id: 'vectors-3d',
         code: '8KNSRW',
-        title: 'Ôn tập Bài 3 – Chương 1 – Toán 12: Vectơ & Hình học Không gian Oxyz (Vectors in 3D Space)',
+        title: 'Vectơ & Hình học Không gian Oxyz (Vectors in 3D Space)',
         titleVi: 'Vectơ & Hình học Không gian Oxyz',
         titleEn: 'Vectors & Analytic Geometry in 3D Space',
         grade: 'Khối 12',
@@ -416,7 +444,7 @@ var App = window.App = {
       {
         id: 'integrals-calculus',
         code: 'F2H75Q',
-        title: 'Ôn tập Bài 4 – Chương 3 – Toán 12: Tích phân Xác định & Diện tích Hình phẳng (Calculus)',
+        title: 'Tích phân Xác định & Diện tích Hình phẳng (Calculus)',
         titleVi: 'Tích phân Xác định & Diện tích Hình phẳng',
         titleEn: 'Definite Integrals & Planar Area',
         grade: 'Khối 12',
@@ -483,12 +511,13 @@ var App = window.App = {
     else if (grade.includes('11')) grade = 'Khối 11';
     else if (grade.includes('10')) grade = 'Khối 10';
 
-    const vi = (meta.titleVi || '').trim();
+    const vi = this.cleanItemTitle((meta.titleVi || '').trim());
     const en = (meta.titleEn || '').trim();
     let displayTitle = vi;
     if (en && en !== vi) {
       displayTitle = vi ? `${vi} (${en})` : en;
     }
+    displayTitle = this.cleanItemTitle(displayTitle);
     if (!displayTitle) {
       displayTitle = 'Bài giảng / Đề thi Toán Song ngữ';
     }
@@ -879,7 +908,7 @@ var App = window.App = {
                 ${item.grade || 'Toán THPT'}
               </span>
               <span class="line-clamp-2 hover:text-indigo-600 cursor-pointer font-bold text-slate-900" onclick="App.openExamFromList('${item.id}')" title="Nhấp để mở bài làm">
-                ${item.title}
+                ${this.cleanItemTitle(item.title)}
               </span>
             </div>
             <div class="text-[11px] text-slate-400 font-normal flex items-center gap-2 flex-wrap">
@@ -998,7 +1027,7 @@ var App = window.App = {
                 Mô hình 4 Nấc ZPD
               </span>
               <span class="line-clamp-2 hover:text-amber-700 cursor-pointer font-bold text-slate-900" onclick="App.openScaffoldItem('${item.id}')" title="Nhấp để mở bài tập giàn giáo">
-                ${item.title || item.titleVi || 'Bài tập giàn giáo ZPD'}
+                ${this.cleanItemTitle(item.title || item.titleVi || 'Bài tập giàn giáo ZPD')}
               </span>
             </div>
             <div class="text-[11px] text-slate-500 font-normal flex items-center gap-2 flex-wrap">
@@ -1095,7 +1124,7 @@ var App = window.App = {
     const parallelEnEl = document.getElementById('edit-scaffold-parallel-en');
     const parallelAnsEl = document.getElementById('edit-scaffold-parallel-ans');
 
-    if (titleEl) titleEl.value = item.titleVi || item.title || '';
+    if (titleEl) titleEl.value = this.cleanItemTitle(item.titleVi || item.title || '');
     if (gradeEl) {
       const g = item.grade || 'Khối 12';
       gradeEl.value = g.includes('10') ? 'Khối 10' : (g.includes('11') ? 'Khối 11' : 'Khối 12');
@@ -1208,8 +1237,8 @@ var App = window.App = {
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
 
     // Update item properties
-    item.title = title;
-    item.titleVi = title;
+    item.title = this.cleanItemTitle(title);
+    item.titleVi = this.cleanItemTitle(title);
     item.grade = grade;
     item.rawInput = rawInput;
     item.updatedAt = timeStr;
