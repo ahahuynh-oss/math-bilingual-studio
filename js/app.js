@@ -1018,9 +1018,6 @@ var App = window.App = {
 
           <td class="py-3.5 px-4 text-right whitespace-nowrap">
             <div class="flex items-center justify-end gap-1.5 flex-wrap">
-              <button onclick="App.openScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all cursor-pointer" title="Mở không gian giàn giáo nhận thức ZPD">
-                🪜 <span>Mở</span>
-              </button>
               <button onclick="App.editScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 flex items-center gap-1 transition-all cursor-pointer shadow-2xs" title="Chỉnh sửa bài tập giàn giáo này">
                 ✏️ <span>Sửa</span>
               </button>
