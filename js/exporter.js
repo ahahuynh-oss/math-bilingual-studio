@@ -1902,6 +1902,233 @@ const Exporter = {
   },
 
   /**
+   * Generates and downloads a Standalone Self-Contained HTML document
+   * specifically for a Scaffolding Tutor Exercise (100% Offline with MathJax, Audio & Auto-Grading)
+   */
+  exportScaffoldStandaloneHTML(item) {
+    if (!item) return;
+    const title = item.title || item.titleVi || 'Bài tập giàn giáo ZPD';
+    const grade = item.grade || 'Toán THPT';
+    const data = item.scaffoldData || {};
+    const rawInput = item.rawInput || '';
+    const branding = window.App?.teacherBranding || {
+      teacherName: "Cô Huỳnh Thị Hà",
+      subject: "TỔ TOÁN - TIN HỌC",
+      school: "TRƯỜNG THPT CHUYÊN"
+    };
+
+    const vocabCards = (data.bilingual_vocabulary || []).map((v, i) => `
+      <div class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition-all space-y-1.5 shadow-xs">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <div class="font-bold text-slate-900 text-sm">${v.english_term || ''}</div>
+            <div class="text-xs font-bold text-emerald-700 mt-0.5">👉 ${v.vietnamese_term || ''}</div>
+          </div>
+          <button type="button" onclick="speakText('${(v.english_term || '').replace(/'/g, "\\'")}', 1.0)" class="p-1 px-2 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs cursor-pointer shadow-2xs" title="Phát âm tiếng Anh">🔊</button>
+        </div>
+        ${v.context_note ? `<div class="text-[11px] text-slate-500 italic border-t border-slate-100 pt-1.5 leading-snug">${v.context_note}</div>` : ''}
+      </div>
+    `).join('');
+
+    const breakdownItems = (data.tier_2_breakdown || []).map((b, i) => `
+      <div class="p-3.5 rounded-xl bg-white border border-slate-200 flex items-start gap-3 shadow-2xs">
+        <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">${i + 1}</span>
+        <div class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">${b}</div>
+      </div>
+    `).join('');
+
+    const parallel = data.parallel_exercise || {};
+    const cleanEscapedAnswer = (parallel.short_answer || '').replace(/"/g, '\\"');
+
+    const html = `<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} | Phiếu Giàn Giáo Sư Phạm ZPD</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']], processEscapes: true },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="p-4 sm:p-8 min-h-screen">
+  <div class="max-w-4xl mx-auto space-y-6">
+    
+    <!-- Top Header Banner -->
+    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500 via-amber-600 to-indigo-700 text-white shadow-xl space-y-3">
+      <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-amber-200">
+        <span>🪜 Mô Hình Giàn Giáo Nhận Thức ZPD (Vygotsky)</span>
+        <span class="bg-white/20 px-3 py-0.5 rounded-full text-white font-bold">${grade}</span>
+      </div>
+      <h1 class="text-xl sm:text-2xl font-black tracking-tight leading-snug">${title}</h1>
+      <div class="text-xs text-amber-100 flex items-center gap-3 pt-1 border-t border-white/20">
+        <span>Dự án Sáng kiến Giáo dục 2026</span>
+        <span>•</span>
+        <span>Tác giả: <strong>${branding.teacherName || 'Huỳnh Thị Hà'}</strong></span>
+      </div>
+    </div>
+
+    <!-- Target Problem Card -->
+    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold uppercase tracking-wide text-indigo-700 flex items-center gap-1.5">
+          <span>🎯</span> <span>Bài Toán Mục Tiêu Cần Giải Quyết:</span>
+        </h2>
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="speakText(document.getElementById('scaffold-raw-problem').innerText, 1.0)" class="p-1 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs font-semibold cursor-pointer">🔊 Đọc</button>
+          <button type="button" onclick="speakText(document.getElementById('scaffold-raw-problem').innerText, 0.72)" class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 text-xs font-semibold cursor-pointer">🐢 Chậm</button>
+        </div>
+      </div>
+      <div id="scaffold-raw-problem" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-sm sm:text-base leading-relaxed">
+        ${rawInput || title}
+      </div>
+      ${data.problem_analysis ? `
+        <div class="text-xs text-slate-600 border-l-2 border-indigo-400 pl-3 leading-relaxed">
+          <strong class="text-indigo-900">Bản chất toán học:</strong> ${data.problem_analysis}
+        </div>
+      ` : ''}
+    </div>
+
+    <!-- Tier 0: Vocabulary -->
+    ${vocabCards ? `
+    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+      <h3 class="text-sm font-bold uppercase tracking-wide text-slate-800 flex items-center gap-1.5">
+        <span>🗣️</span> <span>Cầu Nối Thuật Ngữ Toán Học Song Ngữ (Bilingual Vocabulary):</span>
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${vocabCards}</div>
+    </div>
+    ` : ''}
+
+    <!-- Tier 1: Hint -->
+    ${data.tier_1_hint ? `
+    <div class="p-5 sm:p-6 rounded-2xl bg-sky-50/70 border border-sky-200 shadow-xs space-y-2">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold uppercase tracking-wide text-sky-900 flex items-center gap-1.5">
+          <span>💡</span> <span>Gợi Ý Nấc 1 (Tier 1 Hint - Khơi gợi tư duy):</span>
+        </h3>
+        <button type="button" onclick="document.getElementById('tier-1-content').classList.toggle('hidden')" class="text-xs text-sky-700 font-bold hover:underline cursor-pointer">Đóng/Mở</button>
+      </div>
+      <div id="tier-1-content" class="text-xs sm:text-sm text-sky-950 font-medium leading-relaxed bg-white/80 p-3.5 rounded-xl border border-sky-200/80">
+        ${data.tier_1_hint}
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- Tier 2: Breakdown Steps -->
+    ${breakdownItems ? `
+    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold uppercase tracking-wide text-slate-800 flex items-center gap-1.5">
+          <span>🪜</span> <span>Khung Tư Duy Nấc 2 (Tier 2 Breakdown - Chia nhỏ các bước giải):</span>
+        </h3>
+        <button type="button" onclick="document.getElementById('tier-2-content').classList.toggle('hidden')" class="text-xs text-indigo-700 font-bold hover:underline cursor-pointer">Đóng/Mở</button>
+      </div>
+      <div id="tier-2-content" class="space-y-2.5">${breakdownItems}</div>
+    </div>
+    ` : ''}
+
+    <!-- Pitfalls -->
+    ${data.common_pitfall ? `
+    <div class="p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 text-xs sm:text-sm space-y-1">
+      <div class="font-bold text-rose-800 flex items-center gap-1.5">
+        <span>⚠️</span> <span>Cạm bẫy & Sai lầm học sinh cần tránh:</span>
+      </div>
+      <p class="leading-relaxed font-medium text-rose-900">${data.common_pitfall}</p>
+    </div>
+    ` : ''}
+
+    <!-- Tier 3: Full Solution -->
+    ${data.full_solution ? `
+    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold uppercase tracking-wide text-emerald-800 flex items-center gap-1.5">
+          <span>🏆</span> <span>Lời Giải Mẫu Hoàn Chỉnh (Exemplary Solution):</span>
+        </h3>
+        <button type="button" onclick="document.getElementById('tier-3-content').classList.toggle('hidden')" class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 cursor-pointer">👁️ Xem lời giải</button>
+      </div>
+      <div id="tier-3-content" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-mono whitespace-pre-wrap">
+        ${data.full_solution}
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- Parallel Exercise with Interactive Auto-Grading -->
+    ${parallel.question_vi || parallel.question_en ? `
+    <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-50/80 to-indigo-50/60 border border-amber-200 shadow-xs space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold uppercase tracking-wide text-amber-950 flex items-center gap-1.5">
+          <span>🎯</span> <span>Bài Tập Song Song Tự Luyện (Parallel Exercise):</span>
+        </h3>
+        <span class="text-[11px] font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-indigo-200">Chấm điểm tự động</span>
+      </div>
+      <div class="space-y-1.5 text-xs sm:text-sm font-semibold text-slate-800 bg-white p-4 rounded-xl border border-slate-200">
+        <div>${parallel.question_vi || ''}</div>
+        ${parallel.question_en ? `<div class="text-slate-500 italic text-xs">${parallel.question_en}</div>` : ''}
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2 pt-1">
+        <input type="text" id="parallel-user-ans" placeholder="Điền đáp số ngắn của em..." class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-xs sm:text-sm font-bold flex-1">
+        <button type="button" onclick="checkParallelAnswer()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold cursor-pointer">Kiểm tra kết quả</button>
+      </div>
+      <div id="parallel-result-box" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+    </div>
+    ` : ''}
+
+  </div>
+
+  <script>
+    function speakText(text, rate = 1.0) {
+      if (!window.speechSynthesis || !text) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = rate;
+      window.speechSynthesis.speak(u);
+    }
+
+    const expectedAnswer = "${cleanEscapedAnswer}";
+    function checkParallelAnswer() {
+      const inp = document.getElementById('parallel-user-ans');
+      const box = document.getElementById('parallel-result-box');
+      if (!inp || !box) return;
+      const val = inp.value.trim().toLowerCase().replace(/\\s+/g, '').replace(/\\$/g, '');
+      const expected = expectedAnswer.trim().toLowerCase().replace(/\\s+/g, '').replace(/\\$/g, '');
+      box.classList.remove('hidden');
+      if (val === expected) {
+        box.className = 'p-3.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-bold flex items-center gap-2';
+        box.innerHTML = '🎉 <span>Chính xác tuyệt đối! Em đã nắm vững giàn giáo nhận thức của dạng toán này!</span>';
+      } else {
+        box.className = 'p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-semibold flex items-center gap-2';
+        box.innerHTML = '❌ <span>Chưa chính xác rồi. Em hãy đọc lại gợi ý Nấc 1 và các bước ở Nấc 2 để thử lại nhé!</span>';
+      }
+    }
+  </script>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const safeTitle = (item.titleVi || item.title || 'Gian_Giao_ZPD').replace(/[^a-zA-Z0-9_\u00C0-\u024F\u1E00-\u1EFF]/g, '_');
+    a.href = url;
+    a.download = `Gian_Giao_${safeTitle}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  /**
    * Generates and triggers an A4-optimized printable worksheet
    */
   printWorksheetA4(lesson, options = { includeSolutions: false, mode: 'quiz-only' }) {

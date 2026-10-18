@@ -1017,9 +1017,15 @@ var App = window.App = {
           </td>
 
           <td class="py-3.5 px-4 text-right whitespace-nowrap">
-            <div class="flex items-center justify-end gap-1.5">
-              <button onclick="App.openScaffoldItem('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all cursor-pointer" title="Mở không gian giàn giáo nhận thức ZPD">
+            <div class="flex items-center justify-end gap-1.5 flex-wrap">
+              <button onclick="App.openScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all cursor-pointer" title="Mở không gian giàn giáo nhận thức ZPD">
                 🪜 <span>Mở</span>
+              </button>
+              <button onclick="App.editScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 flex items-center gap-1 transition-all cursor-pointer shadow-2xs" title="Chỉnh sửa bài tập giàn giáo này">
+                ✏️ <span>Sửa</span>
+              </button>
+              <button onclick="App.exportHtmlForScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1 transition-all cursor-pointer shadow-2xs" title="Xuất ra file HTML độc lập cho bài tập này">
+                🚀 <span>HTML</span>
               </button>
               <button onclick="App.exportWordForScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all cursor-pointer" title="Xuất file Word (.doc) giàn giáo">
                 📄 <span>Word</span>
@@ -1037,9 +1043,15 @@ var App = window.App = {
     }).join('');
   },
 
+  currentEditingScaffoldId: null,
+
   openScaffoldItem(id) {
     const item = this.createdLibrary.find(e => e.id === id);
     if (!item) return;
+
+    if (window.ScaffoldingTutor) {
+      window.ScaffoldingTutor.currentEditingId = id;
+    }
 
     if (item.scaffoldKey && window.ScaffoldingTutor && window.ScaffoldingTutor.presets[item.scaffoldKey]) {
       window.ScaffoldingTutor.selectPreset(item.scaffoldKey);
@@ -1054,6 +1066,186 @@ var App = window.App = {
     }
     this.switchTab('scaffolding-tutor');
     this.showToast('🪜 Đã nạp bài tập giàn giáo: ' + (item.titleVi || item.title));
+  },
+
+  exportHtmlForScaffoldItem(id) {
+    const item = this.createdLibrary.find(e => e.id === id);
+    if (!item) return;
+    if (window.Exporter && window.Exporter.exportScaffoldStandaloneHTML) {
+      window.Exporter.exportScaffoldStandaloneHTML(item);
+      this.showToast('🚀 Đã xuất file HTML độc lập cho bài tập giàn giáo: ' + (item.titleVi || item.title));
+    }
+  },
+
+  editScaffoldItem(id) {
+    const item = this.createdLibrary.find(e => e.id === id);
+    if (!item) {
+      this.showToast('Không tìm thấy bài tập cần sửa!', 'warning');
+      return;
+    }
+    this.currentEditingScaffoldId = id;
+
+    // Fill modal fields
+    const titleEl = document.getElementById('edit-scaffold-title');
+    const gradeEl = document.getElementById('edit-scaffold-grade');
+    const rawInputEl = document.getElementById('edit-scaffold-raw-input');
+    const analysisEl = document.getElementById('edit-scaffold-analysis');
+    const hintEl = document.getElementById('edit-scaffold-tier1-hint');
+    const breakdownEl = document.getElementById('edit-scaffold-tier2-breakdown');
+    const pitfallEl = document.getElementById('edit-scaffold-pitfall');
+    const solutionEl = document.getElementById('edit-scaffold-full-solution');
+    const parallelViEl = document.getElementById('edit-scaffold-parallel-vi');
+    const parallelEnEl = document.getElementById('edit-scaffold-parallel-en');
+    const parallelAnsEl = document.getElementById('edit-scaffold-parallel-ans');
+
+    if (titleEl) titleEl.value = item.titleVi || item.title || '';
+    if (gradeEl) {
+      const g = item.grade || 'Khối 12';
+      gradeEl.value = g.includes('10') ? 'Khối 10' : (g.includes('11') ? 'Khối 11' : 'Khối 12');
+    }
+    if (rawInputEl) rawInputEl.value = item.rawInput || '';
+
+    const d = item.scaffoldData || {};
+    if (analysisEl) analysisEl.value = d.problem_analysis || '';
+    if (hintEl) hintEl.value = d.tier_1_hint || '';
+    if (breakdownEl) breakdownEl.value = (d.tier_2_breakdown || []).join('\n');
+    if (pitfallEl) pitfallEl.value = d.common_pitfall || '';
+    if (solutionEl) solutionEl.value = d.full_solution || '';
+
+    const p = d.parallel_exercise || {};
+    if (parallelViEl) parallelViEl.value = p.question_vi || '';
+    if (parallelEnEl) parallelEnEl.value = p.question_en || '';
+    if (parallelAnsEl) parallelAnsEl.value = p.short_answer || '';
+
+    // Render vocabulary rows
+    this.renderEditScaffoldVocabRows(d.bilingual_vocabulary || []);
+
+    const modal = document.getElementById('modal-edit-scaffold');
+    if (modal) {
+      modal.classList.remove('hidden');
+    }
+  },
+
+  closeEditScaffoldModal() {
+    this.currentEditingScaffoldId = null;
+    const modal = document.getElementById('modal-edit-scaffold');
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+  },
+
+  renderEditScaffoldVocabRows(vocabList) {
+    const container = document.getElementById('edit-scaffold-vocab-container');
+    if (!container) return;
+    container.innerHTML = '';
+    if (!vocabList || vocabList.length === 0) {
+      this.addEditScaffoldVocabRow();
+      return;
+    }
+    vocabList.forEach(v => {
+      this.addEditScaffoldVocabRow(v.english_term || '', v.vietnamese_term || '', v.context_note || '');
+    });
+  },
+
+  addEditScaffoldVocabRow(en = '', vi = '', note = '') {
+    const container = document.getElementById('edit-scaffold-vocab-container');
+    if (!container) return;
+    const row = document.createElement('div');
+    row.className = 'grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-white p-2 rounded-xl border border-slate-200';
+    row.innerHTML = `
+      <div class="sm:col-span-4">
+        <input type="text" placeholder="Thuật ngữ tiếng Anh (English)..." value="${(en || '').replace(/"/g, '&quot;')}" class="edit-vocab-en w-full px-2.5 py-1.5 glass-input text-xs font-semibold">
+      </div>
+      <div class="sm:col-span-4">
+        <input type="text" placeholder="Nghĩa tiếng Việt..." value="${(vi || '').replace(/"/g, '&quot;')}" class="edit-vocab-vi w-full px-2.5 py-1.5 glass-input text-xs font-semibold text-emerald-800">
+      </div>
+      <div class="sm:col-span-3">
+        <input type="text" placeholder="Ngữ cảnh / Ghi chú..." value="${(note || '').replace(/"/g, '&quot;')}" class="edit-vocab-note w-full px-2.5 py-1.5 glass-input text-xs">
+      </div>
+      <div class="sm:col-span-1 text-center">
+        <button type="button" onclick="this.closest('.grid').remove()" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg cursor-pointer" title="Xóa dòng này">✕</button>
+      </div>
+    `;
+    container.appendChild(row);
+  },
+
+  saveEditedScaffoldItem() {
+    if (!this.currentEditingScaffoldId) return;
+    const item = this.createdLibrary.find(e => e.id === this.currentEditingScaffoldId);
+    if (!item) {
+      this.showToast('Không tìm thấy bài tập cần lưu!', 'warning');
+      return;
+    }
+
+    const title = (document.getElementById('edit-scaffold-title')?.value || '').trim() || item.title || 'Bài tập giàn giáo ZPD';
+    const grade = document.getElementById('edit-scaffold-grade')?.value || item.grade || 'Khối 12';
+    const rawInput = (document.getElementById('edit-scaffold-raw-input')?.value || '').trim();
+    const analysis = (document.getElementById('edit-scaffold-analysis')?.value || '').trim();
+    const hint = (document.getElementById('edit-scaffold-tier1-hint')?.value || '').trim();
+    const breakdownRaw = document.getElementById('edit-scaffold-tier2-breakdown')?.value || '';
+    const breakdownSteps = breakdownRaw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+    const pitfall = (document.getElementById('edit-scaffold-pitfall')?.value || '').trim();
+    const solution = (document.getElementById('edit-scaffold-full-solution')?.value || '').trim();
+
+    const parallelVi = (document.getElementById('edit-scaffold-parallel-vi')?.value || '').trim();
+    const parallelEn = (document.getElementById('edit-scaffold-parallel-en')?.value || '').trim();
+    const parallelAns = (document.getElementById('edit-scaffold-parallel-ans')?.value || '').trim();
+
+    // Collect vocabularies from rows
+    const vocabRows = document.querySelectorAll('#edit-scaffold-vocab-container .grid');
+    const vocabList = [];
+    vocabRows.forEach(r => {
+      const en = (r.querySelector('.edit-vocab-en')?.value || '').trim();
+      const vi = (r.querySelector('.edit-vocab-vi')?.value || '').trim();
+      const note = (r.querySelector('.edit-vocab-note')?.value || '').trim();
+      if (en || vi) {
+        vocabList.push({
+          english_term: en,
+          vietnamese_term: vi,
+          context_note: note
+        });
+      }
+    });
+
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    // Update item properties
+    item.title = title;
+    item.titleVi = title;
+    item.grade = grade;
+    item.rawInput = rawInput;
+    item.updatedAt = timeStr;
+    item.vocabCount = vocabList.length;
+
+    item.scaffoldData = {
+      bilingual_vocabulary: vocabList,
+      problem_analysis: analysis,
+      tier_1_hint: hint,
+      tier_2_breakdown: breakdownSteps,
+      common_pitfall: pitfall,
+      full_solution: solution,
+      parallel_exercise: {
+        question_vi: parallelVi,
+        question_en: parallelEn,
+        short_answer: parallelAns
+      }
+    };
+
+    // Save library
+    this.saveCreatedLibrary();
+    this.renderScaffoldLibraryTable(this.scaffoldFilter || 'all');
+
+    // If ScaffoldingTutor is currently displaying this item, update it
+    if (window.ScaffoldingTutor && window.ScaffoldingTutor.currentData) {
+      window.ScaffoldingTutor.currentData = JSON.parse(JSON.stringify(item.scaffoldData));
+      const tutorInput = document.getElementById('scaffold-problem-input');
+      if (tutorInput) tutorInput.value = rawInput;
+      window.ScaffoldingTutor.render();
+    }
+
+    this.closeEditScaffoldModal();
+    this.showToast(`✅ Đã lưu và cập nhật bài tập "${title}" vào Bài tập đã tạo!`);
   },
 
   exportWordForScaffoldItem(id) {

@@ -574,10 +574,17 @@ NGUYÊN TẮC BẮT BUỘC:
     let titleEn = firstVocabEn;
     let fullTitle = `${grade}: ${titleVi} (${titleEn})`;
 
-    const entryId = 'scaffold-' + Date.now();
+    let existingIdx = -1;
+    if (this.currentEditingId && window.App && window.App.createdLibrary) {
+      existingIdx = window.App.createdLibrary.findIndex(e => e.id === this.currentEditingId);
+    }
+
+    const entryId = existingIdx >= 0 ? this.currentEditingId : ('scaffold-' + Date.now());
+    const existingEntry = existingIdx >= 0 ? window.App.createdLibrary[existingIdx] : null;
+
     const entry = {
       id: entryId,
-      code: Math.random().toString(36).substring(2, 8).toUpperCase(),
+      code: existingEntry?.code || Math.random().toString(36).substring(2, 8).toUpperCase(),
       title: fullTitle,
       titleVi: titleVi,
       titleEn: titleEn,
@@ -588,20 +595,25 @@ NGUYÊN TẮC BẮT BUỘC:
       questionCount: 1,
       conceptCount: 1,
       vocabCount: (this.currentData.bilingual_vocabulary || []).length,
-      takenCount: 1,
+      takenCount: existingEntry?.takenCount || 1,
       updatedAt: timeStr,
       rawInput: inputVal,
       scaffoldData: JSON.parse(JSON.stringify(this.currentData))
     };
 
     if (window.App && window.App.createdLibrary) {
-      window.App.createdLibrary.unshift(entry);
+      if (existingIdx >= 0) {
+        window.App.createdLibrary[existingIdx] = entry;
+      } else {
+        window.App.createdLibrary.unshift(entry);
+        this.currentEditingId = entryId;
+      }
       window.App.saveCreatedLibrary();
       if (window.App.activeTab === 'scaffold-library') {
         window.App.renderScaffoldLibraryTable(window.App.scaffoldFilter || 'all');
       }
       if (window.App.showToast) {
-        window.App.showToast(auto ? '✅ Tự động lưu bài tập vào "Bài tập đã tạo" của Giàn giáo!' : '💾 Đã lưu bài tập vào "Bài tập đã tạo" của Giàn giáo!');
+        window.App.showToast(auto ? '✅ Tự động lưu bài tập vào "Bài tập đã tạo" của Giàn giáo!' : '💾 Đã lưu & cập nhật bài tập vào "Bài tập đã tạo"!');
       }
     }
   },

@@ -1739,17 +1739,130 @@
     </div>
   </div>
 
+  <!-- ============================================================== -->
+  <!-- MODAL: CHỈNH SỬA BÀI TẬP GIÀN GIÁO ZPD                           -->
+  <!-- ============================================================== -->
+  <div id="modal-edit-scaffold" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs">
+    <div class="glass-card max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in duration-150">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between border-b border-slate-100 p-5 bg-gradient-to-r from-amber-50/50 to-white shrink-0">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl border border-amber-300 shadow-2xs">✏️</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900">Chỉnh Sửa Bài Tập Giàn Giáo ZPD</h3>
+            <p class="text-[11px] text-slate-500">Tùy biến đề bài, 6 nấc sư phạm nhận thức và bài tập tương tự. Bấm Lưu để cập nhật tức thì.</p>
+          </div>
+        </div>
+        <button onclick="App.closeEditScaffoldModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm transition-all cursor-pointer">✕</button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-slate-700 uppercase mb-1">Tiêu đề bài tập giàn giáo:</label>
+            <input type="text" id="edit-scaffold-title" placeholder="Ví dụ: Khối 12: Khảo sát hàm phân thức & Tiệm cận..." class="w-full px-3.5 py-2 glass-input text-xs font-bold text-slate-900">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 uppercase mb-1">Khối lớp:</label>
+            <select id="edit-scaffold-grade" class="w-full px-3.5 py-2 glass-input text-xs font-semibold">
+              <option value="Khối 12">Khối 12</option>
+              <option value="Khối 11">Khối 11</option>
+              <option value="Khối 10">Khối 10</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase mb-1">Đề bài toán mục tiêu (Raw Input / $LaTeX$):</label>
+          <textarea id="edit-scaffold-raw-input" rows="3" placeholder="Nhập đề bài toán..." class="w-full p-3 glass-input text-xs font-mono"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase mb-1">1. Bóc tách đề bài & Trọng tâm kiến thức:</label>
+          <textarea id="edit-scaffold-analysis" rows="3" placeholder="Phân tích đề bài..." class="w-full p-3 glass-input text-xs"></textarea>
+        </div>
+
+        <!-- Vocabulary editor section -->
+        <div class="space-y-2 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+          <div class="flex items-center justify-between">
+            <label class="font-bold text-slate-800 uppercase text-[11px] flex items-center gap-1.5">
+              <span>🗣️</span> <span>2. Bảng thuật ngữ toán song ngữ (Bilingual Vocabulary):</span>
+            </label>
+            <button type="button" onclick="App.addEditScaffoldVocabRow()" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-bold border border-indigo-200 cursor-pointer">➕ Thêm thuật ngữ</button>
+          </div>
+          <div id="edit-scaffold-vocab-container" class="space-y-2"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase mb-1">3. Gợi ý Nấc 1 (Tier 1 Hint - Khơi gợi tư duy):</label>
+            <textarea id="edit-scaffold-tier1-hint" rows="3" placeholder="Gợi ý ban đầu..." class="w-full p-3 glass-input text-xs"></textarea>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 uppercase mb-1">4. Cạm bẫy & Sai lầm cần tránh (Common Pitfalls):</label>
+            <textarea id="edit-scaffold-pitfall" rows="3" placeholder="Học sinh hay nhầm lẫn ở điểm nào..." class="w-full p-3 glass-input text-xs"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase mb-1">5. Khung tư duy Nấc 2 (Tier 2 Breakdown - Mỗi bước 1 dòng):</label>
+          <textarea id="edit-scaffold-tier2-breakdown" rows="4" placeholder="Bước 1: ...&#10;Bước 2: ...&#10;Bước 3: ..." class="w-full p-3 glass-input text-xs font-mono"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase mb-1">6. Lời giải mẫu hoàn chỉnh (Full Exemplary Solution):</label>
+          <textarea id="edit-scaffold-full-solution" rows="5" placeholder="Lời giải chi tiết từng bước có công thức $$LaTeX$$..." class="w-full p-3 glass-input text-xs font-mono"></textarea>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-2.5">
+          <label class="block font-bold text-amber-900 uppercase text-[11px]">7. Bài tập song song rèn luyện (Parallel Exercise) & Chấm điểm tự động:</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-600 block mb-0.5">Đề tiếng Việt:</span>
+              <input type="text" id="edit-scaffold-parallel-vi" placeholder="Đề bài tiếng Việt..." class="w-full px-3 py-1.5 glass-input text-xs">
+            </div>
+            <div>
+              <span class="text-[11px] font-semibold text-slate-600 block mb-0.5">Đề tiếng Anh:</span>
+              <input type="text" id="edit-scaffold-parallel-en" placeholder="English problem statement..." class="w-full px-3 py-1.5 glass-input text-xs">
+            </div>
+          </div>
+          <div>
+            <span class="text-[11px] font-semibold text-slate-600 block mb-0.5">Đáp số ngắn chuẩn (Short Answer):</span>
+            <input type="text" id="edit-scaffold-parallel-ans" placeholder="Ví dụ: 0, 2, 4/3, 1.5..." class="w-full sm:w-60 px-3 py-1.5 glass-input text-xs font-bold text-indigo-700">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
+        <span class="text-[11px] text-slate-400 font-medium">Thay đổi sẽ tự động đồng bộ vào bộ nhớ và danh sách bài tập.</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="App.closeEditScaffoldModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 cursor-pointer">Hủy</button>
+          <button type="button" onclick="App.saveEditedScaffoldItem()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs hover:shadow-emerald-500/20 transition-all flex items-center gap-2 cursor-pointer">
+            <span>💾</span>
+            <span>Lưu & Tích Hợp Vào Bài Tập Đã Tạo</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261018_5"></script>
-  <script src="js/ai-generator.js?v=20261018_5"></script>
-  <script src="js/exporter.js?v=20261018_5"></script>
-  <script src="js/quiz.js?v=20261018_5"></script>
-  <script src="js/scaffolding-tutor.js?v=20261018_5"></script>
-  <script src="js/bilingual-helper.js?v=20261018_5"></script>
-  <script src="js/guide.js?v=20261018_5"></script>
-  <script src="js/app.js?v=20261018_7"></script>
+  <script src="js/data.js?v=20261018_8"></script>
+  <script src="js/ai-generator.js?v=20261018_8"></script>
+  <script src="js/exporter.js?v=20261018_8"></script>
+  <script src="js/quiz.js?v=20261018_8"></script>
+  <script src="js/scaffolding-tutor.js?v=20261018_8"></script>
+  <script src="js/bilingual-helper.js?v=20261018_8"></script>
+  <script src="js/guide.js?v=20261018_8"></script>
+  <script src="js/app.js?v=20261018_8"></script>
 </body>
 </html>
