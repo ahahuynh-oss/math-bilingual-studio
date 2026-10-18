@@ -70,16 +70,19 @@ var App = window.App = {
   showToast(message, type = 'success') {
     const toast = document.getElementById('app-toast');
     if (!toast) return;
-    toast.innerText = message;
+    toast.innerHTML = message;
     toast.className = `fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 flex items-center gap-2 ${
       type === 'success' ? 'bg-emerald-600 text-white shadow-emerald-500/20' : 'bg-rose-600 text-white shadow-rose-500/20'
     }`;
     toast.style.opacity = '1';
     toast.style.transform = 'translateY(0)';
-    setTimeout(() => {
+    toast.style.pointerEvents = 'auto';
+    if (this._toastTimer) clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateY(10px)';
-    }, 2800);
+      toast.style.pointerEvents = 'none';
+    }, 4000);
   },
 
   loadTeacherBranding() {
@@ -2567,6 +2570,67 @@ var App = window.App = {
   // ==========================================
   // EXPORT AND IMPORT ACTIONS
   // ==========================================
+  saveLessonToLibraryAction() {
+    if (!this.currentLesson) {
+      this.currentLesson = getDefaultLesson();
+    }
+    if (!this.currentLesson.meta) {
+      this.currentLesson.meta = {};
+    }
+
+    // Sync active inputs from Lesson Builder
+    const titleEn = document.getElementById('meta-title-en')?.value;
+    const titleVi = document.getElementById('meta-title-vi')?.value;
+    const grade = document.getElementById('meta-grade')?.value;
+    const duration = document.getElementById('meta-duration')?.value;
+    const overviewEn = document.getElementById('meta-overview-en')?.value;
+    const overviewVi = document.getElementById('meta-overview-vi')?.value;
+
+    if (titleEn !== undefined) this.currentLesson.meta.titleEn = titleEn.trim();
+    if (titleVi !== undefined) this.currentLesson.meta.titleVi = titleVi.trim();
+    if (grade !== undefined) this.currentLesson.meta.grade = grade.trim();
+    if (duration !== undefined) this.currentLesson.meta.duration = duration.trim();
+    if (overviewEn !== undefined) this.currentLesson.meta.overviewEn = overviewEn.trim();
+    if (overviewVi !== undefined) this.currentLesson.meta.overviewVi = overviewVi.trim();
+
+    if (!this.currentLesson.id) {
+      this.currentLesson.id = `lesson-${Date.now()}`;
+    }
+    if (!this.currentLesson.code) {
+      this.currentLesson.code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    // Save to storage & sync into createdLibrary
+    this.saveLessonToStorage(false);
+    this.syncCurrentLessonToLibrary(true);
+
+    const displayTitle = this.currentLesson.meta.titleVi || this.currentLesson.meta.titleEn || 'Bài giảng';
+    this.showToast(`<span>✅ Đã lưu bài <strong>"${displayTitle}"</strong> và tích hợp vào Danh sách đã tạo!</span> <button onclick="App.switchTab('my-exams')" class="underline font-bold text-amber-200 hover:text-white cursor-pointer ml-1.5 shrink-0">Xem danh sách ➜</button>`);
+  },
+
+  saveQuizToLibraryAction() {
+    if (!this.currentLesson) {
+      this.currentLesson = getDefaultLesson();
+    }
+    if (!this.currentLesson.quiz) {
+      this.currentLesson.quiz = { questions: [] };
+    }
+
+    const titleEn = document.getElementById('quiz-title-en')?.value;
+    const titleVi = document.getElementById('quiz-title-vi')?.value;
+    const timeMinutes = document.getElementById('quiz-time-minutes')?.value;
+
+    if (titleEn !== undefined) this.currentLesson.quiz.titleEn = titleEn.trim();
+    if (titleVi !== undefined) this.currentLesson.quiz.titleVi = titleVi.trim();
+    if (timeMinutes !== undefined) this.currentLesson.quiz.timeMinutes = parseInt(timeMinutes, 10) || 20;
+
+    this.saveLessonToStorage(false);
+    this.syncCurrentLessonToLibrary(true);
+
+    const displayTitle = this.currentLesson.quiz.titleVi || this.currentLesson.quiz.titleEn || this.currentLesson.meta?.titleVi || 'Đề thi';
+    this.showToast(`<span>✅ Đã lưu đề thi <strong>"${displayTitle}"</strong> và tích hợp vào Danh sách đã tạo!</span> <button onclick="App.switchTab('my-exams')" class="underline font-bold text-amber-200 hover:text-white cursor-pointer ml-1.5 shrink-0">Xem danh sách ➜</button>`);
+  },
+
   exportStandaloneHTML() {
     Exporter.exportStandaloneHTML(this.currentLesson);
     this.showToast('Đã đóng gói và tải xuống file HTML độc lập!');
