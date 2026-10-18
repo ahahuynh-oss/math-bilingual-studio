@@ -926,9 +926,6 @@ var App = window.App = {
 
           <td class="py-3.5 px-4 text-right whitespace-nowrap">
             <div class="flex items-center justify-end gap-1.5">
-              <button onclick="App.openExamFromList('${item.id}')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 flex items-center gap-1 transition-all cursor-pointer" title="Làm bài tương tác / Xem trước">
-                👁️ <span>Mở</span>
-              </button>
               <button onclick="App.editExamFromList('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all cursor-pointer" title="Chỉnh sửa bài giảng & đề thi">
                 ✏️ <span>Sửa</span>
               </button>
