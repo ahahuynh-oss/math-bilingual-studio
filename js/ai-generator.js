@@ -910,8 +910,8 @@ var AIGenerator = window.AIGenerator = {
           },
           {
             id: "qsd-12", type: "multiple-choice", points: 1.2,
-            stemEn: "Two forces $\\vec{F}_1$ and $\\vec{F}_2$ act on an object with magnitudes $|\vec{F}_1| = 3\\text{ N}$, $|\vec{F}_2| = 4\\text{ N}$, and their angle is $90^\\circ$. The resultant force magnitude is:",
-            stemVi: "Hai lực $\\vec{F}_1$ và $\\vec{F}_2$ cùng tác dụng vào một chất điểm với độ lớn $|\vec{F}_1| = 3\\text{ N}$, $|\vec{F}_2| = 4\\text{ N}$ và góc giữa chúng là $90^\\circ$. Độ lớn hợp lực $\\vec{F} = \\vec{F}_1 + \\vec{F}_2$ là:",
+            stemEn: "Two forces $\\vec{F}_1$ and $\\vec{F}_2$ act on an object with magnitudes $|\\vec{F}_1| = 3\\text{ N}$, $|\\vec{F}_2| = 4\\text{ N}$, and their angle is $90^\\circ$. The resultant force magnitude is:",
+            stemVi: "Hai lực $\\vec{F}_1$ và $\\vec{F}_2$ cùng tác dụng vào một chất điểm với độ lớn $|\\vec{F}_1| = 3\\text{ N}$, $|\\vec{F}_2| = 4\\text{ N}$ và góc giữa chúng là $90^\\circ$. Độ lớn hợp lực $\\vec{F} = \\vec{F}_1 + \\vec{F}_2$ là:",
             options: [
               { id: "A", text: "$5\\text{ N}$", isCorrect: true },
               { id: "B", text: "$7\\text{ N}$", isCorrect: false },
@@ -919,7 +919,7 @@ var AIGenerator = window.AIGenerator = {
               { id: "D", text: "$12\\text{ N}$", isCorrect: false }
             ],
             explanationEn: "$|\\vec{F}| = \\sqrt{F_1^2 + F_2^2} = \\sqrt{3^2 + 4^2} = 5\\text{ N}$.",
-            explanationVi: "Theo định lý Pythagore cho hai lực vuông góc: $|\vec{F}| = \\sqrt{3^2 + 4^2} = 5\\text{ N}$."
+            explanationVi: "Theo định lý Pythagore cho hai lực vuông góc: $|\\vec{F}| = \\sqrt{3^2 + 4^2} = 5\\text{ N}$."
           }
         ]
       }
@@ -1319,15 +1319,43 @@ JSON Schema:
     if (cleanJSON.endsWith('```')) {
       cleanJSON = cleanJSON.substring(0, cleanJSON.length - 3);
     }
-    cleanJSON = cleanJSON.trim();
+  safeParseAiJson(rawJSON) {
+    if (!rawJSON || typeof rawJSON !== 'string') return null;
+    let clean = rawJSON.trim();
+    if (clean.startsWith('```json')) clean = clean.substring(7);
+    else if (clean.startsWith('```')) clean = clean.substring(3);
+    if (clean.endsWith('```')) clean = clean.substring(0, clean.length - 3);
+    clean = clean.trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (jsonMatch) clean = jsonMatch[0];
 
-    // Regex extract outer JSON if extra text is present
-    const jsonMatch = cleanJSON.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      cleanJSON = jsonMatch[0];
+    // Try direct parse first
+    try {
+      return JSON.parse(clean);
+    } catch (e1) {
+      // Fix unescaped backslashes before LaTeX commands in JSON strings
+      try {
+        const latexFixed = clean.replace(/\\([a-zA-Z]+)/g, (match, cmd) => {
+          return '\\\\' + cmd;
+        });
+        return JSON.parse(latexFixed);
+      } catch (e2) {
+        // Fallback: fix control chars created by single backslashes in JSON (\x0b, \t, \f, etc.)
+        const sanitized = clean
+          .replace(/\x0bec\b/g, '\\\\vec')
+          .replace(/\x0b/g, '\\\\')
+          .replace(/\text\{/g, '\\\\text{')
+          .replace(/\x0crac\b/g, '\\\\frac')
+          .replace(/\right\b/g, '\\\\right')
+          .replace(/\x08egin\b/g, '\\\\begin')
+          .replace(/\x08ar\b/g, '\\\\bar')
+          .replace(/\neq\b/g, '\\\\neq');
+        return JSON.parse(sanitized);
+      }
     }
+  },
 
-    const lessonData = JSON.parse(cleanJSON);
+    const lessonData = this.safeParseAiJson(cleanJSON);
     lessonData.id = `lesson-ai-${Date.now()}`;
     lessonData.meta = lessonData.meta || {};
     lessonData.meta.titleEn = lessonData.meta.titleEn || "Bilingual Math Lesson";
@@ -1466,7 +1494,7 @@ JSON Schema:
     const jsonMatch = cleanJSON.match(/\{[\s\S]*\}/);
     if (jsonMatch) cleanJSON = jsonMatch[0];
 
-    const lessonData = JSON.parse(cleanJSON);
+    const lessonData = this.safeParseAiJson(cleanJSON);
     lessonData.id = `lesson-ocr-${Date.now()}`;
     lessonData.meta = lessonData.meta || {};
     lessonData.meta.titleEn = lessonData.meta.titleEn || "OCR Bilingual Math Lesson";
@@ -1583,7 +1611,7 @@ Biên soạn CHÍNH XÁC 01 CÂU HỎI TOÁN HỌC SONG NGỮ (English & Tiếng
               if (rawText.startsWith('```json')) rawText = rawText.substring(7);
               if (rawText.startsWith('```')) rawText = rawText.substring(3);
               if (rawText.endsWith('```')) rawText = rawText.substring(0, rawText.length - 3);
-              const parsed = JSON.parse(rawText.trim());
+              const parsed = this.safeParseAiJson(rawText);
               if (parsed && (parsed.stemEn || parsed.stemVi)) {
                 return parsed;
               }

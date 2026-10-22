@@ -1,86 +1,109 @@
 # Math Bilingual Studio
 
-> **Single Page Application (SPA) hỗ trợ giáo viên Toán soạn bài giảng tương tác và đề kiểm tra Toán tiếng Anh song ngữ (English - Vietnamese).**
+> **Single Page Application (SPA) hỗ trợ giáo viên Toán soạn bài giảng tương tác, đề kiểm tra chuẩn Bộ GD&ĐT và ứng dụng Giàn giáo Nhận thức (Scaffolding ZPD) Toán tiếng Anh song ngữ (English - Vietnamese).**
+>
+> **Phiên bản:** `2026.2.0` • **Dự án Sáng kiến Giáo dục 2026** • **Tác giả:** Huỳnh Thị Hà (Giáo viên Toán THPT)
 
 ---
 
-## 🌟 Tổng Quan Tính Năng
+## 🌟 Tổng Quan Tính Năng Nổi Bật (Phiên Bản Mới Nhất 2026.2.0)
 
 ### 1. Hệ Thống Soạn Tự Động & Trích Xuất Tài Liệu (AI & Document Auto-Generator)
+- **Quét Đề Từ Ảnh Chụp & Trang Sách (Gemini Vision OCR - Tính Năng Mới):**
+  - Hỗ trợ kéo thả ảnh hoặc dán ảnh chụp màn hình trực tiếp bằng tổ hợp phím **`Ctrl + V`** (sau khi chụp bằng `Win + Shift + S`).
+  - Tự động nhận diện công thức toán học $LaTeX$, bóc tách câu hỏi, dịch song ngữ Anh - Việt.
+  - **Tự động phân loại 4 mức độ nhận thức:** Nhận biết (NB) • Thông hiểu (TH) • Vận dụng (VD) • Vận dụng cao (VDC).
+- **Trích Xuất & Soạn Theo Tài Liệu Tải Lên (Smart Document Parser):**
+  - Hỗ trợ đa định dạng: **Word (.docx via Mammoth.js)**, **PDF (.pdf via PDF.js)**, **Text/Markdown (.txt, .md, .tex)** hoặc dán trực tiếp đề thi/giáo án.
+  - Tự động bóc tách tiêu đề, bảng từ vựng song ngữ, công thức toán $LaTeX$ và các câu hỏi trắc nghiệm.
+- **Trợ Lý AI Trực Tuyến Thế Hệ Mới (Google Gemini 3.8 Flash & 2.5 Flash):**
+  - Tích hợp các mô hình tiên tiến nhất: `gemini-3.8-flash` (mới nhất, siêu nhanh), `gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-1.5-pro`.
+  - Nút **"🔍 Quét Model Khả Dụng"** giúp giáo viên kiểm tra tức thì các mô hình AI hoạt động trong tài khoản Google AI Studio cá nhân.
 - **Soạn Tự Động Theo Chủ Đề Chuẩn (Curriculum Topics Generator):**
-  - Tích hợp sẵn kho dữ liệu bài giảng toán THPT song ngữ: *Tích phân & Diện tích hình phẳng (Calculus)*, *Xác suất cổ điển & Biến cố độc lập (Probability)*, *Số phức (Complex Numbers)*, *Đạo hàm & Cực trị*, *Vectơ Oxyz*.
-  - Khởi tạo tức thì đầy đủ 4 phần: Khái niệm & Định lý có LaTeX, Từ vựng kèm phát âm, Ví dụ mẫu 3 bước, và Đề kiểm tra 3 dạng câu hỏi.
-- **Trích Xuất & Soạn Theo Tài Liệu Tải Lên (Document Parser):**
-  - Hỗ trợ tải lên đa định dạng: **Word (.docx via Mammoth.js)**, **PDF (.pdf via PDF.js)**, **Text/Markdown (.txt, .md, .tex)** hoặc dán trực tiếp đề thi/giáo án vào khung nhập.
-  - Bộ phân tích thông minh (Smart Parser) tự động nhận diện:
-    - Tiêu đề bài học song ngữ.
-    - Cặp thuật ngữ từ vựng (`Term : Meaning` hoặc `Từ vựng : Dịch nghĩa`).
-    - Công thức toán học LaTeX (`\int`, `\lim`, `\frac`, v.v.).
-    - Câu hỏi trắc nghiệm ABCD (tự tách 4 phương án).
-    - Câu hỏi Đúng/Sai 4 mệnh đề (tự tách các ý a, b, c, d).
-    - Câu hỏi điền đáp án ngắn.
-- **Trợ Lý AI Trực Tuyến (Google Gemini 1.5 Flash):**
-  - Hỗ trợ nhập Google Gemini API Key để tùy biến sinh bài giảng và câu hỏi kiểm tra theo bất kỳ yêu cầu sư phạm nào của giáo viên.
+  - Tích hợp sẵn kho bài giảng THPT song ngữ: *Tích phân & Thể tích khối tròn xoay*, *Vectơ & Tọa độ không gian Oxyz*, *Giới hạn vô định 0/0*, *Hàm phân thức & Tiệm cận*, *Đạo hàm & Cực trị*.
 
-### 2. Hệ Thống Điều Hướng & Soạn Thảo (Tabs System)
-- **Tab 1: Soạn Bài giảng (Lesson Builder)**
-  - **Khái niệm & Định lý (Concepts & Theorems):** Soạn thảo song ngữ Anh - Việt, hỗ trợ công thức Toán LaTeX ($...$ và $$...$$) với khung Live Math Preview trực tiếp. Nút bật/tắt hiển thị tiếng Việt nhanh chóng.
-  - **Từ vựng trọng tâm (Key Vocabulary):** Bảng từ vựng chuẩn ngữ cảnh toán học, phiên âm IPA, từ loại, ví dụ minh họa và **phát âm giọng bản xứ bằng Web Speech API** (`speechSynthesis`).
-  - **Ví dụ mẫu (Worked Examples):** Trình bày bài toán mẫu với phương pháp giải chia theo từng bước (Step-by-step reveal) giúp học sinh tự tư duy trước khi xem đáp án.
-  - **Khung nhúng GeoGebra & Trực quan hóa (Visualizer):** Hỗ trợ nhúng GeoGebra Applet ID trực tiếp và tích hợp sẵn **Interactive Canvas Grapher** cho phép kéo thanh trượt các hệ số $a, b, c$ của hàm số và quan sát tiếp tuyến tại điểm cực trị trong thời gian thực.
-  - **Thanh công cụ hỗ trợ gõ nhanh công thức LaTeX (Quick LaTeX Toolbar):** Chèn nhanh các ký hiệu phổ biến ($\frac{a}{b}$, $\sqrt{x}$, $\int$, $\lim$, $\vec{u}$, $\pm$, $\Delta$, $\alpha$, $\theta$, $\mathbb{R}$, $\begin{cases}...\end{cases}$) vào bất kỳ ô nhập liệu nào đang được chọn.
+### 2. Hệ Thống Điều Hướng Cây Thư Mục & Không Gian Soạn Thảo (Tree Navigation)
+- **Nhánh 1: Soạn bài giảng (Lesson Builder)**
+  - **Danh sách đã tạo (My Created Library):** Quản lý tập trung toàn bộ bài giảng và đề thi đã tạo, lọc theo Khối 10, 11, 12, thao tác làm bài thi, sửa nội dung hoặc xuất file Word.
+  - **Soạn bài giảng mới:** Thiết lập Metadata, Mục tiêu bài học (*Objectives*), Bảng từ vựng có IPA & phát âm bản ngữ, Khái niệm định lý có thanh công cụ gõ nhanh $LaTeX$, và Ví dụ mẫu mở từng bước (*Step-by-step*).
+  - **Trực quan hóa đồ thị:** Tích hợp **Interactive Canvas Grapher** cho phép kéo thanh trượt hệ số $a, b, c$ và quan sát tiếp tuyến cực trị thời gian thực, kèm hỗ trợ nhúng GeoGebra Applet.
+  - **Soạn đề thi (Quiz Builder):** Hỗ trợ đầy đủ 3 dạng câu hỏi chuẩn thi tốt nghiệp THPT 2025:
+    1. *Trắc nghiệm 4 lựa chọn (ABCD).*
+    2. *Trắc nghiệm Đúng/Sai 4 mệnh đề* với cách tính điểm lũy tiến chuẩn Bộ GD&ĐT (1 ý: 0.1đ; 2 ý: 0.25đ; 3 ý: 0.5đ; 4 ý: 1.0đ).
+    3. *Câu hỏi điền đáp án ngắn* (số thực/phân số có cơ chế dung sai tolerance).
+- **Nhánh 2: Gia sư Giàn giáo Nhận thức ZPD (Scaffolding Tutor - Mô Hình Vygotsky)**
+  - **6 Nấc Sư Phạm Khai Phóng Năng Lực:**
+    1. *Bóc tách đề bài & Trọng tâm kiến thức.*
+    2. *Bảng thuật ngữ toán song ngữ (có phát âm & luyện đọc).*
+    3. *Gợi ý Nấc 1 (Tier 1 Hint - Khơi gợi tư duy Socratic ban đầu).*
+    4. *Khung tư duy Nấc 2 (Tier 2 Step Breakdown - Chia nhỏ nhiệm vụ có checklist từng bước).*
+    5. *Cạm bẫy học sinh cần tránh (Common Pitfalls).*
+    6. *Lời giải mẫu hoàn chỉnh (Exemplary Solution).*
+    7. *Bài tập song song rèn luyện (Parallel Exercise) tự động chấm điểm & rút dần giàn giáo (Scaffold Fading).*
+  - **Biên tập trực quan:** Nút *"✏️ Sửa bài tập này"* mở Modal chỉnh sửa mọi trường nội dung giàn giáo và lưu tức thì vào kho **Bài tập đã tạo (Scaffold Library)**.
 
-- **Tab 2: Soạn Đề thi (Quiz & Test Builder)**
-  - Hỗ trợ **3 dạng câu hỏi toán học chuẩn** (theo chuẩn Bộ GD&ĐT và các bài thi quốc tế):
-    1. **Trắc nghiệm 4 lựa chọn (Multiple Choice A, B, C, D):** Chọn nhanh đáp án đúng, tự do điều chỉnh điểm số.
-    2. **Trắc nghiệm Đúng/Sai 4 mệnh đề (True/False 4 propositions a, b, c, d):** Định dạng đề thi tốt nghiệp THPT mới với cách tính điểm chuẩn lũy tiến (1 ý đúng = 10%, 2 ý = 25%, 3 ý = 50%, 4 ý = 100% điểm).
-    3. **Câu hỏi điền đáp án ngắn (Short Answer):** Điền số thực hoặc phân số, hỗ trợ kiểm tra dung sai số thập phân ($\pm$ tolerance) và các giá trị tương đương.
-  - Mỗi câu hỏi đều hỗ trợ đề bài song ngữ, công thức MathJax và hướng dẫn giải chi tiết.
+### 3. Công Cụ Đánh Giá & Hỗ Trợ Chuyên Môn
+- **Ma Trận Đề Thi Chuẩn Bộ GD&ĐT (Test Matrix):**
+  - Phân tích cơ cấu đề theo 4 mức độ nhận thức (Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao).
+  - Tự động thống kê số câu, số điểm và tỷ lệ % theo từng phần thi phục vụ hồ sơ bài dạy.
+- **Trợ Lý Âm Thanh Bản Xứ & Phòng Luyện Nói Shadowing:**
+  - Cụm nút **🔊 Nghe chuẩn (1.0x)** và **🐢 Nghe chậm (0.75x)** ứng dụng Web Speech API.
+  - **Bôi đen văn bản để tra cứu tức thì (Floating Tooltip):** Hiện thanh tra cứu nghe, nghe chậm và luyện nói ngay khi tô đen chữ tiếng Anh trên màn hình.
+  - **Phòng Luyện nói Shadowing với Micro:** Nhận diện giọng nói và chấm điểm phát âm tương tác kèm phân tích màu sắc trực quan.
+  - **Nút bật/tắt song ngữ:** Bật hoặc ẩn phần dịch tiếng Việt trên toàn trang chỉ với 1 click.
 
-- **Tab 3: Xem trước & Tương tác (Live Preview & Interactive Mode)**
-  - **Chế độ Học sinh (Student Mode):**
-    - Học bài trực tiếp: Nghe đọc từ vựng, mở từng bước giải ví dụ mẫu, kéo thanh trượt đồ thị hàm số.
-    - Làm bài kiểm tra có đồng hồ đếm ngược (Countdown Timer), thanh tiến độ (Progress Bar), bảng chọn câu hỏi nhanh (Question Palette).
-    - Nộp bài & chấm điểm tự động tức thì (Auto-grading), thang điểm 10, hiển thị nhận xét và lời giải chi tiết.
-  - **Chế độ Giáo viên (Teacher Mode):** Xem trước bài giảng và đề thi với đáp án hiển thị sẵn để kiểm tra chất lượng trước khi giao cho học sinh.
+### 4. Tùy Biến Giao Diện Làm Việc Linh Hoạt
+- **Workspace Zoom Slider:** Kéo thanh trượt 🔍 để thu phóng toàn bộ giao diện làm việc từ **75% đến 130%**.
+- **Sidebar Collapse & Resizer:** Nút thu gọn thanh bên và thanh kéo co giãn chiều rộng thanh bên từ 180px đến 500px (nhấp đúp để đặt lại mặc định 260px).
 
-- **Tab 4: Gia Sư Giàn Giáo (Scaffolding Tutor - Mô Hình Vygotsky ZPD):**
-  - **6 Nấc Sư Phạm Khai Phóng Năng Lực:** Bóc tách đề bài & Trọng tâm, Bảng thuật ngữ toán song ngữ (có phát âm Web Speech API), Gợi ý nấc 1 (Tier 1 Hint), Khung tư duy chia nhỏ các bước (Tier 2 Breakdown), Cạm bẫy học sinh cần tránh (Common Pitfalls), Lời giải mẫu hoàn chỉnh (Full Solution) và Bài tập song song rèn luyện (Parallel Exercise có tự động kiểm tra đáp số).
-  - Tích hợp sẵn 3 bài mẫu chuẩn THPT (Lớp 10: Tọa độ & Tích vô hướng Oxy, Lớp 11: Giới hạn vô định 0/0, Lớp 12: Hàm phân thức & Tiệm cận).
-
-### 2. Tính Năng Xuất Nội Dung (Export Features)
-- **Nút "Xuất Word (.doc / .docx)":**
-  - Tạo tệp Word chuẩn tương thích 100% với **Microsoft Word (mọi phiên bản), Office 365, Google Docs, LibreOffice Writer**.
-  - Tự động thiết lập cấu hình trang in chuẩn A4 (lề 2cm, Times New Roman 12pt, bảng biểu có viền sắc nét, công thức toán hiển thị rõ ràng).
-  - Hỗ trợ 3 tùy chọn xuất:
-    1. *Phiếu Bài Tập Cho Học Sinh:* Khung thông tin học sinh, bảng điểm, Bảng từ vựng song ngữ, các câu hỏi và chỗ trống điền đáp án.
-    2. *Đề Thi Kèm Đáp Án Chi Tiết:* Đánh dấu đáp án chuẩn và lời giải từng bước cho giáo viên.
-    3. *Phiếu Giàn Giáo Sư Phạm (Scaffolding Worksheet):* Xuất toàn bộ 6 tầng sư phạm của bài toán giàn giáo để phát cho học sinh hoặc lưu trữ giáo án.
-- **Nút "Export Standalone HTML":**
-  - Đóng gói toàn bộ bài giảng, từ vựng, ví dụ, công cụ phát âm Web Speech API, MathJax 3, hệ thống làm bài thi **và tích hợp cả Tab Gia Sư Giàn Giáo (Scaffolding Tutor) offline** thành **1 file HTML duy nhất**.
-  - Học sinh chỉ cần click đúp chuột vào file tải về là có thể:
-    + Đọc lý thuyết bài giảng & nghe phát âm từ vựng toán.
-    + Tự học với Gia sư giàn giáo (chuyển đổi giữa các khối 10, 11, 12, mở 3 nấc gợi ý, làm bài tập song song có chấm điểm ngay).
-    + Làm bài kiểm tra tính giờ tự chấm điểm mà không cần kết nối mạng Internet.
-- **Nút "Print Worksheet (A4)":**
-  - Chuyển đổi định dạng chuyên nghiệp tối ưu cho máy in hoặc Lưu dưới dạng PDF chuẩn khổ giấy A4 (Times New Roman, phân chia 2 cột, công thức toán sắc nét, chống lỗi gãy trang).
-
-### 3. Kết Xuất Toán Học (MathJax 3)
-- Tích hợp MathJax 3 CHTML/SVG hiển thị mượt mà trên mọi màn hình.
-- Debounced re-rendering tự động cập nhật công thức mỗi khi giáo viên gõ nội dung trong trình soạn thảo.
+### 5. Xuất Bản & Chuyển Giao Đa Kênh
+- **Xuất Microsoft Word (.doc / .docx):**
+  - Tương thích 100% với Word, Office 365, Google Docs, LibreOffice; định dạng sẵn khổ A4 chuẩn, lề 2cm, Times New Roman 12pt.
+  - 3 tùy chọn: *Phiếu bài tập học sinh*, *Đề thi kèm đáp án giáo viên*, hoặc *Phiếu giàn giáo ZPD*.
+- **Export Standalone HTML:** Đóng gói toàn bộ ứng dụng thành **1 file HTML duy nhất** chạy offline 100% không cần cài đặt hay kết nối Internet.
+- **In Worksheet A4:** Căn chỉnh bố cục tối ưu hóa cho máy in trường học hoặc xuất PDF khổ A4 sắc nét.
+- **Lưu trữ & Phục hồi JSON:** Sao lưu và chuyển giao bài giảng giữa các giáo viên thuận tiện.
 
 ---
 
-## 🚀 Hướng Dẫn Sử Dụng Nhanh
+## 📖 Cẩm Nang Hướng Dẫn Sử Dụng Tích Hợp (11 Chuyên Đề)
 
-1. **Khởi chạy ứng dụng:**
-   - Ứng dụng đang chạy tại: `http://localhost:8088`
-   - Hoặc mở trực tiếp file `index.html` trong trình duyệt.
-2. **Khám phá các bài mẫu:**
-   - Sử dụng menu chọn mẫu bài học ở thanh trên cùng để xem bài giảng:
-     - *1. Đạo hàm & Cực trị của hàm số (Derivatives and Extrema)*
-     - *2. Vectơ & Tích vô hướng trong Không gian Oxyz (Vectors in 3D Space)*
-     - *3. Tạo bài học mới (Blank Lesson)*
-3. **Lưu trữ & Chuyển giao:**
-   - Mọi thay đổi được tự động lưu vào bộ nhớ `localStorage` của trình duyệt.
-   - Nút **"Tải JSON"** và **"Nhập JSON"** giúp bạn dễ dàng lưu trữ và chia sẻ file bài giảng với các đồng nghiệp.
+Ứng dụng tích hợp sẵn toàn bộ cẩm nang hướng dẫn sử dụng chi tiết ngay tại mục **"❓ Hướng dẫn"** trên thanh bên, bao gồm:
+1. **Quy trình chung:** Quy trình 4 bước tổng quan cho giáo viên & học sinh.
+2. **Cấu hình Trợ lý AI Google Gemini:** Hướng dẫn lấy key miễn phí và đổi mô hình Gemini 3.8 Flash.
+3. **Quét Đề Từ Ảnh Chụp (Gemini Vision OCR):** Hướng dẫn kéo thả và dán ảnh `Ctrl + V`.
+4. **Thiết kế bài giảng Toán song ngữ:** Soạn lý thuyết, từ vựng, ví dụ mẫu và Canvas Grapher.
+5. **Gia sư Giàn giáo Nhận thức ZPD (6 nấc):** Phương pháp sư phạm và rút dần giàn giáo.
+6. **Soạn & Tổ chức Thi trắc nghiệm 3 dạng:** ABCD, Đúng/Sai 4 mệnh đề và Điền đáp án ngắn.
+7. **Ma trận đề thi chuẩn Bộ GD&ĐT:** Phân tích 4 mức độ nhận thức (NB • TH • VD • VDC).
+8. **Luyện phát âm Bản ngữ & Dịch tức thì:** Nghe 1.0x, 0.75x, Floating Tooltip và phòng Shadowing.
+9. **Xuất bản Word, Standalone HTML & In A4:** Hướng dẫn xuất bản và in ấn chuẩn.
+10. **Quản lý Thư viện & Tùy biến giao diện:** Cây thư mục, kho bài tập, Zoom Slider và Sidebar Resizer.
+11. **Báo lỗi & Góp ý sáng kiến:** Kênh gửi phản hồi sư phạm và thông tin tác giả.
+
+---
+
+## 🚀 Hướng Dẫn Khởi Chạy Nhanh
+
+### Cách 1: Khởi chạy bằng tệp thực thi nhanh (Khuyên dùng trên Windows)
+- Nhấp đúp vào tệp `CHAY_APP_TOAN_8088.bat` tại thư mục gốc.
+- Trình duyệt sẽ tự động mở địa chỉ: `http://localhost:8088/`
+
+### Cách 2: Khởi chạy bằng Python Server
+```bash
+cd math-bilingual-studio
+python -m http.server 8088 --bind 127.0.0.1
+```
+Sau đó truy cập: `http://localhost:8088/` trên trình duyệt.
+
+### Cách 3: Mở trực tiếp file HTML
+- Mở trực tiếp tệp `index.html` bằng bất kỳ trình duyệt web hiện đại nào (Chrome, Edge, Firefox, Safari).
+
+---
+
+## 📞 Thông Tin Tác Giả & Hỗ Trợ Kỹ Thuật
+
+- **Tác giả sáng kiến:** Cô Huỳnh Thị Hà - Giáo viên Toán THPT
+- **Dự án:** Sáng kiến Giáo dục 2026 - *Bilingual Math Scaffolding Studio*
+- **Email:** [ahahuynh@gmail.com](mailto:ahahuynh@gmail.com)
+- **Mã nguồn mở GitHub:** [https://github.com/ahahuynh-oss/math-bilingual-studio](https://github.com/ahahuynh-oss/math-bilingual-studio)

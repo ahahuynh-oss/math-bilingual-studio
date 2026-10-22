@@ -3,6 +3,129 @@
  * Hỗ trợ xuất Standalone HTML offline (kèm Scaffolding Tutor), in A4, và xuất Word (.doc/.docx)
  */
 
+function standaloneParseFormulaForSpeech(f, isVi) {
+  if (!f) return '';
+  var s = ' ' + String(f).trim() + ' ';
+  s = s.replace(/\\text\{([^}]+)\}/g, ' $1 ')
+       .replace(/\\mathrm\{([^}]+)\}/g, ' $1 ')
+       .replace(/\\mathbf\{([^}]+)\}/g, ' $1 ')
+       .replace(/\\left|\\right/g, ' ')
+       .replace(/\\quad|\\qquad|\\,|\\;|\\!/g, ' ');
+
+  if (isVi) {
+    s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' vectơ không ')
+         .replace(/\\vec\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\\|([^\\|]+?)\\\|/g, ' độ dài của $1 ')
+         .replace(/\\cdot/g, ' nhân vô hướng ')
+         .replace(/\\times/g, ' nhân có hướng ')
+         .replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 trên $2 ')
+         .replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' căn bậc $1 của $2 ')
+         .replace(/\\sqrt\{([^{}]+)\}/g, ' căn bậc hai của $1 ')
+         .replace(/\^2\b|\^\{2\}/g, ' bình phương ')
+         .replace(/\^3\b|\^\{3\}/g, ' lập phương ')
+         .replace(/\^\{([^}]+)\}/g, ' mũ $1 ')
+         .replace(/\^([a-zA-Z0-9]+)/g, ' mũ $1 ')
+         .replace(/f'''\(x\)/g, ' f ba phẩy x ')
+         .replace(/f''\(x\)/g, ' f hai phẩy x ')
+         .replace(/f'\(x\)/g, ' f phẩy x ')
+         .replace(/y''/g, ' y hai phẩy ')
+         .replace(/y'/g, ' y phẩy ')
+         .replace(/f\(x\)/g, ' f của x ')
+         .replace(/\\perp/g, ' vuông góc với ')
+         .replace(/\\parallel/g, ' song song với ')
+         .replace(/\\pm/g, ' cộng trừ ')
+         .replace(/\\leq|\\le/g, ' nhỏ hơn hoặc bằng ')
+         .replace(/\\geq|\\ge/g, ' lớn hơn hoặc bằng ')
+         .replace(/\\neq/g, ' khác ')
+         .replace(/\\approx/g, ' xấp xỉ ')
+         .replace(/\\to/g, ' tiến tới ')
+         .replace(/\\implies/g, ' suy ra ')
+         .replace(/\\iff/g, ' tương đương ')
+         .replace(/\\in/g, ' thuộc ')
+         .replace(/\\notin/g, ' không thuộc ')
+         .replace(/\\infty/g, ' vô cực ')
+         .replace(/\\mathbb\{R\}/g, ' tập số thực R ')
+         .replace(/\\Delta/g, ' đen-ta ')
+         .replace(/\\pi/g, ' pi ')
+         .replace(/\\alpha/g, ' an-pha ')
+         .replace(/\\beta/g, ' bê-ta ')
+         .replace(/=/g, ' bằng ')
+         .replace(/\+/g, ' cộng ')
+         .replace(/-/g, ' trừ ');
+  } else {
+    s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' zero vector ')
+         .replace(/\\vec\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\\|([^\\|]+?)\\\|/g, ' magnitude of $1 ')
+         .replace(/\\cdot/g, ' dot ')
+         .replace(/\\times/g, ' times ')
+         .replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 over $2 ')
+         .replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' $1 root of $2 ')
+         .replace(/\\sqrt\{([^{}]+)\}/g, ' square root of $1 ')
+         .replace(/\^2\b|\^\{2\}/g, ' squared ')
+         .replace(/\^3\b|\^\{3\}/g, ' cubed ')
+         .replace(/\^\{([^}]+)\}/g, ' to the power of $1 ')
+         .replace(/\^([a-zA-Z0-9]+)/g, ' to the power of $1 ')
+         .replace(/f'''\(x\)/g, ' f triple prime of x ')
+         .replace(/f''\(x\)/g, ' f double prime of x ')
+         .replace(/f'\(x\)/g, ' f prime of x ')
+         .replace(/y''/g, ' y double prime ')
+         .replace(/y'/g, ' y prime ')
+         .replace(/f\(x\)/g, ' f of x ')
+         .replace(/\\perp/g, ' is perpendicular to ')
+         .replace(/\\parallel/g, ' is parallel to ')
+         .replace(/\\pm/g, ' plus or minus ')
+         .replace(/\\leq|\\le/g, ' is less than or equal to ')
+         .replace(/\\geq|\\ge/g, ' is greater than or equal to ')
+         .replace(/\\neq/g, ' is not equal to ')
+         .replace(/\\approx/g, ' is approximately ')
+         .replace(/\\to/g, ' approaches ')
+         .replace(/\\implies/g, ' implies ')
+         .replace(/\\iff/g, ' if and only if ')
+         .replace(/\\in/g, ' in ')
+         .replace(/\\notin/g, ' not in ')
+         .replace(/\\infty/g, ' infinity ')
+         .replace(/\\mathbb\{R\}/g, ' real numbers ')
+         .replace(/\\Delta/g, ' delta ')
+         .replace(/\\pi/g, ' pi ')
+         .replace(/\\alpha/g, ' alpha ')
+         .replace(/\\beta/g, ' beta ')
+         .replace(/=/g, ' equals ')
+         .replace(/\+/g, ' plus ')
+         .replace(/-/g, ' minus ');
+  }
+
+  s = s.replace(/\\[a-zA-Z]+/g, ' ')
+       .replace(/[{}\\$]/g, ' ')
+       .replace(/\s+/g, ' ')
+       .trim();
+
+  return s;
+}
+
+function standaloneCleanLatexForSpeech(text, forcedLang) {
+  if (!text) return '';
+  var str = String(text).replace(/<[^>]+>/g, ' ');
+  var isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
+             (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(str));
+
+  str = str.replace(/\$\$([\s\S]*?)\$\$/g, function(m, f) { return ' ' + parseFormulaForSpeech(f, isVi) + ' '; });
+  str = str.replace(/\$([^\$]+)\$/g, function(m, f) { return ' ' + parseFormulaForSpeech(f, isVi) + ' '; });
+  if (/\\(vec|overrightarrow|frac|sqrt|lim|int|cdot|times|perp|parallel|pm|Delta|alpha|beta|pi|infty|mathbb)/.test(str)) {
+    str = parseFormulaForSpeech(str, isVi);
+  }
+  return str.replace(/\s+/g, ' ').trim();
+}
+
+function standaloneEscapeSpeechAttr(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/"/g, '&quot;')
+    .replace(/\r?\n/g, ' ')
+    .replace(/<[^>]*>/g, ' ');
+}
+
 const Exporter = {
   /**
    * Helper to format LaTeX math for clean readability in Microsoft Word
@@ -125,6 +248,21 @@ const Exporter = {
     mjx-container {
       color: #0f172a !important;
       outline: none;
+      display: inline-block !important;
+      line-height: normal !important;
+      vertical-align: middle !important;
+    }
+    mjx-merror {
+      display: inline-block !important;
+      color: #dc2626 !important;
+      background-color: #fee2e2 !important;
+      border: 1px solid #fca5a5 !important;
+      border-radius: 4px !important;
+      padding: 1px 6px !important;
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+      margin: 0 4px !important;
+      white-space: nowrap !important;
     }
     /* Universal light mode overrides so all elements have crisp black text and soothing light backgrounds */
     .text-white, .text-slate-100, .text-slate-200 { color: #0f172a !important; }
@@ -624,128 +762,11 @@ const Exporter = {
       }
     }
 
-    function parseFormulaForSpeech(f, isVi) {
-      if (!f) return '';
-      let s = ' ' + String(f).trim() + ' ';
-      s = s.replace(/\\text\{([^}]+)\}/g, ' $1 ')
-           .replace(/\\mathrm\{([^}]+)\}/g, ' $1 ')
-           .replace(/\\mathbf\{([^}]+)\}/g, ' $1 ')
-           .replace(/\\left|\\right/g, ' ')
-           .replace(/\\quad|\\qquad|\\,|\\;|\\!/g, ' ');
+    ${standaloneParseFormulaForSpeech.toString().replace('standaloneParseFormulaForSpeech', 'parseFormulaForSpeech')}
 
-      if (isVi) {
-        s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' vectơ không ')
-             .replace(/\\vec\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
-             .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
-             .replace(/\\\|\s*([^\\|]+?)\s*\\\|/g, ' độ dài của $1 ')
-             .replace(/\\cdot/g, ' nhân vô hướng ')
-             .replace(/\\times/g, ' nhân có hướng ')
-             .replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 trên $2 ')
-             .replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' căn bậc $1 của $2 ')
-             .replace(/\\sqrt\{([^{}]+)\}/g, ' căn bậc hai của $1 ')
-             .replace(/\^2\b|\^\{2\}/g, ' bình phương ')
-             .replace(/\^3\b|\^\{3\}/g, ' lập phương ')
-             .replace(/\^\{([^}]+)\}/g, ' mũ $1 ')
-             .replace(/\^([a-zA-Z0-9]+)/g, ' mũ $1 ')
-             .replace(/f'''\(x\)/g, ' f ba phẩy x ')
-             .replace(/f''\(x\)/g, ' f hai phẩy x ')
-             .replace(/f'\(x\)/g, ' f phẩy x ')
-             .replace(/y''/g, ' y hai phẩy ')
-             .replace(/y'/g, ' y phẩy ')
-             .replace(/f\(x\)/g, ' f của x ')
-             .replace(/\\perp/g, ' vuông góc với ')
-             .replace(/\\parallel/g, ' song song với ')
-             .replace(/\\pm/g, ' cộng trừ ')
-             .replace(/\\leq|\\le/g, ' nhỏ hơn hoặc bằng ')
-             .replace(/\\geq|\\ge/g, ' lớn hơn hoặc bằng ')
-             .replace(/\\neq/g, ' khác ')
-             .replace(/\\approx/g, ' xấp xỉ ')
-             .replace(/\\to/g, ' tiến tới ')
-             .replace(/\\implies/g, ' suy ra ')
-             .replace(/\\iff/g, ' tương đương ')
-             .replace(/\\in/g, ' thuộc ')
-             .replace(/\\notin/g, ' không thuộc ')
-             .replace(/\\infty/g, ' vô cực ')
-             .replace(/\\mathbb\{R\}/g, ' tập số thực R ')
-             .replace(/\\Delta/g, ' đen-ta ')
-             .replace(/\\pi/g, ' pi ')
-             .replace(/\\alpha/g, ' an-pha ')
-             .replace(/\\beta/g, ' bê-ta ')
-             .replace(/=/g, ' bằng ')
-             .replace(/\+/g, ' cộng ')
-             .replace(/-/g, ' trừ ');
-      } else {
-        s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' zero vector ')
-             .replace(/\\vec\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
-             .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
-             .replace(/\\\|\s*([^\\|]+?)\s*\\\|/g, ' magnitude of $1 ')
-             .replace(/\\cdot/g, ' dot ')
-             .replace(/\\times/g, ' times ')
-             .replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 over $2 ')
-             .replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' $1 root of $2 ')
-             .replace(/\\sqrt\{([^{}]+)\}/g, ' square root of $1 ')
-             .replace(/\^2\b|\^\{2\}/g, ' squared ')
-             .replace(/\^3\b|\^\{3\}/g, ' cubed ')
-             .replace(/\^\{([^}]+)\}/g, ' to the power of $1 ')
-             .replace(/\^([a-zA-Z0-9]+)/g, ' to the power of $1 ')
-             .replace(/f'''\(x\)/g, ' f triple prime of x ')
-             .replace(/f''\(x\)/g, ' f double prime of x ')
-             .replace(/f'\(x\)/g, ' f prime of x ')
-             .replace(/y''/g, ' y double prime ')
-             .replace(/y'/g, ' y prime ')
-             .replace(/f\(x\)/g, ' f of x ')
-             .replace(/\\perp/g, ' is perpendicular to ')
-             .replace(/\\parallel/g, ' is parallel to ')
-             .replace(/\\pm/g, ' plus or minus ')
-             .replace(/\\leq|\\le/g, ' is less than or equal to ')
-             .replace(/\\geq|\\ge/g, ' is greater than or equal to ')
-             .replace(/\\neq/g, ' is not equal to ')
-             .replace(/\\approx/g, ' is approximately ')
-             .replace(/\\to/g, ' approaches ')
-             .replace(/\\implies/g, ' implies ')
-             .replace(/\\iff/g, ' if and only if ')
-             .replace(/\\in/g, ' in ')
-             .replace(/\\notin/g, ' not in ')
-             .replace(/\\infty/g, ' infinity ')
-             .replace(/\\mathbb\{R\}/g, ' real numbers ')
-             .replace(/\\Delta/g, ' delta ')
-             .replace(/\\pi/g, ' pi ')
-             .replace(/\\alpha/g, ' alpha ')
-             .replace(/\\beta/g, ' beta ')
-             .replace(/=/g, ' equals ')
-             .replace(/\+/g, ' plus ')
-             .replace(/-/g, ' minus ');
-      }
+    ${standaloneCleanLatexForSpeech.toString().replace('standaloneCleanLatexForSpeech', 'cleanLatexForSpeech')}
 
-      s = s.replace(/\\[a-zA-Z]+/g, ' ')
-           .replace(/[{}\\$]/g, ' ')
-           .replace(/\s+/g, ' ')
-           .trim();
-
-      return s;
-    }
-
-    function cleanLatexForSpeech(text, forcedLang) {
-      if (!text) return '';
-      let str = String(text).replace(/<[^>]+>/g, ' ');
-      const isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
-                   (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(str));
-
-      str = str.replace(/\$\$([\s\S]*?)\$\$/g, function(m, f) { return ' ' + parseFormulaForSpeech(f, isVi) + ' '; });
-      str = str.replace(/\$([^\$]+)\$/g, function(m, f) { return ' ' + parseFormulaForSpeech(f, isVi) + ' '; });
-      if (/\\(vec|overrightarrow|frac|sqrt|lim|int|cdot|times|perp|parallel|pm|Delta|alpha|beta|pi|infty|mathbb)/.test(str)) {
-        str = parseFormulaForSpeech(str, isVi);
-      }
-      return str.replace(/\s+/g, ' ').trim();
-    }
-
-    function escapeSpeechAttr(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/"/g, '&quot;')
-        .replace(/\\r?\\n/g, ' ')
-        .replace(/<[^>]*>/g, ' ');
-    }
+    ${standaloneEscapeSpeechAttr.toString().replace('standaloneEscapeSpeechAttr', 'escapeSpeechAttr')}
 
     function getBestVoice(isVi) {
       if (!('speechSynthesis' in window)) return null;

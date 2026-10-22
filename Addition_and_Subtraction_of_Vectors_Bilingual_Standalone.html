@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Addition and Subtraction of Two Vectors (Grade 10) | Math Bilingual Studio Standalone</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- MathJax 3 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      svg: { fontCache: 'global' },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+          window.__mathjaxLoaded = true;
+        }
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 1rem !important;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+      color: #0f172a !important;
+    }
+    .latex-box {
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 0.75rem !important;
+      color: #0f172a !important;
+    }
+    mjx-container {
+      color: #0f172a !important;
+      outline: none;
+      display: inline-block !important;
+      line-height: normal !important;
+      vertical-align: middle !important;
+    }
+    mjx-merror {
+      display: inline-block !important;
+      color: #dc2626 !important;
+      background-color: #fee2e2 !important;
+      border: 1px solid #fca5a5 !important;
+      border-radius: 4px !important;
+      padding: 1px 6px !important;
+      font-size: 11px !important;
+      line-height: 1.2 !important;
+      margin: 0 4px !important;
+      white-space: nowrap !important;
+    }
+    /* Universal light mode overrides so all elements have crisp black text and soothing light backgrounds */
+    .text-white, .text-slate-100, .text-slate-200 { color: #0f172a !important; }
+    .text-slate-300 { color: #1e293b !important; }
+    .text-slate-400 { color: #475569 !important; }
+    .text-indigo-300, .text-indigo-400 { color: #4338ca !important; }
+    .text-teal-300, .text-teal-400 { color: #0f766e !important; }
+    .text-purple-300, .text-purple-400 { color: #6b21a8 !important; }
+    .text-amber-300, .text-amber-400 { color: #92400e !important; }
+    .text-emerald-300, .text-emerald-400 { color: #047857 !important; }
+    .text-rose-300, .text-rose-400 { color: #b91c1c !important; }
+
+    .bg-slate-950, .bg-slate-900, .bg-slate-900/90, .bg-slate-900/80, .bg-slate-900/60, .bg-indigo-950, .bg-indigo-950/40, .bg-indigo-950/30, .bg-purple-950, .bg-amber-950, .bg-teal-950, .bg-teal-950/30 {
+      background-color: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+    .bg-slate-800, .bg-slate-850 {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      color: #334155 !important;
+    }
+    .border-slate-800, .border-slate-700 {
+      border-color: #e2e8f0 !important;
+    }
+    .hidden { display: none !important; }
+    .cursor-pointer { cursor: pointer !important; }
+    button { cursor: pointer; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; }
+      .glass-card { background: white !important; border: 1px solid #ddd !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-2xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-amber-400 flex items-center justify-center shadow-xs font-bold text-lg text-white">
+          🎓
+        </div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">TRƯỜNG THPT CHUYÊN</span>
+            <span class="text-xs text-slate-500 hidden sm:inline">• TỔ TOÁN - TIN HỌC • GV: Cô Huỳnh Thị Hà • Khối 12</span>
+          </div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <span>Addition and Subtraction of Two Vectors (Grade 10)</span>
+            <button type="button" onclick="speakText(this)" data-speech="Addition and Subtraction of Two Vectors (Grade 10)" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe giọng nữ chuẩn (1.0x)">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Addition and Subtraction of Two Vectors (Grade 10)" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe chậm phát âm (0.72x)">🐢</button>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Navigation & Mode -->
+      <div class="flex items-center gap-2">
+        <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 gap-1">
+          <button id="tab-btn-lesson" onclick="switchStandaloneTab('lesson')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-indigo-700 shadow-xs">
+            📖 Bài Giảng (Lesson)
+          </button>
+          <button id="tab-btn-scaffold" onclick="switchStandaloneTab('scaffold')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
+            🪜 Gia Sư Giàn Giáo (Tutor)
+          </button>
+          <button id="tab-btn-quiz" onclick="switchStandaloneTab('quiz')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
+            ✍️ Kiểm Tra (Quiz)
+          </button>
+        </div>
+        <button onclick="toggleAllVietnamese()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-2xs flex items-center gap-1.5" title="Bật/Tắt dịch tiếng Việt">
+          🇻🇳 <span id="vi-toggle-text">Dịch: Đang mở</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: LESSON VIEW                         -->
+    <!-- ========================================== -->
+    <div id="standalone-lesson-view" class="space-y-8">
+      
+      <!-- Lesson Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-50/80 via-white to-teal-50/60 p-6 sm:p-8 border border-slate-200 shadow-xs">
+        <div class="relative z-10 max-w-3xl">
+          <span class="px-3 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-3 inline-block">
+            Target Duration: 45 minutes
+          </span>
+          <div class="flex items-center gap-2 mb-1 flex-wrap">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Addition and Subtraction of Two Vectors (Grade 10)</h2>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="speakText(this)" data-speech="Addition and Subtraction of Two Vectors (Grade 10)" class="p-1 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs font-semibold" title="Nghe giọng nữ chuẩn (1.0x)">🔊 <span>Nghe</span></button>
+              <button type="button" onclick="speakSlow(this)" data-speech="Addition and Subtraction of Two Vectors (Grade 10)" class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 transition-all text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs font-semibold" title="Nghe chậm (0.72x)">🐢 <span>Chậm</span></button>
+            </div>
+          </div>
+          <h3 class="text-base sm:text-lg text-indigo-700 font-semibold mb-4 vi-text">Tổng và Hiệu Của Hai Vectơ (Hình Học Lớp 10)</h3>
+          <div class="flex items-start gap-2.5 mb-2">
+            <p class="text-slate-800 text-sm leading-relaxed flex-1">Master vector operations: Triangle rule (Chasles' relation), Parallelogram rule, vector subtraction, and properties of midpoints and centroids.</p>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" onclick="speakText(this)" data-speech="Master vector operations: Triangle rule (Chasles' relation), Parallelogram rule, vector subtraction, and properties of midpoints and centroids." class="p-1 px-2 rounded-lg bg-slate-100 hover:bg-indigo-600 text-slate-700 hover:text-white border border-slate-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe đọc phần tổng quan (1.0x)">🔊</button>
+              <button type="button" onclick="speakSlow(this)" data-speech="Master vector operations: Triangle rule (Chasles' relation), Parallelogram rule, vector subtraction, and properties of midpoints and centroids." class="p-1 px-1.5 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 transition-all text-xs cursor-pointer shadow-2xs" title="Nghe chậm tổng quan (0.72x)">🐢</button>
+            </div>
+          </div>
+          <p class="text-slate-600 text-xs italic leading-relaxed vi-text border-l-2 border-indigo-400 pl-3">Nắm vững các phép toán vectơ: Quy tắc ba điểm (hệ thức Chasles), quy tắc hình bình hành, phép trừ vectơ, hệ thức trung điểm và trọng tâm tam giác.</p>
+        </div>
+        <div class="absolute right-0 top-0 w-80 h-full bg-gradient-to-l from-indigo-500/10 to-transparent pointer-events-none"></div>
+      </div>
+
+      <!-- VOCABULARY SECTION -->
+      <section class="space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-sm border border-teal-200">🗣️</span>
+            <span>Key Mathematical Vocabulary (Từ vựng trọng tâm)</span>
+            <button type="button" onclick="speakText(this)" data-speech="Key Mathematical Vocabulary" class="p-1 px-1.5 rounded-md bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white border border-teal-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần từ vựng">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Key Mathematical Vocabulary" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm">🐢</button>
+          </h3>
+          <span class="text-xs text-slate-500">Bấm 🔊 để nghe chuẩn, 🐢 để nghe chậm phát âm</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="vocab-grid">
+          
+            <div class="glass-card p-4 rounded-xl border border-slate-200 hover:border-indigo-400 transition-all flex flex-col justify-between group bg-white shadow-xs">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                  <div>
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Vector Addition</h4>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="font-mono text-teal-700 font-semibold">/ˈvek.tər əˈdɪʃ.ən/</span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">noun phrase</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakTerm(this)" data-term="Vector Addition" class="p-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer shadow-2xs font-bold" title="Nghe giọng nữ chuẩn (1.0x)">
+                      🔊
+                    </button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Vector Addition" class="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white transition-all text-xs border border-amber-200 cursor-pointer shadow-2xs font-bold" title="Nghe chậm từng âm tiết (0.72x)">
+                      🐢
+                    </button>
+                  </div>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
+                  👉 Phép cộng vectơ (tổng hai vectơ)
+                </p>
+                <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
+                  <div class="flex items-start justify-between gap-1 mb-1">
+                    <div class="latex-box flex-1">Vector addition obeys commutative and associative laws.</div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="speakText(this)" data-speech="Vector addition obeys commutative and associative laws." class="p-1 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe câu ví dụ (1.0x)">🔊</button>
+                      <button type="button" onclick="speakSlow(this)" data-speech="Vector addition obeys commutative and associative laws." class="p-1 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm câu ví dụ (0.72x)">🐢</button>
+                    </div>
+                  </div>
+                  <div class="text-[11px] text-slate-600 italic vi-text">Phép cộng vectơ có tính giao hoán và kết hợp.</div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="glass-card p-4 rounded-xl border border-slate-200 hover:border-indigo-400 transition-all flex flex-col justify-between group bg-white shadow-xs">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                  <div>
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Vector Subtraction</h4>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="font-mono text-teal-700 font-semibold">/ˈvek.tər səbˈtræk.ʃən/</span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">noun phrase</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakTerm(this)" data-term="Vector Subtraction" class="p-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer shadow-2xs font-bold" title="Nghe giọng nữ chuẩn (1.0x)">
+                      🔊
+                    </button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Vector Subtraction" class="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white transition-all text-xs border border-amber-200 cursor-pointer shadow-2xs font-bold" title="Nghe chậm từng âm tiết (0.72x)">
+                      🐢
+                    </button>
+                  </div>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
+                  👉 Phép trừ vectơ (hiệu hai vectơ)
+                </p>
+                <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
+                  <div class="flex items-start justify-between gap-1 mb-1">
+                    <div class="latex-box flex-1">Vector subtraction is defined via opposite vectors.</div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="speakText(this)" data-speech="Vector subtraction is defined via opposite vectors." class="p-1 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe câu ví dụ (1.0x)">🔊</button>
+                      <button type="button" onclick="speakSlow(this)" data-speech="Vector subtraction is defined via opposite vectors." class="p-1 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm câu ví dụ (0.72x)">🐢</button>
+                    </div>
+                  </div>
+                  <div class="text-[11px] text-slate-600 italic vi-text">Phép trừ vectơ được định nghĩa qua vectơ đối.</div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="glass-card p-4 rounded-xl border border-slate-200 hover:border-indigo-400 transition-all flex flex-col justify-between group bg-white shadow-xs">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                  <div>
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Opposite Vector</h4>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="font-mono text-teal-700 font-semibold">/ˈɒp.ə.zɪt ˈvek.tər/</span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">noun phrase</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakTerm(this)" data-term="Opposite Vector" class="p-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer shadow-2xs font-bold" title="Nghe giọng nữ chuẩn (1.0x)">
+                      🔊
+                    </button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Opposite Vector" class="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white transition-all text-xs border border-amber-200 cursor-pointer shadow-2xs font-bold" title="Nghe chậm từng âm tiết (0.72x)">
+                      🐢
+                    </button>
+                  </div>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
+                  👉 Vectơ đối
+                </p>
+                <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
+                  <div class="flex items-start justify-between gap-1 mb-1">
+                    <div class="latex-box flex-1">$-\vec{AB} = \vec{BA}$ is the opposite vector of $\vec{AB}$.</div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="speakText(this)" data-speech="$-\vec{AB} = \vec{BA}$ is the opposite vector of $\vec{AB}$." class="p-1 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe câu ví dụ (1.0x)">🔊</button>
+                      <button type="button" onclick="speakSlow(this)" data-speech="$-\vec{AB} = \vec{BA}$ is the opposite vector of $\vec{AB}$." class="p-1 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm câu ví dụ (0.72x)">🐢</button>
+                    </div>
+                  </div>
+                  <div class="text-[11px] text-slate-600 italic vi-text">$-\vec{AB} = \vec{BA}$ là vectơ đối của $\vec{AB}$.</div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="glass-card p-4 rounded-xl border border-slate-200 hover:border-indigo-400 transition-all flex flex-col justify-between group bg-white shadow-xs">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                  <div>
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Triangle Rule</h4>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="font-mono text-teal-700 font-semibold">/ˈtraɪ.æŋ.ɡəl ruːl/</span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">noun phrase</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakTerm(this)" data-term="Triangle Rule" class="p-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer shadow-2xs font-bold" title="Nghe giọng nữ chuẩn (1.0x)">
+                      🔊
+                    </button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Triangle Rule" class="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white transition-all text-xs border border-amber-200 cursor-pointer shadow-2xs font-bold" title="Nghe chậm từng âm tiết (0.72x)">
+                      🐢
+                    </button>
+                  </div>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
+                  👉 Quy tắc tam giác (quy tắc ba điểm)
+                </p>
+                <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
+                  <div class="flex items-start justify-between gap-1 mb-1">
+                    <div class="latex-box flex-1">According to the triangle rule, $\vec{AB} + \vec{BC} = \vec{AC}$.</div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="speakText(this)" data-speech="According to the triangle rule, $\vec{AB} + \vec{BC} = \vec{AC}$." class="p-1 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe câu ví dụ (1.0x)">🔊</button>
+                      <button type="button" onclick="speakSlow(this)" data-speech="According to the triangle rule, $\vec{AB} + \vec{BC} = \vec{AC}$." class="p-1 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm câu ví dụ (0.72x)">🐢</button>
+                    </div>
+                  </div>
+                  <div class="text-[11px] text-slate-600 italic vi-text">Theo quy tắc tam giác, $\vec{AB} + \vec{BC} = \vec{AC}$.</div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="glass-card p-4 rounded-xl border border-slate-200 hover:border-indigo-400 transition-all flex flex-col justify-between group bg-white shadow-xs">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                  <div>
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Parallelogram Rule</h4>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="font-mono text-teal-700 font-semibold">/ˌpær.əˈlel.ə.ɡræm ruːl/</span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">noun phrase</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakTerm(this)" data-term="Parallelogram Rule" class="p-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer shadow-2xs font-bold" title="Nghe giọng nữ chuẩn (1.0x)">
+                      🔊
+                    </button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Parallelogram Rule" class="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white transition-all text-xs border border-amber-200 cursor-pointer shadow-2xs font-bold" title="Nghe chậm từng âm tiết (0.72x)">
+                      🐢
+                    </button>
+                  </div>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
+                  👉 Quy tắc hình bình hành
+                </p>
+                <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
+                  <div class="flex items-start justify-between gap-1 mb-1">
+                    <div class="latex-box flex-1">The parallelogram rule determines the resultant vector.</div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="speakText(this)" data-speech="The parallelogram rule determines the resultant vector." class="p-1 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe câu ví dụ (1.0x)">🔊</button>
+                      <button type="button" onclick="speakSlow(this)" data-speech="The parallelogram rule determines the resultant vector." class="p-1 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm câu ví dụ (0.72x)">🐢</button>
+                    </div>
+                  </div>
+                  <div class="text-[11px] text-slate-600 italic vi-text">Quy tắc hình bình hành xác định vectơ tổng hợp lực.</div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="glass-card p-4 rounded-xl border border-slate-200 hover:border-indigo-400 transition-all flex flex-col justify-between group bg-white shadow-xs">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                  <div>
+                    <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Resultant Vector</h4>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                      <span class="font-mono text-teal-700 font-semibold">/rɪˈzʌl.tənt ˈvek.tər/</span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-100 text-[10px] text-slate-600 border border-slate-200">noun phrase</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakTerm(this)" data-term="Resultant Vector" class="p-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white transition-all text-xs border border-indigo-200 cursor-pointer shadow-2xs font-bold" title="Nghe giọng nữ chuẩn (1.0x)">
+                      🔊
+                    </button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Resultant Vector" class="p-1.5 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white transition-all text-xs border border-amber-200 cursor-pointer shadow-2xs font-bold" title="Nghe chậm từng âm tiết (0.72x)">
+                      🐢
+                    </button>
+                  </div>
+                </div>
+                <p class="text-sm font-semibold text-emerald-700 vi-text mb-2.5">
+                  👉 Vectơ tổng (vectơ hợp lực)
+                </p>
+                <div class="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-800">
+                  <div class="flex items-start justify-between gap-1 mb-1">
+                    <div class="latex-box flex-1">The resultant vector represents the combined effect of forces.</div>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <button type="button" onclick="speakText(this)" data-speech="The resultant vector represents the combined effect of forces." class="p-1 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe câu ví dụ (1.0x)">🔊</button>
+                      <button type="button" onclick="speakSlow(this)" data-speech="The resultant vector represents the combined effect of forces." class="p-1 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm câu ví dụ (0.72x)">🐢</button>
+                    </div>
+                  </div>
+                  <div class="text-[11px] text-slate-600 italic vi-text">Vectơ tổng biểu thị tác dụng kết hợp của các vectơ thành phần.</div>
+                </div>
+              </div>
+            </div>
+          
+        </div>
+      </section>
+
+      <!-- CONCEPTS & THEOREMS -->
+      <section class="space-y-4">
+        <div class="border-b border-slate-200 pb-3">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-sm border border-indigo-200">📐</span>
+            <span>Mathematical Concepts & Theorems (Định lý & Công thức)</span>
+            <button type="button" onclick="speakText(this)" data-speech="Mathematical Concepts and Theorems" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần định lý (1.0x)">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Mathematical Concepts and Theorems" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+          </h3>
+        </div>
+
+        <div class="space-y-4">
+          
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-600 border-slate-200 bg-white shadow-xs space-y-3">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="text-base font-bold text-slate-900">1. Triangle Rule for Vector Addition</h4>
+                  <div class="flex items-center gap-1">
+                    <button type="button" onclick="speakText(this)" data-speech="Triangle Rule for Vector Addition" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc định lý (1.0x)">🔊</button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Triangle Rule for Vector Addition" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                  </div>
+                </div>
+                <span class="text-xs text-indigo-700 vi-text font-semibold">Quy Tắc Ba Điểm (Quy Tắc Tam Giác)</span>
+              </div>
+              <div class="flex items-start justify-between gap-2">
+                <div class="text-sm text-slate-800 leading-relaxed flex-1">For any three points $A, B, C$, the sum of vector $\vec{AB}$ and vector $\vec{BC}$ is vector $\vec{AC}$.</div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="speakText(this)" data-speech="For any three points $A, B, C$, the sum of vector $\vec{AB}$ and vector $\vec{BC}$ is vector $\vec{AC}$. \vec{AB} + \vec{BC} = \vec{AC}" class="p-1 px-1.5 rounded-md bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-xs cursor-pointer shadow-2xs" title="Nghe đọc định nghĩa và công thức (1.0x)">🔊</button>
+                  <button type="button" onclick="speakSlow(this)" data-speech="For any three points $A, B, C$, the sum of vector $\vec{AB}$ and vector $\vec{BC}$ is vector $\vec{AC}$. \vec{AB} + \vec{BC} = \vec{AC}" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                </div>
+              </div>
+              <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">Với ba điểm bất kì $A, B, C$, ta luôn có tổng của vectơ $\vec{AB}$ và vectơ $\vec{BC}$ bằng vectơ $\vec{AC}$.</div>
+              
+              <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-center latex-box overflow-x-auto text-slate-900 font-medium">
+                $$\vec{AB} + \vec{BC} = \vec{AC}$$
+              </div>
+              
+                <div class="text-xs text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-2">
+                  <span>💡</span>
+                  <span><strong>Lưu ý sư phạm:</strong> Còn gọi là hệ thức Chasles. Mở rộng cho đa giác: điểm cuối vectơ trước nối tiếp điểm đầu vectơ sau.</span>
+                </div>
+              
+            </div>
+          
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-600 border-slate-200 bg-white shadow-xs space-y-3">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="text-base font-bold text-slate-900">2. Parallelogram Rule</h4>
+                  <div class="flex items-center gap-1">
+                    <button type="button" onclick="speakText(this)" data-speech="Parallelogram Rule" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc định lý (1.0x)">🔊</button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Parallelogram Rule" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                  </div>
+                </div>
+                <span class="text-xs text-indigo-700 vi-text font-semibold">Quy Tắc Hình Bình Hành</span>
+              </div>
+              <div class="flex items-start justify-between gap-2">
+                <div class="text-sm text-slate-800 leading-relaxed flex-1">If $ABCD$ is a parallelogram, the sum of two adjacent side vectors sharing initial point $A$ equals the diagonal vector starting from $A$.</div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="speakText(this)" data-speech="If $ABCD$ is a parallelogram, the sum of two adjacent side vectors sharing initial point $A$ equals the diagonal vector starting from $A$. \vec{AB} + \vec{AD} = \vec{AC} \quad (ABCD \text{ is a parallelogram})" class="p-1 px-1.5 rounded-md bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-xs cursor-pointer shadow-2xs" title="Nghe đọc định nghĩa và công thức (1.0x)">🔊</button>
+                  <button type="button" onclick="speakSlow(this)" data-speech="If $ABCD$ is a parallelogram, the sum of two adjacent side vectors sharing initial point $A$ equals the diagonal vector starting from $A$. \vec{AB} + \vec{AD} = \vec{AC} \quad (ABCD \text{ is a parallelogram})" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                </div>
+              </div>
+              <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">Nếu $ABCD$ là hình bình hành thì tổng hai vectơ chung gốc $A$ tương ứng với hai cạnh bằng vectơ đường chéo xuất phát từ $A$.</div>
+              
+              <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-center latex-box overflow-x-auto text-slate-900 font-medium">
+                $$\vec{AB} + \vec{AD} = \vec{AC} \quad (ABCD \text{ is a parallelogram})$$
+              </div>
+              
+                <div class="text-xs text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-2">
+                  <span>💡</span>
+                  <span><strong>Lưu ý sư phạm:</strong> Ứng dụng trong vật lý để tìm hợp lực của hai lực đồng quy.</span>
+                </div>
+              
+            </div>
+          
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-600 border-slate-200 bg-white shadow-xs space-y-3">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="text-base font-bold text-slate-900">3. Vector Subtraction and Difference Rule</h4>
+                  <div class="flex items-center gap-1">
+                    <button type="button" onclick="speakText(this)" data-speech="Vector Subtraction and Difference Rule" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc định lý (1.0x)">🔊</button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Vector Subtraction and Difference Rule" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                  </div>
+                </div>
+                <span class="text-xs text-indigo-700 vi-text font-semibold">Phép Trừ Vectơ và Quy Tắc Hiệu</span>
+              </div>
+              <div class="flex items-start justify-between gap-2">
+                <div class="text-sm text-slate-800 leading-relaxed flex-1">Subtracting vector $\vec{b}$ means adding its opposite vector $-\vec{b}$. For any origin $O$, the difference $\vec{OB} - \vec{OA} = \vec{AB}$.</div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="speakText(this)" data-speech="Subtracting vector $\vec{b}$ means adding its opposite vector $-\vec{b}$. For any origin $O$, the difference $\vec{OB} - \vec{OA} = \vec{AB}$. \vec{OB} - \vec{OA} = \vec{AB}, \quad \vec{a} - \vec{b} = \vec{a} + (-\vec{b})" class="p-1 px-1.5 rounded-md bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-xs cursor-pointer shadow-2xs" title="Nghe đọc định nghĩa và công thức (1.0x)">🔊</button>
+                  <button type="button" onclick="speakSlow(this)" data-speech="Subtracting vector $\vec{b}$ means adding its opposite vector $-\vec{b}$. For any origin $O$, the difference $\vec{OB} - \vec{OA} = \vec{AB}$. \vec{OB} - \vec{OA} = \vec{AB}, \quad \vec{a} - \vec{b} = \vec{a} + (-\vec{b})" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                </div>
+              </div>
+              <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">Hiệu của hai vectơ là tổng với vectơ đối. Với điểm $O$ bất kì, hiệu hai vectơ chung gốc $\vec{OB} - \vec{OA} = \vec{AB}$ (ngọn trừ gốc).</div>
+              
+              <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-center latex-box overflow-x-auto text-slate-900 font-medium">
+                $$\vec{OB} - \vec{OA} = \vec{AB}, \quad \vec{a} - \vec{b} = \vec{a} + (-\vec{b})$$
+              </div>
+              
+                <div class="text-xs text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-start gap-2">
+                  <span>💡</span>
+                  <span><strong>Lưu ý sư phạm:</strong> Ghi nhớ: Ngọn của số bị trừ là điểm cuối, ngọn của số trừ là điểm đầu.</span>
+                </div>
+              
+            </div>
+          
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-indigo-600 border-slate-200 bg-white shadow-xs space-y-3">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <h4 class="text-base font-bold text-slate-900">4. Midpoint and Centroid Relations</h4>
+                  <div class="flex items-center gap-1">
+                    <button type="button" onclick="speakText(this)" data-speech="Midpoint and Centroid Relations" class="p-1 px-1.5 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc định lý (1.0x)">🔊</button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Midpoint and Centroid Relations" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                  </div>
+                </div>
+                <span class="text-xs text-indigo-700 vi-text font-semibold">Hệ Thức Trung Điểm và Trọng Tâm</span>
+              </div>
+              <div class="flex items-start justify-between gap-2">
+                <div class="text-sm text-slate-800 leading-relaxed flex-1">$I$ is the midpoint of $AB$ iff $\vec{IA} + \vec{IB} = \vec{0}$. $G$ is the centroid of $\triangle ABC$ iff $\vec{GA} + \vec{GB} + \vec{GC} = \vec{0}$.</div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" onclick="speakText(this)" data-speech="$I$ is the midpoint of $AB$ iff $\vec{IA} + \vec{IB} = \vec{0}$. $G$ is the centroid of $\triangle ABC$ iff $\vec{GA} + \vec{GB} + \vec{GC} = \vec{0}$. \vec{IA} + \vec{IB} = \vec{0} \iff \vec{MA} + \vec{MB} = 2\vec{MI}; \quad \vec{GA} + \vec{GB} + \vec{GC} = \vec{0}" class="p-1 px-1.5 rounded-md bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-xs cursor-pointer shadow-2xs" title="Nghe đọc định nghĩa và công thức (1.0x)">🔊</button>
+                  <button type="button" onclick="speakSlow(this)" data-speech="$I$ is the midpoint of $AB$ iff $\vec{IA} + \vec{IB} = \vec{0}$. $G$ is the centroid of $\triangle ABC$ iff $\vec{GA} + \vec{GB} + \vec{GC} = \vec{0}$. \vec{IA} + \vec{IB} = \vec{0} \iff \vec{MA} + \vec{MB} = 2\vec{MI}; \quad \vec{GA} + \vec{GB} + \vec{GC} = \vec{0}" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                </div>
+              </div>
+              <div class="text-xs text-slate-700 italic leading-relaxed vi-text bg-slate-50 p-3 rounded-xl border border-slate-200">$I$ là trung điểm $AB$ khi và chỉ khi $\vec{IA} + \vec{IB} = \vec{0}$. $G$ là trọng tâm $\triangle ABC$ khi và chỉ khi $\vec{GA} + \vec{GB} + \vec{GC} = \vec{0}$.</div>
+              
+              <div class="p-3.5 rounded-xl bg-white border border-slate-200 text-center latex-box overflow-x-auto text-slate-900 font-medium">
+                $$\vec{IA} + \vec{IB} = \vec{0} \iff \vec{MA} + \vec{MB} = 2\vec{MI}; \quad \vec{GA} + \vec{GB} + \vec{GC} = \vec{0}$$
+              </div>
+              
+            </div>
+          
+        </div>
+      </section>
+
+      <!-- WORKED EXAMPLES (STEP-BY-STEP) -->
+      <section class="space-y-4">
+        <div class="border-b border-slate-200 pb-3">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center text-sm border border-purple-200">💡</span>
+            <span>Worked Examples (Ví dụ mẫu từng bước)</span>
+            <button type="button" onclick="speakText(this)" data-speech="Worked Examples" class="p-1 px-1.5 rounded-md bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white border border-purple-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề phần ví dụ (1.0x)">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Worked Examples" class="p-1 px-1.5 rounded-md bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+          </h3>
+        </div>
+
+        <div class="space-y-6">
+          
+            <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+                <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                  Example 1
+                </span>
+                <button type="button" onclick="revealAllSteps('exsd-1')" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer">
+                  Mở toàn bộ các bước giải 👁️
+                </button>
+              </div>
+
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-1.5">
+                  <p class="text-sm sm:text-base font-semibold text-slate-900 latex-box flex-1">Given parallelogram $ABCD$ with center $O$. Simplify the expression $\vec{u} = \vec{AB} + \vec{AD} - \vec{AC}$.</p>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button type="button" onclick="speakText(this)" data-speech="Given parallelogram $ABCD$ with center $O$. Simplify the expression $\vec{u} = \vec{AB} + \vec{AD} - \vec{AC}$." class="p-1 px-2 rounded-lg bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white border border-purple-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc đề bài ví dụ (1.0x)">🔊 <span class="text-[11px] font-semibold">Đề bài</span></button>
+                    <button type="button" onclick="speakSlow(this)" data-speech="Given parallelogram $ABCD$ with center $O$. Simplify the expression $\vec{u} = \vec{AB} + \vec{AD} - \vec{AC}$." class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe chậm đề bài (0.72x)">🐢 <span class="text-[11px] font-semibold">Chậm</span></button>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-600 italic vi-text border-l-2 border-purple-400 pl-2.5">Cho hình bình hành $ABCD$ tâm $O$. Hãy rút gọn biểu thức vectơ $\vec{u} = \vec{AB} + \vec{AD} - \vec{AC}$.</p>
+              </div>
+
+              <!-- Steps Container -->
+              <div class="space-y-3 pt-2">
+                
+                  <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
+                    <div onclick="toggleStep('exsd-1', 1)" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer select-none">
+                      <span class="flex items-center gap-2 flex-1 pr-2 flex-wrap">
+                        <span class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-[11px] font-bold border border-indigo-200 shrink-0">1</span>
+                        <span>Step 1: Apply Parallelogram Rule</span>
+                        <div class="flex items-center gap-0.5" onclick="event.stopPropagation()">
+                          <button type="button" onclick="speakText(this)" data-speech="Apply Parallelogram Rule \vec{AB} + \vec{AD} = \vec{AC}" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe đọc bước này (1.0x)">🔊</button>
+                          <button type="button" onclick="speakSlow(this)" data-speech="Apply Parallelogram Rule \vec{AB} + \vec{AD} = \vec{AC}" class="p-0.5 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                        </div>
+                        <span class="text-slate-500 italic vi-text text-xs font-normal">(Áp dụng quy tắc hình bình hành)</span>
+                      </span>
+                      <span id="step-icon-exsd-1-1" class="text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs">➕ Mở bước này</span>
+                    </div>
+                    <div id="step-content-exsd-1-1" class="hidden p-4 pt-2 border-t border-slate-200 text-xs sm:text-sm text-slate-800 space-y-2 bg-slate-50">
+                      <div class="p-3 bg-white rounded-lg border border-slate-200 font-mono text-center latex-box overflow-x-auto text-slate-900">$$\vec{AB} + \vec{AD} = \vec{AC}$$</div>
+                      
+                        <div class="flex items-start justify-between gap-2 text-slate-800">
+                          <div class="flex-1">Because $ABCD$ is a parallelogram, the sum of adjacent side vectors from $A$ equals the diagonal vector $\vec{AC}$.</div>
+                          <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="speakText(this)" data-speech="Because $ABCD$ is a parallelogram, the sum of adjacent side vectors from $A$ equals the diagonal vector $\vec{AC}$." class="p-1 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe giải thích bước này (1.0x)">🔊</button>
+                            <button type="button" onclick="speakSlow(this)" data-speech="Because $ABCD$ is a parallelogram, the sum of adjacent side vectors from $A$ equals the diagonal vector $\vec{AC}$." class="p-1 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                          </div>
+                        </div>
+                      
+                      <div class="text-slate-600 vi-text text-[11px] italic">Vì $ABCD$ là hình bình hành nên tổng hai vectơ cạnh $\vec{AB} + \vec{AD} = \vec{AC}$.</div>
+                    </div>
+                  </div>
+                  
+                  <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
+                    <div onclick="toggleStep('exsd-1', 2)" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer select-none">
+                      <span class="flex items-center gap-2 flex-1 pr-2 flex-wrap">
+                        <span class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-[11px] font-bold border border-indigo-200 shrink-0">2</span>
+                        <span>Step 2: Substitute and simplify</span>
+                        <div class="flex items-center gap-0.5" onclick="event.stopPropagation()">
+                          <button type="button" onclick="speakText(this)" data-speech="Substitute and simplify \vec{u} = \vec{AC} - \vec{AC} = \vec{0}" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe đọc bước này (1.0x)">🔊</button>
+                          <button type="button" onclick="speakSlow(this)" data-speech="Substitute and simplify \vec{u} = \vec{AC} - \vec{AC} = \vec{0}" class="p-0.5 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                        </div>
+                        <span class="text-slate-500 italic vi-text text-xs font-normal">(Thay thế và rút gọn)</span>
+                      </span>
+                      <span id="step-icon-exsd-1-2" class="text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs">➕ Mở bước này</span>
+                    </div>
+                    <div id="step-content-exsd-1-2" class="hidden p-4 pt-2 border-t border-slate-200 text-xs sm:text-sm text-slate-800 space-y-2 bg-slate-50">
+                      <div class="p-3 bg-white rounded-lg border border-slate-200 font-mono text-center latex-box overflow-x-auto text-slate-900">$$\vec{u} = \vec{AC} - \vec{AC} = \vec{0}$$</div>
+                      
+                        <div class="flex items-start justify-between gap-2 text-slate-800">
+                          <div class="flex-1">Subtracting a vector from itself produces the zero vector $\vec{0}$.</div>
+                          <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="speakText(this)" data-speech="Subtracting a vector from itself produces the zero vector $\vec{0}$." class="p-1 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe giải thích bước này (1.0x)">🔊</button>
+                            <button type="button" onclick="speakSlow(this)" data-speech="Subtracting a vector from itself produces the zero vector $\vec{0}$." class="p-1 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                          </div>
+                        </div>
+                      
+                      <div class="text-slate-600 vi-text text-[11px] italic">Hiệu của một vectơ với chính nó cho kết quả là vectơ-không $\vec{0}$.</div>
+                    </div>
+                  </div>
+                  
+                  <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs">
+                    <div onclick="toggleStep('exsd-1', 3)" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer select-none">
+                      <span class="flex items-center gap-2 flex-1 pr-2 flex-wrap">
+                        <span class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center text-[11px] font-bold border border-indigo-200 shrink-0">3</span>
+                        <span>Step 3: Conclusion</span>
+                        <div class="flex items-center gap-0.5" onclick="event.stopPropagation()">
+                          <button type="button" onclick="speakText(this)" data-speech="Conclusion \vec{u} = \vec{0}" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe đọc bước này (1.0x)">🔊</button>
+                          <button type="button" onclick="speakSlow(this)" data-speech="Conclusion \vec{u} = \vec{0}" class="p-0.5 px-1.5 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[11px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                        </div>
+                        <span class="text-slate-500 italic vi-text text-xs font-normal">(Kết luận)</span>
+                      </span>
+                      <span id="step-icon-exsd-1-3" class="text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs">➕ Mở bước này</span>
+                    </div>
+                    <div id="step-content-exsd-1-3" class="hidden p-4 pt-2 border-t border-slate-200 text-xs sm:text-sm text-slate-800 space-y-2 bg-slate-50">
+                      <div class="p-3 bg-white rounded-lg border border-slate-200 font-mono text-center latex-box overflow-x-auto text-slate-900">$$\vec{u} = \vec{0}$$</div>
+                      
+                        <div class="flex items-start justify-between gap-2 text-slate-800">
+                          <div class="flex-1">The resultant vector is the zero vector.</div>
+                          <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="speakText(this)" data-speech="The resultant vector is the zero vector." class="p-1 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe giải thích bước này (1.0x)">🔊</button>
+                            <button type="button" onclick="speakSlow(this)" data-speech="The resultant vector is the zero vector." class="p-1 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm (0.72x)">🐢</button>
+                          </div>
+                        </div>
+                      
+                      <div class="text-slate-600 vi-text text-[11px] italic">Biểu thức sau khi rút gọn bằng vectơ $\vec{0}$.</div>
+                    </div>
+                  </div>
+                  
+              </div>
+            </div>
+            
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: SCAFFOLDING TUTOR (OFFLINE)         -->
+    <!-- ========================================== -->
+    <div id="standalone-scaffold-view" class="space-y-6 hidden">
+      
+      <!-- Top Scaffolding Tutor Banner -->
+      <div class="glass-card p-6 sm:p-7 rounded-3xl border border-slate-200 bg-gradient-to-r from-indigo-50/70 via-white to-purple-50/50 shadow-xs space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg border border-amber-300">🪜</span>
+            <div>
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded border border-amber-300">
+                Gia Sư Giàn Giáo Sư Phạm (Scaffolding Offline)
+              </span>
+              <div class="flex items-center gap-2">
+                <h2 class="text-xl sm:text-2xl font-black text-slate-900">Bilingual Math Scaffolding Tutor</h2>
+                <button type="button" onclick="speakText(this)" data-speech="Bilingual Math Scaffolding Tutor" class="p-1 px-2 rounded-lg bg-amber-100 hover:bg-amber-600 text-amber-800 hover:text-white border border-amber-300 text-xs cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề giàn giáo">🔊</button>
+                <button type="button" onclick="speakSlow(this)" data-speech="Bilingual Math Scaffolding Tutor" class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 text-xs cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>
+              </div>
+            </div>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200">
+            Mô hình Vygotsky ZPD • Hoạt động 100% Offline
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">
+          Hệ thống cung cấp giàn giáo nhận thức nhiều tầng giúp bạn tự suy luận giải bài toán song ngữ: phá bỏ rào cản thuật ngữ tiếng Anh, mở gợi ý từng nấc và rèn luyện bài tập song song.
+        </p>
+
+        <!-- Presets Selection Bar -->
+        <div class="pt-2 border-t border-slate-200 flex flex-wrap items-center gap-2">
+          <span class="text-xs font-bold text-slate-700">Chọn Bài Mẫu THPT:</span>
+          <button onclick="selectStandalonePreset('grade-10-vectors')" id="btn-pre-10" class="px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all">
+            📘 Khối 10: Tọa độ Oxy & Tích vô hướng
+          </button>
+          <button onclick="selectStandalonePreset('grade-11-limits')" id="btn-pre-11" class="px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all">
+            📗 Khối 11: Giới hạn vô định 0/0
+          </button>
+          <button onclick="selectStandalonePreset('grade-12-asymptotes')" id="btn-pre-12" class="px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all">
+            📙 Khối 12: Hàm phân thức & Tiệm cận
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Problem Card -->
+      <div class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">Đề bài mục tiêu (Target Problem):</span>
+          <div class="flex items-center gap-1.5">
+            <span id="scaffold-grade-badge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300 mr-1">Khối 12</span>
+            <button type="button" onclick="speakText(document.getElementById('scaffold-problem-text').innerText)" class="p-1 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe đọc đề bài mục tiêu">🔊 <span class="text-[11px] font-semibold">Nghe đề</span></button>
+            <button type="button" onclick="speakSlow(document.getElementById('scaffold-problem-text').innerText)" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe chậm đề bài (0.72x)">🐢 <span class="text-[11px] font-semibold">Chậm</span></button>
+          </div>
+        </div>
+        <div id="scaffold-problem-text" class="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed latex-box">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- 3-Step Progress Tier Control Buttons -->
+      <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+          <span>⚡</span> <span>Mở mức độ hỗ trợ sư phạm:</span>
+        </span>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="setStandaloneTier(1)" id="tier-btn-1" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow transition-all">
+            🟡 Chỉ mở Gợi ý Nấc 1
+          </button>
+          <button onclick="setStandaloneTier(2)" id="tier-btn-2" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all">
+            🔵 Mở Khung tư duy 3 bước
+          </button>
+          <button onclick="setStandaloneTier(3)" id="tier-btn-3" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all">
+            🟢 Mở Toàn bộ Lời giải & Cạm bẫy
+          </button>
+        </div>
+      </div>
+
+      <!-- Scaffold Dynamic Sections Container -->
+      <div id="standalone-scaffold-container" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: QUIZ VIEW                           -->
+    <!-- ========================================== -->
+    <div id="standalone-quiz-view" class="space-y-8 hidden">
+      
+      <!-- Quiz Header Card -->
+      <div class="glass-card p-6 sm:p-8 rounded-2xl border border-slate-200 bg-white shadow-xs flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 mb-2 inline-block">
+            Assessment Test
+          </span>
+          <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900">Assessment: Vector Addition and Subtraction (12 Multiple-Choice Questions)</h2>
+            <button type="button" onclick="speakText(this)" data-speech="Assessment: Vector Addition and Subtraction (12 Multiple-Choice Questions)" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe đọc tiêu đề bài kiểm tra">🔊</button>
+            <button type="button" onclick="speakSlow(this)" data-speech="Assessment: Vector Addition and Subtraction (12 Multiple-Choice Questions)" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 text-xs inline-flex items-center gap-1 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>
+          </div>
+          <h3 class="text-sm font-semibold text-slate-700 vi-text mt-0.5">Đề Kiểm Tra: Tổng và Hiệu Của Hai Vectơ (12 Câu Trắc Nghiệm)</h3>
+          <p class="text-xs text-slate-600 mt-2">
+            Thời gian: <strong>25 phút</strong> • Tổng số câu: <strong>12</strong>
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="gradeStandaloneQuiz()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 hover:border-emerald-300 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <span>✅</span> <span>Nộp Bài & Chấm Điểm</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Questions Container -->
+      <div class="space-y-6" id="standalone-questions-container">
+        <!-- Rendered via Javascript for full reactivity -->
+      </div>
+
+      <!-- Result Banner (Hidden initially) -->
+      <div id="standalone-quiz-result" class="hidden glass-card p-6 sm:p-8 rounded-2xl border border-emerald-300 bg-emerald-50/60 text-center space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl font-bold shadow-sm">
+          🏆
+        </div>
+        <h3 class="text-2xl font-black text-slate-900">Kết Quả Bài Kiểm Tra (Quiz Result)</h3>
+        <div class="flex justify-center items-baseline gap-2">
+          <span id="result-score-num" class="text-5xl font-black text-emerald-700">0.0</span>
+          <span class="text-xl text-slate-600 font-semibold">/ 10.0</span>
+        </div>
+        <p id="result-feedback" class="text-sm font-semibold text-slate-800 max-w-md mx-auto"></p>
+        <button onclick="resetStandaloneQuiz()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 transition-all shadow-xs">
+          🔄 Làm lại bài kiểm tra
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="mt-auto border-t border-slate-200 py-6 text-center text-xs text-slate-600 bg-white">
+    Được tạo tự động bởi <strong>Math Bilingual Studio</strong> • Hoạt động độc lập & Hỗ trợ học trực tuyến/offline.
+  </footer>
+
+  <!-- Embedded JS Logic -->
+  <script>
+    const LESSON_DATA = {"id":"vectors-sum-diff-grade10","meta":{"titleEn":"Addition and Subtraction of Two Vectors (Grade 10)","titleVi":"Tổng và Hiệu Của Hai Vectơ (Hình Học Lớp 10)","grade":"Grade 10 / Geometry","duration":"45 minutes","teacher":"Math Bilingual Department","overviewEn":"Master vector operations: Triangle rule (Chasles' relation), Parallelogram rule, vector subtraction, and properties of midpoints and centroids.","overviewVi":"Nắm vững các phép toán vectơ: Quy tắc ba điểm (hệ thức Chasles), quy tắc hình bình hành, phép trừ vectơ, hệ thức trung điểm và trọng tâm tam giác."},"concepts":[{"id":"csd-1","titleEn":"Triangle Rule for Vector Addition","titleVi":"Quy Tắc Ba Điểm (Quy Tắc Tam Giác)","latex":"\\vec{AB} + \\vec{BC} = \\vec{AC}","descEn":"For any three points $A, B, C$, the sum of vector $\\vec{AB}$ and vector $\\vec{BC}$ is vector $\\vec{AC}$.","descVi":"Với ba điểm bất kì $A, B, C$, ta luôn có tổng của vectơ $\\vec{AB}$ và vectơ $\\vec{BC}$ bằng vectơ $\\vec{AC}$.","notesEn":"Also called Chasles' relation. Extends to polygon rules: $\\vec{A_1A_2} + \\vec{A_2A_3} + \\dots + \\vec{A_{n-1}A_n} = \\vec{A_1A_n}$.","notesVi":"Còn gọi là hệ thức Chasles. Mở rộng cho đa giác: điểm cuối vectơ trước nối tiếp điểm đầu vectơ sau."},{"id":"csd-2","titleEn":"Parallelogram Rule","titleVi":"Quy Tắc Hình Bình Hành","latex":"\\vec{AB} + \\vec{AD} = \\vec{AC} \\quad (ABCD \\text{ is a parallelogram})","descEn":"If $ABCD$ is a parallelogram, the sum of two adjacent side vectors sharing initial point $A$ equals the diagonal vector starting from $A$.","descVi":"Nếu $ABCD$ là hình bình hành thì tổng hai vectơ chung gốc $A$ tương ứng với hai cạnh bằng vectơ đường chéo xuất phát từ $A$.","notesEn":"Used in physics to find the resultant of two forces: $\\vec{F} = \\vec{F}_1 + \\vec{F}_2$.","notesVi":"Ứng dụng trong vật lý để tìm hợp lực của hai lực đồng quy."},{"id":"csd-3","titleEn":"Vector Subtraction and Difference Rule","titleVi":"Phép Trừ Vectơ và Quy Tắc Hiệu","latex":"\\vec{OB} - \\vec{OA} = \\vec{AB}, \\quad \\vec{a} - \\vec{b} = \\vec{a} + (-\\vec{b})","descEn":"Subtracting vector $\\vec{b}$ means adding its opposite vector $-\\vec{b}$. For any origin $O$, the difference $\\vec{OB} - \\vec{OA} = \\vec{AB}$.","descVi":"Hiệu của hai vectơ là tổng với vectơ đối. Với điểm $O$ bất kì, hiệu hai vectơ chung gốc $\\vec{OB} - \\vec{OA} = \\vec{AB}$ (ngọn trừ gốc).","notesEn":"Remember: Terminal point of the subtrahend becomes initial point of the difference.","notesVi":"Ghi nhớ: Ngọn của số bị trừ là điểm cuối, ngọn của số trừ là điểm đầu."},{"id":"csd-4","titleEn":"Midpoint and Centroid Relations","titleVi":"Hệ Thức Trung Điểm và Trọng Tâm","latex":"\\vec{IA} + \\vec{IB} = \\vec{0} \\iff \\vec{MA} + \\vec{MB} = 2\\vec{MI}; \\quad \\vec{GA} + \\vec{GB} + \\vec{GC} = \\vec{0}","descEn":"$I$ is the midpoint of $AB$ iff $\\vec{IA} + \\vec{IB} = \\vec{0}$. $G$ is the centroid of $\\triangle ABC$ iff $\\vec{GA} + \\vec{GB} + \\vec{GC} = \\vec{0}$.","descVi":"$I$ là trung điểm $AB$ khi và chỉ khi $\\vec{IA} + \\vec{IB} = \\vec{0}$. $G$ là trọng tâm $\\triangle ABC$ khi và chỉ khi $\\vec{GA} + \\vec{GB} + \\vec{GC} = \\vec{0}$."}],"vocabulary":[{"id":"vsd-1","term":"Vector Addition","ipa":"/ˈvek.tər əˈdɪʃ.ən/","pos":"noun phrase","meaningVi":"Phép cộng vectơ (tổng hai vectơ)","exampleEn":"Vector addition obeys commutative and associative laws.","exampleVi":"Phép cộng vectơ có tính giao hoán và kết hợp."},{"id":"vsd-2","term":"Vector Subtraction","ipa":"/ˈvek.tər səbˈtræk.ʃən/","pos":"noun phrase","meaningVi":"Phép trừ vectơ (hiệu hai vectơ)","exampleEn":"Vector subtraction is defined via opposite vectors.","exampleVi":"Phép trừ vectơ được định nghĩa qua vectơ đối."},{"id":"vsd-3","term":"Opposite Vector","ipa":"/ˈɒp.ə.zɪt ˈvek.tər/","pos":"noun phrase","meaningVi":"Vectơ đối","exampleEn":"$-\\vec{AB} = \\vec{BA}$ is the opposite vector of $\\vec{AB}$.","exampleVi":"$-\\vec{AB} = \\vec{BA}$ là vectơ đối của $\\vec{AB}$."},{"id":"vsd-4","term":"Triangle Rule","ipa":"/ˈtraɪ.æŋ.ɡəl ruːl/","pos":"noun phrase","meaningVi":"Quy tắc tam giác (quy tắc ba điểm)","exampleEn":"According to the triangle rule, $\\vec{AB} + \\vec{BC} = \\vec{AC}$.","exampleVi":"Theo quy tắc tam giác, $\\vec{AB} + \\vec{BC} = \\vec{AC}$."},{"id":"vsd-5","term":"Parallelogram Rule","ipa":"/ˌpær.əˈlel.ə.ɡræm ruːl/","pos":"noun phrase","meaningVi":"Quy tắc hình bình hành","exampleEn":"The parallelogram rule determines the resultant vector.","exampleVi":"Quy tắc hình bình hành xác định vectơ tổng hợp lực."},{"id":"vsd-6","term":"Resultant Vector","ipa":"/rɪˈzʌl.tənt ˈvek.tər/","pos":"noun phrase","meaningVi":"Vectơ tổng (vectơ hợp lực)","exampleEn":"The resultant vector represents the combined effect of forces.","exampleVi":"Vectơ tổng biểu thị tác dụng kết hợp của các vectơ thành phần."}],"examples":[{"id":"exsd-1","titleEn":"Simplifying Vector Expressions in a Parallelogram","titleVi":"Rút Gọn Biểu Thức Vectơ Trong Hình Bình Hành","problemEn":"Given parallelogram $ABCD$ with center $O$. Simplify the expression $\\vec{u} = \\vec{AB} + \\vec{AD} - \\vec{AC}$.","problemVi":"Cho hình bình hành $ABCD$ tâm $O$. Hãy rút gọn biểu thức vectơ $\\vec{u} = \\vec{AB} + \\vec{AD} - \\vec{AC}$.","steps":[{"stepNum":1,"titleEn":"Apply Parallelogram Rule","titleVi":"Áp dụng quy tắc hình bình hành","latex":"\\vec{AB} + \\vec{AD} = \\vec{AC}","explanationEn":"Because $ABCD$ is a parallelogram, the sum of adjacent side vectors from $A$ equals the diagonal vector $\\vec{AC}$.","explanationVi":"Vì $ABCD$ là hình bình hành nên tổng hai vectơ cạnh $\\vec{AB} + \\vec{AD} = \\vec{AC}$."},{"stepNum":2,"titleEn":"Substitute and simplify","titleVi":"Thay thế và rút gọn","latex":"\\vec{u} = \\vec{AC} - \\vec{AC} = \\vec{0}","explanationEn":"Subtracting a vector from itself produces the zero vector $\\vec{0}$.","explanationVi":"Hiệu của một vectơ với chính nó cho kết quả là vectơ-không $\\vec{0}$."},{"stepNum":3,"titleEn":"Conclusion","titleVi":"Kết luận","latex":"\\vec{u} = \\vec{0}","explanationEn":"The resultant vector is the zero vector.","explanationVi":"Biểu thức sau khi rút gọn bằng vectơ $\\vec{0}$."}]}],"visualizer":{"type":"canvas-interactive","preset":"cubic","paramA":1,"paramB":0,"paramC":0,"formulaDisplay":"\\vec{u} + \\vec{v} = (x_1 + x_2, \\; y_1 + y_2)"},"quiz":{"titleEn":"Assessment: Vector Addition and Subtraction (12 Multiple-Choice Questions)","titleVi":"Đề Kiểm Tra: Tổng và Hiệu Của Hai Vectơ (12 Câu Trắc Nghiệm)","timeMinutes":25,"questions":[{"id":"qsd-1","type":"multiple-choice","points":0.8,"stemEn":"For three points $A, B, C$, which vector equals $\\vec{AB} + \\vec{BC}$?","stemVi":"Với ba điểm bất kì $A, B, C$, vectơ nào bằng $\\vec{AB} + \\vec{BC}$?","options":[{"id":"A","text":"$\\vec{AC}$","isCorrect":true},{"id":"B","text":"$\\vec{CA}$","isCorrect":false},{"id":"C","text":"$\\vec{BA}$","isCorrect":false},{"id":"D","text":"$\\vec{CB}$","isCorrect":false}],"explanationEn":"According to the triangle rule, $\\vec{AB} + \\vec{BC} = \\vec{AC}$.","explanationVi":"Theo quy tắc ba điểm (hệ thức Chasles), $\\vec{AB} + \\vec{BC} = \\vec{AC}$."},{"id":"qsd-2","type":"multiple-choice","points":0.8,"stemEn":"For any origin $O$ and points $A, B$, the vector $\\vec{OB} - \\vec{OA}$ equals:","stemVi":"Với điểm $O$ bất kì và hai điểm $A, B$, vectơ $\\vec{OB} - \\vec{OA}$ bằng:","options":[{"id":"A","text":"$\\vec{AB}$","isCorrect":true},{"id":"B","text":"$\\vec{BA}$","isCorrect":false},{"id":"C","text":"$\\vec{OA}$","isCorrect":false},{"id":"D","text":"$\\vec{BO}$","isCorrect":false}],"explanationEn":"By the subtraction rule for vectors with the same origin, $\\vec{OB} - \\vec{OA} = \\vec{AB}$.","explanationVi":"Theo quy tắc phép trừ hai vectơ chung gốc, $\\vec{OB} - \\vec{OA} = \\vec{AB}$."},{"id":"qsd-3","type":"multiple-choice","points":0.8,"stemEn":"Given parallelogram $ABCD$. The sum $\\vec{AB} + \\vec{AD}$ is equal to:","stemVi":"Cho hình bình hành $ABCD$. Tổng vectơ $\\vec{AB} + \\vec{AD}$ bằng:","options":[{"id":"A","text":"$\\vec{AC}$","isCorrect":true},{"id":"B","text":"$\\vec{BD}$","isCorrect":false},{"id":"C","text":"$\\vec{CA}$","isCorrect":false},{"id":"D","text":"$\\vec{DB}$","isCorrect":false}],"explanationEn":"By the parallelogram rule, $\\vec{AB} + \\vec{AD} = \\vec{AC}$.","explanationVi":"Theo quy tắc hình bình hành, $\\vec{AB} + \\vec{AD} = \\vec{AC}$."},{"id":"qsd-4","type":"multiple-choice","points":0.8,"stemEn":"Given triangle $ABC$. Simplify $\\vec{AB} + \\vec{BC} + \\vec{CA}$:","stemVi":"Cho tam giác $ABC$. Rút gọn biểu thức $\\vec{AB} + \\vec{BC} + \\vec{CA}$:","options":[{"id":"A","text":"$\\vec{0}$","isCorrect":true},{"id":"B","text":"$\\vec{AA}$","isCorrect":false},{"id":"C","text":"$2\\vec{AC}$","isCorrect":false},{"id":"D","text":"$3\\vec{AB}$","isCorrect":false}],"explanationEn":"$\\vec{AB} + \\vec{BC} + \\vec{CA} = \\vec{AC} + \\vec{CA} = \\vec{AA} = \\vec{0}$.","explanationVi":"Ta có $\\vec{AB} + \\vec{BC} + \\vec{CA} = \\vec{AC} + \\vec{CA} = \\vec{0}$."},{"id":"qsd-5","type":"multiple-choice","points":0.8,"stemEn":"Let $I$ be the midpoint of segment $AB$. For any point $M$, which relation is TRUE?","stemVi":"Gọi $I$ là trung điểm của đoạn thẳng $AB$. Với điểm $M$ bất kì, hệ thức nào sau đây là ĐÚNG?","options":[{"id":"A","text":"$\\vec{MA} + \\vec{MB} = 2\\vec{MI}$","isCorrect":true},{"id":"B","text":"$\\vec{MA} + \\vec{MB} = \\vec{MI}$","isCorrect":false},{"id":"C","text":"$\\vec{MA} - \\vec{MB} = 2\\vec{MI}$","isCorrect":false},{"id":"D","text":"$\\vec{MA} + \\vec{MB} = \\vec{0}$","isCorrect":false}],"explanationEn":"Midpoint formula for vectors: $\\vec{MA} + \\vec{MB} = 2\\vec{MI}$.","explanationVi":"Tính chất trung điểm: $\\vec{MA} + \\vec{MB} = 2\\vec{MI}$ với mọi điểm $M$."},{"id":"qsd-6","type":"multiple-choice","points":0.8,"stemEn":"Let $G$ be the centroid of triangle $ABC$. Which of the following vector equalities is TRUE?","stemVi":"Gọi $G$ là trọng tâm của tam giác $ABC$. Đẳng thức vectơ nào sau đây là ĐÚNG?","options":[{"id":"A","text":"$\\vec{GA} + \\vec{GB} + \\vec{GC} = \\vec{0}$","isCorrect":true},{"id":"B","text":"$\\vec{GA} + \\vec{GB} + \\vec{GC} = 3\\vec{GG}$","isCorrect":false},{"id":"C","text":"$\\vec{AB} + \\vec{BC} + \\vec{CA} = \\vec{G}$","isCorrect":false},{"id":"D","text":"$\\vec{GA} = \\vec{GB} = \\vec{GC}$","isCorrect":false}],"explanationEn":"$G$ is the centroid iff $\\vec{GA} + \\vec{GB} + \\vec{GC} = \\vec{0}$.","explanationVi":"$G$ là trọng tâm tam giác khi và chỉ khi $\\vec{GA} + \\vec{GB} + \\vec{GC} = \\vec{0}$."},{"id":"qsd-7","type":"multiple-choice","points":0.8,"stemEn":"Given square $ABCD$ with side length $a$. The magnitude $|\\vec{AB} + \\vec{AD}|$ is:","stemVi":"Cho hình vuông $ABCD$ cạnh $a$. Độ dài của vectơ $|\\vec{AB} + \\vec{AD}|$ là:","options":[{"id":"A","text":"$a\\sqrt{2}$","isCorrect":true},{"id":"B","text":"$2a$","isCorrect":false},{"id":"C","text":"$a$","isCorrect":false},{"id":"D","text":"$0$","isCorrect":false}],"explanationEn":"$\\vec{AB} + \\vec{AD} = \\vec{AC}$, and diagonal $AC = a\\sqrt{2}$, so magnitude is $a\\sqrt{2}$.","explanationVi":"Ta có $\\vec{AB} + \\vec{AD} = \\vec{AC}$ nên $|\\vec{AB} + \\vec{AD}| = AC = a\\sqrt{2}$."},{"id":"qsd-8","type":"multiple-choice","points":0.8,"stemEn":"Given square $ABCD$ with side length $a$. The magnitude $|\\vec{AB} - \\vec{AD}|$ is:","stemVi":"Cho hình vuông $ABCD$ cạnh $a$. Độ dài của vectơ $|\\vec{AB} - \\vec{AD}|$ bằng:","options":[{"id":"A","text":"$a\\sqrt{2}$","isCorrect":true},{"id":"B","text":"$0$","isCorrect":false},{"id":"C","text":"$a$","isCorrect":false},{"id":"D","text":"$2a$","isCorrect":false}],"explanationEn":"$\\vec{AB} - \\vec{AD} = \\vec{DB}$. The diagonal length is $DB = a\\sqrt{2}$.","explanationVi":"Ta có $\\vec{AB} - \\vec{AD} = \\vec{DB}$. Độ dài đường chéo $DB = a\\sqrt{2}$."},{"id":"qsd-9","type":"multiple-choice","points":0.8,"stemEn":"Which of the following equals the opposite vector of $\\vec{AB} - \\vec{CD}$?","stemVi":"Vectơ nào sau đây là vectơ đối của vectơ $\\vec{AB} - \\vec{CD}$?","options":[{"id":"A","text":"$\\vec{CD} - \\vec{AB}$","isCorrect":true},{"id":"B","text":"$\\vec{BA} - \\vec{DC}$","isCorrect":false},{"id":"C","text":"$\\vec{AB} + \\vec{CD}$","isCorrect":false},{"id":"D","text":"$\\vec{BA} + \\vec{CD}$","isCorrect":false}],"explanationEn":"$-(\\vec{AB} - \\vec{CD}) = -\\vec{AB} + \\vec{CD} = \\vec{CD} - \\vec{AB}$.","explanationVi":"Vectơ đối của $\\vec{u}$ là $-\\vec{u} = -(\\vec{AB} - \\vec{CD}) = \\vec{CD} - \\vec{AB}$."},{"id":"qsd-10","type":"multiple-choice","points":0.8,"stemEn":"Given equilateral triangle $ABC$ of side $a$. Find $|\\vec{AB} + \\vec{AC}|$.","stemVi":"Cho tam giác đều $ABC$ cạnh $a$. Tính độ dài vectơ $|\\vec{AB} + \\vec{AC}|$.","options":[{"id":"A","text":"$a\\sqrt{3}$","isCorrect":true},{"id":"B","text":"$2a$","isCorrect":false},{"id":"C","text":"$a$","isCorrect":false},{"id":"D","text":"$\\frac{a\\sqrt{3}}{2}$","isCorrect":false}],"explanationEn":"Let $M$ be the midpoint of $BC$. $\\vec{AB} + \\vec{AC} = 2\\vec{AM}$. Height $AM = \\frac{a\\sqrt{3}}{2}$, so $2AM = a\\sqrt{3}$.","explanationVi":"Gọi $M$ là trung điểm $BC$ thì $\\vec{AB} + \\vec{AC} = 2\\vec{AM}$. Đường cao $AM = \\frac{a\\sqrt{3}}{2}$ nên độ dài là $2AM = a\\sqrt{3}$."},{"id":"qsd-11","type":"multiple-choice","points":0.8,"stemEn":"For four points $A, B, C, D$, the expression $\\vec{AB} - \\vec{CD} - (\\vec{AC} - \\vec{BD})$ equals:","stemVi":"Cho 4 điểm $A, B, C, D$. Biểu thức $\\vec{AB} - \\vec{CD} - (\\vec{AC} - \\vec{BD})$ bằng:","options":[{"id":"A","text":"$\\vec{0}$","isCorrect":true},{"id":"B","text":"$\\vec{AD}$","isCorrect":false},{"id":"C","text":"$2\\vec{AB}$","isCorrect":false},{"id":"D","text":"$\\vec{BC}$","isCorrect":false}],"explanationEn":"$\\vec{AB} - \\vec{AC} = \\vec{CB}$, and $-\\vec{CD} + \\vec{BD} = \\vec{DC} + \\vec{BD} = \\vec{BC}$. Then $\\vec{CB} + \\vec{BC} = \\vec{0}$.","explanationVi":"Rút gọn: $(\\vec{AB} - \\vec{AC}) + (\\vec{BD} - \\vec{CD}) = \\vec{CB} + \\vec{BC} = \\vec{0}$."},{"id":"qsd-12","type":"multiple-choice","points":1.2,"stemEn":"Two forces $\\vec{F}_1$ and $\\vec{F}_2$ act on an object with magnitudes $|\\vec{F}_1| = 3\\text{ N}$, $|\\vec{F}_2| = 4\\text{ N}$, and their angle is $90^\\circ$. The resultant force magnitude is:","stemVi":"Hai lực $\\vec{F}_1$ và $\\vec{F}_2$ cùng tác dụng vào một chất điểm với độ lớn $|\\vec{F}_1| = 3\\text{ N}$, $|\\vec{F}_2| = 4\\text{ N}$ và góc giữa chúng là $90^\\circ$. Độ lớn hợp lực $\\vec{F} = \\vec{F}_1 + \\vec{F}_2$ là:","options":[{"id":"A","text":"$5\\text{ N}$","isCorrect":true},{"id":"B","text":"$7\\text{ N}$","isCorrect":false},{"id":"C","text":"$1\\text{ N}$","isCorrect":false},{"id":"D","text":"$12\\text{ N}$","isCorrect":false}],"explanationEn":"$|\\vec{F}| = \\sqrt{F_1^2 + F_2^2} = \\sqrt{3^2 + 4^2} = 5\\text{ N}$.","explanationVi":"Theo định lý Pythagore cho hai lực vuông góc: $|\\vec{F}| = \\sqrt{3^2 + 4^2} = 5\\text{ N}$."}]}};
+    const SCAFFOLD_PRESETS = {"grade-10-vectors":{"id":"grade-10-vectors","grade":"Khối 10","title":"Tọa độ, Trọng tâm & Tích vô hướng của hai vectơ trong Oxy","rawInput":"Trong mặt phẳng tọa độ Oxy, cho tam giác ABC với A(1; 2), B(-2; 6) và C(5; 5). Tìm tọa độ trọng tâm G của tam giác ABC và tính tích vô hướng của hai vectơ AB và AC.","data":{"bilingual_vocabulary":[{"english_term":"Cartesian coordinate plane (Oxy)","vietnamese_term":"Mặt phẳng tọa độ Oxy","context_note":"Hệ trục tọa độ gồm trục hoành $Ox$ và trục tung $Oy$ vuông góc nhau"},{"english_term":"Centroid of a triangle","vietnamese_term":"Trọng tâm tam giác","context_note":"Giao điểm 3 đường trung tuyến: $x_G = \\frac{x_A+x_B+x_C}{3}, y_G = \\frac{y_A+y_B+y_C}{3}$"},{"english_term":"Dot product / Scalar product","vietnamese_term":"Tích vô hướng","context_note":"Công thức biểu thức tọa độ: $\\vec{u} \\cdot \\vec{v} = u_1 v_1 + u_2 v_2$"},{"english_term":"Perpendicular vectors","vietnamese_term":"Hai vectơ vuông góc","context_note":"Hai vectơ vuông góc khi và chỉ khi tích vô hướng bằng 0: $\\vec{u} \\cdot \\vec{v} = 0$"}],"problem_analysis":"Đề bài cho tọa độ 3 đỉnh của tam giác $ABC$ trong mặt phẳng $Oxy$. Yêu cầu tìm tọa độ trọng tâm $G$ và tính tích vô hướng $\\vec{AB} \\cdot \\vec{AC}$. Dạng toán trọng tâm là ứng dụng tọa độ của vectơ trong chương trình Hình học Toán 10 (CT GDPT 2018).","tier_1_hint":"Em hãy nhớ lại: Tọa độ trọng tâm $G$ của tam giác $ABC$ được tính bằng trung bình cộng tọa độ các đỉnh như thế nào? Để tính tích vô hướng $\\vec{AB} \\cdot \\vec{AC}$, trước tiên em cần tìm tọa độ của từng vectơ bằng cách lấy tọa độ điểm ngọn trừ tọa độ điểm gốc.","tier_2_breakdown":["Bước 1: Áp dụng công thức tọa độ trọng tâm tam giác: $x_G = \\frac{x_A + x_B + x_C}{3}$ và $y_G = \\frac{y_A + y_B + y_C}{3}$.","Bước 2: Tìm tọa độ hai vectơ: $\\vec{AB} = (x_B - x_A; y_B - y_A)$ và $\\vec{AC} = (x_C - x_A; y_C - y_A)$.","Bước 3: Áp dụng công thức biểu thức tọa độ của tích vô hướng: $\\vec{AB} \\cdot \\vec{AC} = x_1 x_2 + y_1 y_2$ để tính và nhận xét góc $\\widehat{BAC}$."],"common_pitfall":"Học sinh thường nhầm lẫn khi tìm tọa độ vectơ (lấy gốc trừ ngọn thay vì ngọn trừ gốc), hoặc quên chia cho 3 khi tính tọa độ trọng tâm (chỉ cộng dồn tọa độ 3 đỉnh).","full_solution":"1. **Tìm tọa độ trọng tâm $G$ (*Centroid of triangle ABC*):**\n- Áp dụng công thức tọa độ trọng tâm:\n$$x_G = \\frac{x_A + x_B + x_C}{3} = \\frac{1 + (-2) + 5}{3} = \\frac{4}{3}$$\n$$y_G = \\frac{y_A + y_B + y_C}{3} = \\frac{2 + 6 + 5}{3} = \\frac{13}{3}$$\nVậy tọa độ trọng tâm là $G\\left(\\frac{4}{3}; \\frac{13}{3}\\right)$.\n\n2. **Xác định tọa độ hai vectơ $\\vec{AB}$ và $\\vec{AC}$:**\n- Vectơ $\\vec{AB} = (-2 - 1; 6 - 2) = (-3; 4)$.\n- Vectơ $\\vec{AC} = (5 - 1; 5 - 2) = (4; 3)$.\n\n3. **Tính tích vô hướng (*Dot Product*):**\n$$\\vec{AB} \\cdot \\vec{AC} = (-3) \\cdot 4 + 4 \\cdot 3 = -12 + 12 = 0$$\n\n**Kết luận:** Trọng tâm là $G\\left(\\frac{4}{3}; \\frac{13}{3}\\right)$ và tích vô hướng $\\vec{AB} \\cdot \\vec{AC} = 0$. (Đặc biệt: Vì $\\vec{AB} \\cdot \\vec{AC} = 0$ nên $\\vec{AB} \\perp \\vec{AC}$, suy ra tam giác $ABC$ vuông tại $A$).","parallel_exercise":{"question_en":"In the Cartesian plane Oxy, given triangle MNP with M(2; 1), N(5; 5) and P(-2; 4). Calculate the dot product of vector MN and vector MP.","question_vi":"Trong mặt phẳng tọa độ Oxy, cho tam giác MNP với M(2; 1), N(5; 5) và P(-2; 4). Tính tích vô hướng của hai vectơ MN và MP.","short_answer":"0"}}},"grade-11-limits":{"id":"grade-11-limits","grade":"Khối 11","title":"Giới hạn hàm số dạng vô định 0/0 (Limits of Functions)","rawInput":"Tính giới hạn của hàm số: L = lim_{x -\u003e 2} (x^2 - 5x + 6) / (x - 2).","data":{"bilingual_vocabulary":[{"english_term":"Limit of a function","vietnamese_term":"Giới hạn của hàm số","context_note":"Ký hiệu $\\lim_{x \\to x_0} f(x)$, giá trị mà hàm số tiến tới khi biến số tiến dần đến $x_0$"},{"english_term":"Indeterminate form 0/0","vietnamese_term":"Dạng vô định 0/0","context_note":"Dạng giới hạn khi cả tử số và mẫu số cùng tiến về 0, không thể kết luận trực tiếp"},{"english_term":"Factoring polynomials","vietnamese_term":"Phân tích đa thức thành nhân tử","context_note":"Biến đổi $ax^2 + bx + c = a(x - x_1)(x - x_2)$ để làm xuất hiện nhân tử triệt tiêu"},{"english_term":"Cancel common factors","vietnamese_term":"Khử / Triệt tiêu nhân tử chung","context_note":"Rút gọn đại lượng $(x - x_0)$ gây ra dạng vô định khi $x \\neq x_0$"}],"problem_analysis":"Đề bài yêu cầu tính giới hạn của hàm phân thức hữu tỉ tại điểm $x = 2$. Khi thay trực tiếp $x = 2$, biểu thức có dạng vô định $\\left[\\frac{0}{0}\\right]$. Dạng toán trọng tâm là phương pháp khử dạng vô định bằng cách phân tích đa thức thành nhân tử trong Giải tích Toán 11.","tier_1_hint":"Khi thay trực tiếp $x = 2$ vào tử và mẫu, em nhận được dạng gì? Khi gặp dạng vô định $\\left[\\frac{0}{0}\\right]$ của phân thức hữu tỉ, đa thức tử số $x^2 - 5x + 6$ chắc chắn chia hết cho $(x - 2)$. Em hãy phân tích tử số thành nhân tử để triệt tiêu đại lượng làm mẫu số bằng 0!","tier_2_breakdown":["Bước 1: Kiểm tra dạng giới hạn khi thay $x = 2$: tử số bằng 0 và mẫu số bằng 0 $\\implies$ dạng vô định $\\left[\\frac{0}{0}\\right]$.","Bước 2: Phân tích tam thức bậc hai ở tử số $x^2 - 5x + 6$ thành tích của hai nhị thức bậc nhất: $(x - 2)(x - 3)$.","Bước 3: Rút gọn nhân tử chung $(x - 2)$ khi xét $x \\neq 2$: $\\frac{x^2 - 5x + 6}{x - 2} = x - 3$.","Bước 4: Áp dụng định lý giới hạn hàm số liên tục, thay $x = 2$ vào biểu thức rút gọn để tính giá trị giới hạn $L$."],"common_pitfall":"Học sinh thường quên kiểm tra dạng giới hạn ban đầu dẫn tới việc vội vàng kết luận giới hạn bằng 0 hoặc không xác định. Một lỗi khác là tính nhầm nghiệm của tam thức bậc hai dẫn tới phân tích sai nhân tử.","full_solution":"1. **Nhận dạng giới hạn (*Identify Indeterminate Form*):**\n- Khi $x \\to 2$:\n  + Tử số: $2^2 - 5(2) + 6 = 4 - 10 + 6 = 0$.\n  + Mẫu số: $2 - 2 = 0$.\n- Do đó, giới hạn có dạng vô định $\\left[\\frac{0}{0}\\right]$.\n\n2. **Phân tích nhân tử và khử dạng vô định (*Factoring & Canceling*):**\n- Tam thức bậc hai $x^2 - 5x + 6$ có hai nghiệm là $x = 2$ và $x = 3$.\n- Do đó: $x^2 - 5x + 6 = (x - 2)(x - 3)$.\n- Với mọi $x \\neq 2$, ta có:\n$$\\frac{x^2 - 5x + 6}{x - 2} = \\frac{(x - 2)(x - 3)}{x - 2} = x - 3$$\n\n3. **Tính giới hạn (*Compute Limit*):**\n$$L = \\lim_{x \\to 2} \\frac{x^2 - 5x + 6}{x - 2} = \\lim_{x \\to 2} (x - 3) = 2 - 3 = -1$$\n\n**Kết luận:** Giá trị của giới hạn là $L = -1$.","parallel_exercise":{"question_en":"Evaluate the limit of the function: L = lim_{x -\u003e 3} (x^2 - 4x + 3) / (x - 3).","question_vi":"Tính giới hạn của hàm số: L = lim_{x -\u003e 3} (x^2 - 4x + 3) / (x - 3).","short_answer":"2"}}},"grade-12-asymptotes":{"id":"grade-12-asymptotes","grade":"Khối 12","title":"Hàm phân thức & Tích khoảng cách đến hai đường tiệm cận (Bài 1.26)","rawInput":"Cho hàm số y = (x + 1)/(x - 1) có đồ thị (C). Tính tích khoảng cách từ một điểm tuỳ ý thuộc (C) đến hai đường tiệm cận của nó.","data":{"bilingual_vocabulary":[{"english_term":"Rational function","vietnamese_term":"Hàm số phân thức bậc nhất / bậc nhất","context_note":"Dạng hàm $y = \\frac{ax+b}{cx+d}$ ($ad - bc \\neq 0, c \\neq 0$)"},{"english_term":"Asymptote","vietnamese_term":"Đường tiệm cận","context_note":"Đường thẳng mà đồ thị tiến sát tới khi biến số tiến ra vô cực hoặc điểm gián đoạn"},{"english_term":"Vertical asymptote (VA)","vietnamese_term":"Đường tiệm cận đứng","context_note":"Đường thẳng $x = x_0$ làm mẫu thức bằng $0$"},{"english_term":"Horizontal asymptote (HA)","vietnamese_term":"Đường tiệm cận ngang","context_note":"Đường thẳng $y = y_0$ xác định bởi giới hạn $\\lim_{x \\to \\pm\\infty} y$"},{"english_term":"Distance from a point to a line","vietnamese_term":"Khoảng cách từ một điểm đến đường thẳng","context_note":"Độ dài đoạn vuông góc kẻ từ điểm đó đến đường thẳng"},{"english_term":"Product of distances","vietnamese_term":"Tích khoảng cách","context_note":"Kết quả của phép nhân hai khoảng cách $d_1 \\cdot d_2$"}],"problem_analysis":"Đề bài cho đồ thị $(C)$ của hàm số phân thức $y = \\frac{x+1}{x-1}$. Yêu cầu tính tích các khoảng cách từ một điểm bất kỳ trên $(C)$ đến hai đường tiệm cận của đồ thị. Dạng toán trọng tâm là ứng dụng tính chất đường tiệm cận và khoảng cách trong giải tích lớp 12.","tier_1_hint":"Em hãy nhớ lại: Đồ thị hàm số $y = \\frac{ax+b}{cx+d}$ có tiệm cận đứng và tiệm cận ngang là những đường thẳng nào? Khoảng cách từ một điểm $M(x_0, y_0)$ đến đường thẳng thẳng đứng $x = a$ và đường thẳng nằm ngang $y = b$ được tính bằng hiệu tọa độ có chứa dấu giá trị tuyệt đối như thế nào?","tier_2_breakdown":["Bước 1: Tìm phương trình hai đường tiệm cận: tiệm cận đứng $\\Delta_1$ (cho mẫu số bằng 0) và tiệm cận ngang $\\Delta_2$ (tính giới hạn khi $x \\to \\pm\\infty$).","Bước 2: Lấy điểm tùy ý $M(x_0, y_0) \\in (C)$ với $x_0 \\neq 1$. Tách phần nguyên biểu thức hàm số để biểu diễn $y_0 = 1 + \\frac{2}{x_0 - 1}$.","Bước 3: Xác định khoảng cách $d_1 = d(M, \\Delta_1)$ theo $|x_0 - 1|$ và $d_2 = d(M, \\Delta_2)$ theo $|y_0 - 1|$.","Bước 4: Thực hiện phép nhân $P = d_1 \\cdot d_2$ và rút gọn biểu thức."],"common_pitfall":"Học sinh thường quên đặt dấu giá trị tuyệt đối khi tính khoảng cách (chỉ viết $x_0 - 1$ thay vì $|x_0 - 1|$), dẫn tới nhầm lẫn khi $x_0 \u003c 1$. Một số bạn áp dụng máy móc công thức khoảng cách tổng quát $\\frac{|ax_0+by_0+c|}{\\sqrt{a^2+b^2}}$ khiến phép tính trở nên cồng kềnh không cần thiết.","full_solution":"1. **Xác định các đường tiệm cận (Asymptotes):**\n- Ta có $\\lim_{x \\to 1^+} \\frac{x+1}{x-1} = +\\infty$ nên đường tiệm cận đứng (*Vertical Asymptote*) là $\\Delta_1: x = 1 \\iff x - 1 = 0$.\n- Ta có $\\lim_{x \\to \\pm\\infty} \\frac{x+1}{x-1} = 1$ nên đường tiệm cận ngang (*Horizontal Asymptote*) là $\\Delta_2: y = 1 \\iff y - 1 = 0$.\n\n2. **Tọa độ điểm thuộc đồ thị:**\n- Lấy điểm tùy ý $M(x_0, y_0) \\in (C)$ với $x_0 \\neq 1$.\n- Ta có: $y_0 = \\frac{x_0 + 1}{x_0 - 1} = \\frac{(x_0 - 1) + 2}{x_0 - 1} = 1 + \\frac{2}{x_0 - 1} \\implies y_0 - 1 = \\frac{2}{x_0 - 1}$.\n\n3. **Tính khoảng cách đến hai tiệm cận:**\n- Khoảng cách từ $M$ đến tiệm cận đứng $\\Delta_1$: $$d_1 = d(M, \\Delta_1) = |x_0 - 1|$$\n- Khoảng cách từ $M$ đến tiệm cận ngang $\\Delta_2$: $$d_2 = d(M, \\Delta_2) = |y_0 - 1| = \\left| \\frac{2}{x_0 - 1} \\right| = \\frac{2}{|x_0 - 1|}$$\n\n4. **Tính tích khoảng cách (*Product of distances*):**\n$$P = d_1 \\cdot d_2 = |x_0 - 1| \\cdot \\frac{2}{|x_0 - 1|} = 2$$\n\n**Kết luận:** Tích khoảng cách từ một điểm tùy ý trên $(C)$ đến hai đường tiệm cận luôn là một hằng số không đổi bằng $2$ (*The product of the distances to both asymptotes is constant and equals $2$*).","parallel_exercise":{"question_en":"Given the function $y = \\frac{2x - 3}{x + 2}$ with graph $(C)$. Calculate the product of the distances from an arbitrary point on $(C)$ to its two asymptotes.","question_vi":"Cho hàm số $y = \\frac{2x - 3}{x + 2}$ có đồ thị $(C)$. Tính tích khoảng cách từ một điểm tuỳ ý thuộc $(C)$ đến hai đường tiệm cận của nó.","short_answer":"7"}}},"problem-126-asymptotes":{"id":"grade-12-asymptotes","grade":"Khối 12","title":"Hàm phân thức & Tích khoảng cách đến hai đường tiệm cận (Bài 1.26)","rawInput":"Cho hàm số y = (x + 1)/(x - 1) có đồ thị (C). Tính tích khoảng cách từ một điểm tuỳ ý thuộc (C) đến hai đường tiệm cận của nó.","data":{"bilingual_vocabulary":[{"english_term":"Rational function","vietnamese_term":"Hàm số phân thức bậc nhất / bậc nhất","context_note":"Dạng hàm $y = \\frac{ax+b}{cx+d}$ ($ad - bc \\neq 0, c \\neq 0$)"},{"english_term":"Asymptote","vietnamese_term":"Đường tiệm cận","context_note":"Đường thẳng mà đồ thị tiến sát tới khi biến số tiến ra vô cực hoặc điểm gián đoạn"},{"english_term":"Vertical asymptote (VA)","vietnamese_term":"Đường tiệm cận đứng","context_note":"Đường thẳng $x = x_0$ làm mẫu thức bằng $0$"},{"english_term":"Horizontal asymptote (HA)","vietnamese_term":"Đường tiệm cận ngang","context_note":"Đường thẳng $y = y_0$ xác định bởi giới hạn $\\lim_{x \\to \\pm\\infty} y$"},{"english_term":"Distance from a point to a line","vietnamese_term":"Khoảng cách từ một điểm đến đường thẳng","context_note":"Độ dài đoạn vuông góc kẻ từ điểm đó đến đường thẳng"},{"english_term":"Product of distances","vietnamese_term":"Tích khoảng cách","context_note":"Kết quả của phép nhân hai khoảng cách $d_1 \\cdot d_2$"}],"problem_analysis":"Đề bài cho đồ thị $(C)$ của hàm số phân thức $y = \\frac{x+1}{x-1}$. Yêu cầu tính tích các khoảng cách từ một điểm bất kỳ trên $(C)$ đến hai đường tiệm cận của đồ thị. Dạng toán trọng tâm là ứng dụng tính chất đường tiệm cận và khoảng cách trong giải tích lớp 12.","tier_1_hint":"Em hãy nhớ lại: Đồ thị hàm số $y = \\frac{ax+b}{cx+d}$ có tiệm cận đứng và tiệm cận ngang là những đường thẳng nào? Khoảng cách từ một điểm $M(x_0, y_0)$ đến đường thẳng thẳng đứng $x = a$ và đường thẳng nằm ngang $y = b$ được tính bằng hiệu tọa độ có chứa dấu giá trị tuyệt đối như thế nào?","tier_2_breakdown":["Bước 1: Tìm phương trình hai đường tiệm cận: tiệm cận đứng $\\Delta_1$ (cho mẫu số bằng 0) và tiệm cận ngang $\\Delta_2$ (tính giới hạn khi $x \\to \\pm\\infty$).","Bước 2: Lấy điểm tùy ý $M(x_0, y_0) \\in (C)$ với $x_0 \\neq 1$. Tách phần nguyên biểu thức hàm số để biểu diễn $y_0 = 1 + \\frac{2}{x_0 - 1}$.","Bước 3: Xác định khoảng cách $d_1 = d(M, \\Delta_1)$ theo $|x_0 - 1|$ và $d_2 = d(M, \\Delta_2)$ theo $|y_0 - 1|$.","Bước 4: Thực hiện phép nhân $P = d_1 \\cdot d_2$ và rút gọn biểu thức."],"common_pitfall":"Học sinh thường quên đặt dấu giá trị tuyệt đối khi tính khoảng cách (chỉ viết $x_0 - 1$ thay vì $|x_0 - 1|$), dẫn tới nhầm lẫn khi $x_0 \u003c 1$. Một số bạn áp dụng máy móc công thức khoảng cách tổng quát $\\frac{|ax_0+by_0+c|}{\\sqrt{a^2+b^2}}$ khiến phép tính trở nên cồng kềnh không cần thiết.","full_solution":"1. **Xác định các đường tiệm cận (Asymptotes):**\n- Ta có $\\lim_{x \\to 1^+} \\frac{x+1}{x-1} = +\\infty$ nên đường tiệm cận đứng (*Vertical Asymptote*) là $\\Delta_1: x = 1 \\iff x - 1 = 0$.\n- Ta có $\\lim_{x \\to \\pm\\infty} \\frac{x+1}{x-1} = 1$ nên đường tiệm cận ngang (*Horizontal Asymptote*) là $\\Delta_2: y = 1 \\iff y - 1 = 0$.\n\n2. **Tọa độ điểm thuộc đồ thị:**\n- Lấy điểm tùy ý $M(x_0, y_0) \\in (C)$ với $x_0 \\neq 1$.\n- Ta có: $y_0 = \\frac{x_0 + 1}{x_0 - 1} = \\frac{(x_0 - 1) + 2}{x_0 - 1} = 1 + \\frac{2}{x_0 - 1} \\implies y_0 - 1 = \\frac{2}{x_0 - 1}$.\n\n3. **Tính khoảng cách đến hai tiệm cận:**\n- Khoảng cách từ $M$ đến tiệm cận đứng $\\Delta_1$: $$d_1 = d(M, \\Delta_1) = |x_0 - 1|$$\n- Khoảng cách từ $M$ đến tiệm cận ngang $\\Delta_2$: $$d_2 = d(M, \\Delta_2) = |y_0 - 1| = \\left| \\frac{2}{x_0 - 1} \\right| = \\frac{2}{|x_0 - 1|}$$\n\n4. **Tính tích khoảng cách (*Product of distances*):**\n$$P = d_1 \\cdot d_2 = |x_0 - 1| \\cdot \\frac{2}{|x_0 - 1|} = 2$$\n\n**Kết luận:** Tích khoảng cách từ một điểm tùy ý trên $(C)$ đến hai đường tiệm cận luôn là một hằng số không đổi bằng $2$ (*The product of the distances to both asymptotes is constant and equals $2$*).","parallel_exercise":{"question_en":"Given the function $y = \\frac{2x - 3}{x + 2}$ with graph $(C)$. Calculate the product of the distances from an arbitrary point on $(C)$ to its two asymptotes.","question_vi":"Cho hàm số $y = \\frac{2x - 3}{x + 2}$ có đồ thị $(C)$. Tính tích khoảng cách từ một điểm tuỳ ý thuộc $(C)$ đến hai đường tiệm cận của nó.","short_answer":"7"}}}};
+    let currentScaffoldData = null || (SCAFFOLD_PRESETS["grade-12-asymptotes"] ? SCAFFOLD_PRESETS["grade-12-asymptotes"].data : (Object.values(SCAFFOLD_PRESETS)[0] ? Object.values(SCAFFOLD_PRESETS)[0].data : null));
+    let activeScaffoldPresetKey = (SCAFFOLD_PRESETS["grade-12-asymptotes"] ? "grade-12-asymptotes" : Object.keys(SCAFFOLD_PRESETS)[0]) || "";
+    let showVi = true;
+
+    // Scaffolding UI State
+    let scaffoldTiers = {
+      vocab: true,
+      analysis: true,
+      tier1: true,
+      tier2: false,
+      tier3: false,
+      pitfall: false,
+      parallel: false
+    };
+
+    function switchStandaloneTab(tab) {
+      const lessonView = document.getElementById('standalone-lesson-view');
+      const scaffoldView = document.getElementById('standalone-scaffold-view');
+      const quizView = document.getElementById('standalone-quiz-view');
+      const btnLesson = document.getElementById('tab-btn-lesson');
+      const btnScaffold = document.getElementById('tab-btn-scaffold');
+      const btnQuiz = document.getElementById('tab-btn-quiz');
+
+      if (!lessonView || !scaffoldView || !quizView) return;
+
+      // Hide all
+      lessonView.classList.add('hidden');
+      scaffoldView.classList.add('hidden');
+      quizView.classList.add('hidden');
+
+      if (btnLesson) btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer';
+      if (btnScaffold) btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-amber-300 cursor-pointer';
+      if (btnQuiz) btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer';
+
+      if (tab === 'lesson') {
+        lessonView.classList.remove('hidden');
+        if (btnLesson) btnLesson.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs cursor-pointer';
+      } else if (tab === 'scaffold') {
+        scaffoldView.classList.remove('hidden');
+        if (btnScaffold) btnScaffold.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs cursor-pointer';
+        renderStandaloneScaffold();
+      } else {
+        quizView.classList.remove('hidden');
+        if (btnQuiz) btnQuiz.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-indigo-50 text-indigo-800 border border-indigo-200 shadow-2xs cursor-pointer';
+        renderStandaloneQuestions();
+      }
+      triggerMathJax();
+    }
+
+    function toggleAllVietnamese() {
+      showVi = !showVi;
+      const elements = document.querySelectorAll('.vi-text');
+      elements.forEach(el => {
+        el.style.display = showVi ? '' : 'none';
+      });
+      const viText = document.getElementById('vi-toggle-text');
+      if (viText) {
+        viText.innerText = showVi ? 'Dịch: Đang mở' : 'Dịch: Đang ẩn';
+      }
+    }
+
+    function parseFormulaForSpeech(f, isVi) {
+  if (!f) return '';
+  var s = ' ' + String(f).trim() + ' ';
+  s = s.replace(/\\text\{([^}]+)\}/g, ' $1 ')
+       .replace(/\\mathrm\{([^}]+)\}/g, ' $1 ')
+       .replace(/\\mathbf\{([^}]+)\}/g, ' $1 ')
+       .replace(/\\left|\\right/g, ' ')
+       .replace(/\\quad|\\qquad|\\,|\\;|\\!/g, ' ');
+
+  if (isVi) {
+    s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' vectơ không ')
+         .replace(/\\vec\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vectơ ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\\|([^\\|]+?)\\\|/g, ' độ dài của $1 ')
+         .replace(/\\cdot/g, ' nhân vô hướng ')
+         .replace(/\\times/g, ' nhân có hướng ')
+         .replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 trên $2 ')
+         .replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' căn bậc $1 của $2 ')
+         .replace(/\\sqrt\{([^{}]+)\}/g, ' căn bậc hai của $1 ')
+         .replace(/\^2\b|\^\{2\}/g, ' bình phương ')
+         .replace(/\^3\b|\^\{3\}/g, ' lập phương ')
+         .replace(/\^\{([^}]+)\}/g, ' mũ $1 ')
+         .replace(/\^([a-zA-Z0-9]+)/g, ' mũ $1 ')
+         .replace(/f'''\(x\)/g, ' f ba phẩy x ')
+         .replace(/f''\(x\)/g, ' f hai phẩy x ')
+         .replace(/f'\(x\)/g, ' f phẩy x ')
+         .replace(/y''/g, ' y hai phẩy ')
+         .replace(/y'/g, ' y phẩy ')
+         .replace(/f\(x\)/g, ' f của x ')
+         .replace(/\\perp/g, ' vuông góc với ')
+         .replace(/\\parallel/g, ' song song với ')
+         .replace(/\\pm/g, ' cộng trừ ')
+         .replace(/\\leq|\\le/g, ' nhỏ hơn hoặc bằng ')
+         .replace(/\\geq|\\ge/g, ' lớn hơn hoặc bằng ')
+         .replace(/\\neq/g, ' khác ')
+         .replace(/\\approx/g, ' xấp xỉ ')
+         .replace(/\\to/g, ' tiến tới ')
+         .replace(/\\implies/g, ' suy ra ')
+         .replace(/\\iff/g, ' tương đương ')
+         .replace(/\\in/g, ' thuộc ')
+         .replace(/\\notin/g, ' không thuộc ')
+         .replace(/\\infty/g, ' vô cực ')
+         .replace(/\\mathbb\{R\}/g, ' tập số thực R ')
+         .replace(/\\Delta/g, ' đen-ta ')
+         .replace(/\\pi/g, ' pi ')
+         .replace(/\\alpha/g, ' an-pha ')
+         .replace(/\\beta/g, ' bê-ta ')
+         .replace(/=/g, ' bằng ')
+         .replace(/\+/g, ' cộng ')
+         .replace(/-/g, ' trừ ');
+  } else {
+    s = s.replace(/\\vec\{0\}|\\mathbf\{0\}/g, ' zero vector ')
+         .replace(/\\vec\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\overrightarrow\{([A-Za-z0-9]+)\}/g, function(m, v) { return ' vector ' + (v.length > 1 ? v.split('').join(' ') : v) + ' '; })
+         .replace(/\\\|([^\\|]+?)\\\|/g, ' magnitude of $1 ')
+         .replace(/\\cdot/g, ' dot ')
+         .replace(/\\times/g, ' times ')
+         .replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, ' $1 over $2 ')
+         .replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, ' $1 root of $2 ')
+         .replace(/\\sqrt\{([^{}]+)\}/g, ' square root of $1 ')
+         .replace(/\^2\b|\^\{2\}/g, ' squared ')
+         .replace(/\^3\b|\^\{3\}/g, ' cubed ')
+         .replace(/\^\{([^}]+)\}/g, ' to the power of $1 ')
+         .replace(/\^([a-zA-Z0-9]+)/g, ' to the power of $1 ')
+         .replace(/f'''\(x\)/g, ' f triple prime of x ')
+         .replace(/f''\(x\)/g, ' f double prime of x ')
+         .replace(/f'\(x\)/g, ' f prime of x ')
+         .replace(/y''/g, ' y double prime ')
+         .replace(/y'/g, ' y prime ')
+         .replace(/f\(x\)/g, ' f of x ')
+         .replace(/\\perp/g, ' is perpendicular to ')
+         .replace(/\\parallel/g, ' is parallel to ')
+         .replace(/\\pm/g, ' plus or minus ')
+         .replace(/\\leq|\\le/g, ' is less than or equal to ')
+         .replace(/\\geq|\\ge/g, ' is greater than or equal to ')
+         .replace(/\\neq/g, ' is not equal to ')
+         .replace(/\\approx/g, ' is approximately ')
+         .replace(/\\to/g, ' approaches ')
+         .replace(/\\implies/g, ' implies ')
+         .replace(/\\iff/g, ' if and only if ')
+         .replace(/\\in/g, ' in ')
+         .replace(/\\notin/g, ' not in ')
+         .replace(/\\infty/g, ' infinity ')
+         .replace(/\\mathbb\{R\}/g, ' real numbers ')
+         .replace(/\\Delta/g, ' delta ')
+         .replace(/\\pi/g, ' pi ')
+         .replace(/\\alpha/g, ' alpha ')
+         .replace(/\\beta/g, ' beta ')
+         .replace(/=/g, ' equals ')
+         .replace(/\+/g, ' plus ')
+         .replace(/-/g, ' minus ');
+  }
+
+  s = s.replace(/\\[a-zA-Z]+/g, ' ')
+       .replace(/[{}\\$]/g, ' ')
+       .replace(/\s+/g, ' ')
+       .trim();
+
+  return s;
+}
+
+    function cleanLatexForSpeech(text, forcedLang) {
+  if (!text) return '';
+  var str = String(text).replace(/<[^>]+>/g, ' ');
+  var isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
+             (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(str));
+
+  str = str.replace(/\$\$([\s\S]*?)\$\$/g, function(m, f) { return ' ' + parseFormulaForSpeech(f, isVi) + ' '; });
+  str = str.replace(/\$([^\$]+)\$/g, function(m, f) { return ' ' + parseFormulaForSpeech(f, isVi) + ' '; });
+  if (/\\(vec|overrightarrow|frac|sqrt|lim|int|cdot|times|perp|parallel|pm|Delta|alpha|beta|pi|infty|mathbb)/.test(str)) {
+    str = parseFormulaForSpeech(str, isVi);
+  }
+  return str.replace(/\s+/g, ' ').trim();
+}
+
+    function escapeSpeechAttr(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/"/g, '&quot;')
+    .replace(/\r?\n/g, ' ')
+    .replace(/<[^>]*>/g, ' ');
+}
+
+    function getBestVoice(isVi) {
+      if (!('speechSynthesis' in window)) return null;
+      var voices = window.speechSynthesis.getVoices() || [];
+      if (!voices.length) return null;
+      if (isVi) {
+        for (var v = 0; v < voices.length; v++) {
+          var l = (voices[v].lang || '').replace('_', '-').toLowerCase();
+          var n = (voices[v].name || '').toLowerCase();
+          if (l.startsWith('vi') || n.includes('vietnam') || n.includes('tiếng việt') || n.includes('hoaimy') || n.includes('namminh')) {
+            return voices[v];
+          }
+        }
+      }
+      return getBestFemaleVoice();
+    }
+
+    function getBestFemaleVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      var voices = window.speechSynthesis.getVoices() || [];
+      if (!voices.length) return null;
+
+      var isMale = function(name) {
+        var n = (name || '').toLowerCase();
+        return n.includes('david') || n.includes('mark') || n.includes('george') || 
+               n.includes('guy') || n.includes('james') || n.includes('richard') || 
+               n.includes('daniel') || (n.includes('male') && !n.includes('female'));
+      };
+
+      // 1. Top tier Natural / Neural American Female voices (Jenny, Aria, Michelle, Zira, Samantha, Ava)
+      for (var i = 0; i < voices.length; i++) {
+        var v = voices[i];
+        var n = (v.name || '').toLowerCase();
+        var l = (v.lang || '').replace('_', '-').toLowerCase();
+        if ((l.startsWith('en-us') || l.startsWith('en-gb') || l.startsWith('en')) &&
+            (n.includes('jenny') || n.includes('aria') || n.includes('michelle') || n.includes('zira') || n.includes('samantha') || n.includes('ava') || n.includes('allison') || n.includes('susan') || n.includes('karen') || n.includes('victoria')) &&
+            !isMale(v.name)) {
+          return v;
+        }
+      }
+
+      // 2. Google US English (Standard Chrome natural female voice) or Natural non-male
+      for (var j = 0; j < voices.length; j++) {
+        var v2 = voices[j];
+        var n2 = (v2.name || '').toLowerCase();
+        var l2 = (v2.lang || '').replace('_', '-').toLowerCase();
+        if (l2.startsWith('en-us') && (n2.includes('google us english') || (n2.includes('natural') && !isMale(v2.name)) || n2.includes('female'))) {
+          return v2;
+        }
+      }
+
+      // 3. Any en-US voice that is not male
+      for (var k = 0; k < voices.length; k++) {
+        var v3 = voices[k];
+        var l3 = (v3.lang || '').replace('_', '-').toLowerCase();
+        if (l3.startsWith('en-us') && !isMale(v3.name)) {
+          return v3;
+        }
+      }
+
+      // 4. Any English voice that is not male
+      for (var m = 0; m < voices.length; m++) {
+        var v4 = voices[m];
+        var l4 = (v4.lang || '').replace('_', '-').toLowerCase();
+        if (l4.startsWith('en') && !isMale(v4.name)) {
+          return v4;
+        }
+      }
+
+      return voices[0];
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = function() {
+        getBestFemaleVoice();
+      };
+    }
+
+    function speakText(elOrText, rate, forcedLang) {
+      if (typeof rate !== 'number') rate = 1.0;
+      var rawText = '';
+      if (typeof elOrText === 'string') {
+        rawText = elOrText;
+      } else if (elOrText && elOrText.getAttribute) {
+        rawText = elOrText.getAttribute('data-speech') || elOrText.getAttribute('data-term') || '';
+        if (!rawText && elOrText.parentElement) {
+          var siblingTarget = elOrText.parentElement.querySelector('.speech-target') || elOrText.previousElementSibling;
+          if (siblingTarget) rawText = siblingTarget.innerText || '';
+        }
+        if (!rawText) rawText = elOrText.innerText || '';
+      }
+      if (!rawText) return;
+
+      var isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
+                 (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(rawText));
+      var clean = cleanLatexForSpeech(rawText, isVi ? 'vi' : 'en');
+      if (!clean) return;
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        var utter = new SpeechSynthesisUtterance(clean);
+        utter.lang = isVi ? 'vi-VN' : 'en-US';
+        utter.rate = rate; // 1.0 is standard normal speed, 0.72 is slow practice
+        var voice = getBestVoice(isVi);
+        if (voice) utter.voice = voice;
+        window.speechSynthesis.speak(utter);
+      } else {
+        alert('Trình duyệt của bạn chưa hỗ trợ Web Speech API.');
+      }
+    }
+
+    function speakSlow(elOrText, forcedLang) {
+      speakText(elOrText, 0.72, forcedLang);
+    }
+    var speakTerm = speakText;
+
+    function toggleStep(exId, stepNum) {
+      const content = document.getElementById('step-content-' + exId + '-' + stepNum);
+      const icon = document.getElementById('step-icon-' + exId + '-' + stepNum);
+      if (!content) return;
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        if (icon) {
+          icon.innerText = '➖ Ẩn bước';
+          icon.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs cursor-pointer';
+        }
+        triggerMathJax();
+      } else {
+        content.classList.add('hidden');
+        if (icon) {
+          icon.innerText = '➕ Mở bước này';
+          icon.className = 'text-xs text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs cursor-pointer';
+        }
+      }
+    }
+
+    function revealAllSteps(exId) {
+      const contents = document.querySelectorAll('[id^="step-content-' + exId + '-"]');
+      const icons = document.querySelectorAll('[id^="step-icon-' + exId + '-"]');
+      contents.forEach(c => c.classList.remove('hidden'));
+      icons.forEach(i => {
+        i.innerText = '➖ Ẩn bước';
+        i.className = 'text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1 rounded-lg font-bold shrink-0 transition-all shadow-2xs cursor-pointer';
+      });
+      triggerMathJax();
+    }
+
+    function triggerMathJax() {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(err => console.log('MathJax error: ', err));
+      }
+    }
+
+    // ==========================================
+    // STANDALONE SCAFFOLDING TUTOR LOGIC
+    // ==========================================
+    function selectStandalonePreset(presetKey) {
+      activeScaffoldPresetKey = presetKey;
+      const p = SCAFFOLD_PRESETS[presetKey];
+      if (p) {
+        currentScaffoldData = p.data;
+        const b = document.getElementById('scaffold-grade-badge');
+        if (b) b.innerText = p.grade || 'Toán THPT';
+      }
+      ['btn-pre-10', 'btn-pre-11', 'btn-pre-12'].forEach(id => {
+        const b = document.getElementById(id);
+        if (b) {
+          b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 transition-all cursor-pointer';
+        }
+      });
+      if (presetKey === 'grade-10-vectors') {
+        const b = document.getElementById('btn-pre-10');
+        if (b) b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all cursor-pointer';
+      }
+      if (presetKey === 'grade-11-limits') {
+        const b = document.getElementById('btn-pre-11');
+        if (b) b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all cursor-pointer';
+      }
+      if (presetKey === 'grade-12-asymptotes') {
+        const b = document.getElementById('btn-pre-12');
+        if (b) b.className = 'px-3 py-1 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200 transition-all cursor-pointer';
+      }
+
+      setStandaloneTier(1);
+    }
+
+    function setStandaloneTier(tier) {
+      if (tier === 1) {
+        scaffoldTiers = { vocab: true, analysis: true, tier1: true, tier2: false, tier3: false, pitfall: false, parallel: false };
+      } else if (tier === 2) {
+        scaffoldTiers = { vocab: true, analysis: true, tier1: true, tier2: true, tier3: false, pitfall: true, parallel: true };
+      } else {
+        scaffoldTiers = { vocab: true, analysis: true, tier1: true, tier2: true, tier3: true, pitfall: true, parallel: true };
+      }
+
+      ['tier-btn-1', 'tier-btn-2', 'tier-btn-3'].forEach((id, idx) => {
+        const b = document.getElementById(id);
+        if (b) {
+          if (idx + 1 === tier) {
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white shadow-xs transition-all cursor-pointer';
+          } else {
+            b.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all cursor-pointer';
+          }
+        }
+      });
+
+      renderStandaloneScaffold();
+    }
+
+    function toggleScaffoldSection(secKeyOrEl) {
+      const secKey = (typeof secKeyOrEl === 'string') ? secKeyOrEl : (secKeyOrEl ? secKeyOrEl.getAttribute('data-sec') : '');
+      if (!secKey) return;
+      scaffoldTiers[secKey] = !scaffoldTiers[secKey];
+      renderStandaloneScaffold();
+    }
+
+    function renderStandaloneScaffold() {
+      const container = document.getElementById('standalone-scaffold-container');
+      const textEl = document.getElementById('scaffold-problem-text');
+      const d = currentScaffoldData;
+      if (!d) return;
+
+      const pObj = SCAFFOLD_PRESETS[activeScaffoldPresetKey];
+      if (textEl && pObj) {
+        textEl.innerHTML = pObj.rawInput || '';
+      }
+
+      let html = '';
+
+      // 1. Bilingual Vocabulary Card
+      html += '<div class="glass-card rounded-2xl border border-teal-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="vocab" class="p-4 bg-teal-50/70 border-b border-teal-100 flex items-center justify-between cursor-pointer hover:bg-teal-100/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-teal-700 font-bold text-base">🗣️</span>';
+      html += '<span class="font-bold text-sm text-slate-900">1. Thuật ngữ toán học then chốt (Key Mathematical Vocabulary)</span>';
+      html += '</div>';
+      html += '<span class="text-xs text-teal-700 font-bold">' + (scaffoldTiers.vocab ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+
+      if (scaffoldTiers.vocab) {
+        html += '<div class="p-4 space-y-3 bg-white">';
+        html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+        (d.bilingual_vocabulary || []).forEach(v => {
+          const engSafe = (v.english_term || '').replace(/"/g, '&quot;');
+          html += '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">';
+          html += '<div>';
+          html += '<div class="flex items-center justify-between gap-1">';
+          html += '<span class="font-bold text-slate-900 text-sm">' + (v.english_term || '') + '</span>';
+          html += '<div class="flex items-center gap-1">';
+          html += '<button type="button" onclick="speakTerm(this)" data-term="' + engSafe + '" class="text-xs p-1 px-1.5 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Listen pronunciation">🔊</button>';
+          html += '<button type="button" onclick="speakSlow(this)" data-term="' + engSafe + '" class="text-xs p-1 px-1.5 rounded bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Nghe phát âm chậm (0.72x)">🐢</button>';
+          html += '</div>';
+          html += '</div>';
+          html += '<div class="text-emerald-700 font-semibold text-xs mt-1">👉 ' + (v.vietnamese_term || '') + '</div>';
+          html += '<div class="text-slate-600 text-[11px] mt-1.5 italic latex-box">' + (v.context_note || '') + '</div>';
+          html += '</div></div>';
+        });
+        html += '</div></div>';
+      }
+      html += '</div>';
+
+      // 2. Problem Analysis Card
+      html += '<div class="glass-card rounded-2xl border border-indigo-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="analysis" class="p-4 bg-indigo-50/70 border-b border-indigo-100 flex items-center justify-between cursor-pointer hover:bg-indigo-100/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-indigo-700 font-bold text-base">🔍</span>';
+      html += '<span class="font-bold text-sm text-slate-900">2. Bóc tách đề bài & Trọng tâm kiến thức</span>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Problem Analysis" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Problem Analysis" class="p-0.5 px-1.5 rounded bg-white hover:bg-indigo-500 text-indigo-700 hover:text-white border border-indigo-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
+      html += '</div>';
+      html += '<span class="text-xs text-indigo-700 font-bold">' + (scaffoldTiers.analysis ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.analysis) {
+        const analysisSafe = escapeSpeechAttr(d.problem_analysis);
+        html += '<div class="p-4 bg-white flex items-start justify-between gap-3">';
+        html += '<div class="text-xs sm:text-sm text-slate-800 leading-relaxed latex-box flex-1">' + d.problem_analysis + '</div>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + analysisSafe + '" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Nghe phân tích đề bài">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + analysisSafe + '" class="text-xs p-1 px-2 rounded bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 transition-all cursor-pointer shadow-2xs" title="Nghe phân tích chậm (0.72x)">🐢</button>';
+        html += '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+
+      // 3. Tier 1 Hint Card
+      html += '<div class="glass-card rounded-2xl border border-amber-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="tier1" class="p-4 bg-amber-50/70 border-b border-amber-100 flex items-center justify-between cursor-pointer hover:bg-amber-100/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-amber-700 font-bold text-base">💡</span>';
+      html += '<span class="font-bold text-sm text-slate-900">3. Giàn giáo Nấc 1: Gợi mở định hướng tư duy (Tier 1 Hint)</span>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Tier 1 Hint" class="p-0.5 px-1.5 rounded bg-white hover:bg-amber-600 text-amber-800 hover:text-white border border-amber-300 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Tier 1 Hint" class="p-0.5 px-1.5 rounded bg-white hover:bg-amber-500 text-amber-800 hover:text-white border border-amber-300 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
+      html += '</div>';
+      html += '<span class="text-xs text-amber-700 font-bold">' + (scaffoldTiers.tier1 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.tier1) {
+        const hintSafe = escapeSpeechAttr(d.tier_1_hint);
+        html += '<div class="p-4 bg-amber-50/50 flex items-start justify-between gap-3 border-l-4 border-amber-400">';
+        html += '<div class="text-xs sm:text-sm text-slate-900 leading-relaxed latex-box flex-1">' + d.tier_1_hint + '</div>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + hintSafe + '" class="text-xs p-1 px-2 rounded bg-amber-100 hover:bg-amber-600 text-amber-800 hover:text-white border border-amber-300 transition-all cursor-pointer shadow-2xs" title="Nghe câu hỏi gợi ý Nấc 1">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + hintSafe + '" class="text-xs p-1 px-2 rounded bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 transition-all cursor-pointer shadow-2xs" title="Nghe chậm gợi ý Nấc 1 (0.72x)">🐢</button>';
+        html += '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+
+      // 4. Tier 2 Breakdown Card
+      html += '<div class="glass-card rounded-2xl border border-blue-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="tier2" class="p-4 bg-blue-50/70 border-b border-blue-100 flex items-center justify-between cursor-pointer hover:bg-blue-100/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-blue-700 font-bold text-base">🪜</span>';
+      html += '<span class="font-bold text-sm text-slate-900">4. Giàn giáo Nấc 2: Khung tư duy chia nhỏ các bước (Tier 2 Breakdown)</span>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Tier 2 Breakdown" class="p-0.5 px-1.5 rounded bg-white hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Tier 2 Breakdown" class="p-0.5 px-1.5 rounded bg-white hover:bg-blue-500 text-blue-700 hover:text-white border border-blue-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
+      html += '</div>';
+      html += '<span class="text-xs text-blue-700 font-bold">' + (scaffoldTiers.tier2 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.tier2) {
+        html += '<div class="p-4 bg-white space-y-2">';
+        (d.tier_2_breakdown || []).forEach((st, idx) => {
+          const stepSafe = escapeSpeechAttr(st);
+          html += '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 latex-box flex items-start justify-between gap-2.5">';
+          html += '<div class="flex items-start gap-2.5 flex-1">';
+          html += '<span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 border border-blue-200">' + (idx+1) + '</span>';
+          html += '<span class="flex-1">' + st + '</span>';
+          html += '</div>';
+          html += '<div class="flex items-center gap-1 shrink-0">';
+          html += '<button type="button" onclick="speakText(this)" data-speech="' + stepSafe + '" class="text-xs p-1 rounded bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 transition-all cursor-pointer shadow-2xs" title="Nghe bước ' + (idx+1) + '">🔊</button>';
+          html += '<button type="button" onclick="speakSlow(this)" data-speech="' + stepSafe + '" class="text-xs p-1 rounded bg-blue-50 hover:bg-blue-500 text-blue-600 hover:text-white border border-blue-200 transition-all cursor-pointer shadow-2xs" title="Nghe chậm bước ' + (idx+1) + ' (0.72x)">🐢</button>';
+          html += '</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      html += '</div>';
+
+      // 5. Common Pitfalls
+      html += '<div class="glass-card rounded-2xl border border-rose-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="pitfall" class="p-4 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between cursor-pointer hover:bg-rose-100/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-rose-700 font-bold text-base">⚠️</span>';
+      html += '<span class="font-bold text-sm text-slate-900">5. Cảnh báo lỗi sai & Cạm bẫy thường gặp (Common Pitfalls)</span>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Common Pitfalls" class="p-0.5 px-1.5 rounded bg-white hover:bg-rose-600 text-rose-700 hover:text-white border border-rose-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Common Pitfalls" class="p-0.5 px-1.5 rounded bg-white hover:bg-rose-500 text-rose-700 hover:text-white border border-rose-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
+      html += '</div>';
+      html += '<span class="text-xs text-rose-700 font-bold">' + (scaffoldTiers.pitfall ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.pitfall) {
+        const pitfallSafe = escapeSpeechAttr(d.common_pitfall);
+        html += '<div class="p-4 bg-rose-50/50 flex items-start justify-between gap-3 border-l-4 border-rose-400">';
+        html += '<div class="text-xs sm:text-sm text-slate-900 leading-relaxed latex-box flex-1">' + d.common_pitfall + '</div>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + pitfallSafe + '" class="text-xs p-1 px-2 rounded bg-rose-100 hover:bg-rose-600 text-rose-800 hover:text-white border border-rose-300 transition-all cursor-pointer shadow-2xs" title="Nghe cảnh báo cạm bẫy">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + pitfallSafe + '" class="text-xs p-1 px-2 rounded bg-rose-50 hover:bg-rose-500 text-rose-700 hover:text-white border border-rose-300 transition-all cursor-pointer shadow-2xs" title="Nghe chậm cảnh báo cạm bẫy (0.72x)">🐢</button>';
+        html += '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+
+      // 6. Full Solution Card
+      html += '<div class="glass-card rounded-2xl border border-emerald-200 bg-white overflow-hidden shadow-xs">';
+      html += '<div onclick="toggleScaffoldSection(this)" data-sec="tier3" class="p-4 bg-emerald-50/70 border-b border-emerald-100 flex items-center justify-between cursor-pointer hover:bg-emerald-100/50 transition-colors">';
+      html += '<div class="flex items-center gap-2">';
+      html += '<span class="text-emerald-700 font-bold text-base">📝</span>';
+      html += '<span class="font-bold text-sm text-slate-900">6. Lời giải mẫu hoàn chỉnh từng bước (Full Solution)</span>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakText(this)" data-speech="Full Solution" class="p-0.5 px-1.5 rounded bg-white hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe tiêu đề">🔊</button>';
+      html += '<button type="button" onclick="event.stopPropagation(); speakSlow(this)" data-speech="Full Solution" class="p-0.5 px-1.5 rounded bg-white hover:bg-emerald-500 text-emerald-700 hover:text-white border border-emerald-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe chậm tiêu đề (0.72x)">🐢</button>';
+      html += '</div>';
+      html += '<span class="text-xs text-emerald-700 font-bold">' + (scaffoldTiers.tier3 ? '▲ Thu gọn' : '▼ Mở rộng') + '</span>';
+      html += '</div>';
+      if (scaffoldTiers.tier3) {
+        const solFormatted = (d.full_solution || '').replace(/\n/g, '<br>');
+        const solSafe = escapeSpeechAttr(d.full_solution);
+        html += '<div class="p-5 bg-white flex items-start justify-between gap-3">';
+        html += '<div class="text-xs sm:text-sm text-slate-900 leading-relaxed latex-box flex-1">' + solFormatted + '</div>';
+        html += '<div class="flex flex-col gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + solSafe + '" class="text-xs p-1 px-2 rounded bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 transition-all cursor-pointer shadow-2xs" title="Nghe lời giải hoàn chỉnh">🔊</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + solSafe + '" class="text-xs p-1 px-2 rounded bg-emerald-50 hover:bg-emerald-500 text-emerald-600 hover:text-white border border-emerald-200 transition-all cursor-pointer shadow-2xs" title="Nghe chậm lời giải hoàn chỉnh (0.72x)">🐢</button>';
+        html += '</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+
+      // 7. Parallel Exercise
+      if (d.parallel_exercise) {
+        const pEnSafe = escapeSpeechAttr(d.parallel_exercise.question_en);
+        html += '<div class="glass-card rounded-2xl border border-teal-200 p-5 space-y-3 bg-gradient-to-r from-teal-50/60 via-white to-indigo-50/40 shadow-xs">';
+        html += '<div class="flex items-center justify-between gap-2">';
+        html += '<div class="flex items-center gap-2">';
+        html += '<span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center font-bold text-sm border border-teal-200">🎯</span>';
+        html += '<span class="font-bold text-sm text-slate-900">7. Bài tập tương tự tự rèn luyện (Parallel Exercise)</span>';
+        html += '</div>';
+        html += '<div class="flex items-center gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + pEnSafe + '" class="p-1 px-2 rounded-lg bg-teal-50 hover:bg-teal-600 text-teal-800 hover:text-white border border-teal-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc bài tập tương tự">🔊 <span class="text-[11px] font-semibold">Nghe đề</span></button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + pEnSafe + '" class="p-1 px-1.5 rounded-lg bg-teal-50 hover:bg-teal-500 text-teal-700 hover:text-white border border-teal-200 text-xs cursor-pointer shadow-2xs inline-flex items-center" title="Nghe chậm (0.72x)">🐢</button>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div class="text-xs sm:text-sm text-slate-900 font-semibold latex-box">' + d.parallel_exercise.question_en + '</div>';
+        html += '<div class="text-xs text-slate-600 italic vi-text border-l-2 border-teal-400 pl-2.5">' + d.parallel_exercise.question_vi + '</div>';
+        html += '<div class="flex flex-wrap items-center gap-3 pt-2">';
+        html += '<input type="text" id="offline-parallel-input" placeholder="Nhập đáp số (Ví dụ: 0, 7, 2...)" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs sm:text-sm text-slate-900 font-mono w-64 focus:border-teal-500 focus:outline-none">';
+        html += '<button onclick="checkStandaloneParallelAnswer()" class="px-4 py-2 rounded-xl text-xs font-bold bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 hover:border-teal-300 shadow-2xs transition-all cursor-pointer">Kiểm Tra Đáp Số</button>';
+        html += '</div>';
+        html += '<div id="offline-parallel-feedback" class="hidden text-xs p-3 rounded-xl"></div>';
+        html += '</div>';
+      }
+
+      container.innerHTML = html;
+      triggerMathJax();
+    }
+
+    function checkStandaloneParallelAnswer() {
+      const input = document.getElementById('offline-parallel-input');
+      const fb = document.getElementById('offline-parallel-feedback');
+      const d = currentScaffoldData;
+      if (!input || !fb || !d || !d.parallel_exercise) return;
+
+      const userVal = input.value.trim().toLowerCase();
+      const correctVal = String(d.parallel_exercise.short_answer).trim().toLowerCase();
+
+      fb.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-800', 'bg-rose-50', 'border-rose-300', 'text-rose-800');
+      fb.classList.add('border');
+
+      if (userVal === correctVal) {
+        fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
+        fb.innerHTML = '🎉 <strong>Chính xác tuyệt đối!</strong> Em đã vận dụng rất tốt phương pháp giàn giáo để tự giải quyết trọn vẹn bài toán.';
+      } else {
+        fb.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800');
+        fb.innerHTML = '⚠️ <strong>Chưa chính xác!</strong> Hãy xem lại Nấc 2 (Khung tư duy) và Nấc 5 (Cạm bẫy thường gặp) phía trên để điều chỉnh phép tính.';
+      }
+    }
+
+    // ==========================================
+    // STANDALONE QUIZ RENDERING
+    // ==========================================
+    function renderStandaloneQuestions() {
+      const container = document.getElementById('standalone-questions-container');
+      if (container.children.length > 0) return; // already rendered
+
+      const questions = LESSON_DATA.quiz.questions;
+      let html = '';
+
+      questions.forEach((q, index) => {
+        html += '<div id="q-card-' + q.id + '" class="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs transition-all">';
+        html += '<div class="flex items-start justify-between gap-3 mb-3">';
+        html += '<div>';
+        html += '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">Question ' + (index+1) + '</span>';
+        html += '<span class="text-xs text-slate-500 ml-2">[' + q.points + ' pts]</span>';
+        html += '</div>';
+        html += '<span class="text-xs text-slate-600 font-medium capitalize">' + q.type.replace('-', ' ') + '</span>';
+        html += '</div>';
+
+        // Question stem
+        const stemSafe = escapeSpeechAttr(q.stemEn);
+        html += '<div class="flex items-start justify-between gap-2 mb-2">';
+        html += '<div class="text-sm sm:text-base font-semibold text-slate-900 latex-box flex-1">' + q.stemEn + '</div>';
+        html += '<div class="flex items-center gap-1 shrink-0">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + stemSafe + '" class="p-1 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs cursor-pointer shadow-2xs inline-flex items-center gap-1" title="Nghe đọc câu hỏi">🔊 <span class="text-[11px] font-semibold">Nghe</span></button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + stemSafe + '" class="p-1 px-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-500 text-indigo-600 hover:text-white border border-indigo-200 text-xs cursor-pointer shadow-2xs inline-flex items-center" title="Nghe chậm câu hỏi (0.72x)">🐢</button>';
+        html += '</div>';
+        html += '</div>';
+        if (q.stemVi) {
+          html += '<div class="text-xs text-slate-600 italic mb-4 vi-text border-l-2 border-indigo-300 pl-2.5">' + q.stemVi + '</div>';
+        }
+
+        // Options rendering based on type
+        if (q.type === 'multiple-choice') {
+          html += '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 my-3">';
+          q.options.forEach(opt => {
+            const optSafe = escapeSpeechAttr(opt.text);
+            html += '<label class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-indigo-400 cursor-pointer transition-all shadow-xs group">';
+            html += '<div class="flex items-center gap-3 flex-1">';
+            html += '<input type="radio" name="ans-' + q.id + '" value="' + opt.id + '" class="w-4 h-4 text-indigo-600 focus:ring-0">';
+            html += '<span class="font-bold text-xs px-2 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">' + opt.id + '</span>';
+            html += '<span class="text-sm text-slate-900 latex-box">' + opt.text + '</span>';
+            html += '</div>';
+            html += '<div class="flex items-center gap-1 shrink-0">';
+            html += '<button type="button" onclick="event.preventDefault(); event.stopPropagation(); speakText(this)" data-speech="' + optSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs opacity-70 group-hover:opacity-100 transition-opacity" title="Nghe đáp án này">🔊</button>';
+            html += '<button type="button" onclick="event.preventDefault(); event.stopPropagation(); speakSlow(this)" data-speech="' + optSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-500 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs opacity-70 group-hover:opacity-100 transition-opacity" title="Nghe chậm đáp án (0.72x)">🐢</button>';
+            html += '</div>';
+            html += '</label>';
+          });
+          html += '</div>';
+        } else if (q.type === 'true-false-4') {
+          html += '<div class="space-y-2.5 my-3 overflow-x-auto">';
+          html += '<table class="w-full text-left text-xs sm:text-sm">';
+          html += '<thead class="text-slate-600 uppercase text-[10px] border-b border-slate-200 bg-slate-50"><tr><th class="py-2 px-3">Mệnh đề (Proposition)</th><th class="text-center py-2 w-20">Đúng (T)</th><th class="text-center py-2 w-20">Sai (F)</th></tr></thead>';
+          html += '<tbody class="divide-y divide-slate-200">';
+          q.propositions.forEach(prop => {
+            const propSafe = escapeSpeechAttr(prop.textEn);
+            html += '<tr>';
+            html += '<td class="py-2.5 pr-2 px-3">';
+            html += '<div class="flex items-start justify-between gap-2">';
+            html += '<div class="flex-1">';
+            html += '<span class="font-bold text-indigo-700 mr-1.5">' + prop.id + ')</span>';
+            html += '<span class="text-slate-900 latex-box">' + prop.textEn + '</span>';
+            if (prop.textVi) html += '<div class="text-[11px] text-slate-600 italic vi-text mt-0.5">' + prop.textVi + '</div>';
+            html += '</div>';
+            html += '<div class="flex items-center gap-1 shrink-0">';
+            html += '<button type="button" onclick="speakText(this)" data-speech="' + propSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-600 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe mệnh đề này">🔊</button>';
+            html += '<button type="button" onclick="speakSlow(this)" data-speech="' + propSafe + '" class="p-1 px-1.5 rounded bg-slate-100 hover:bg-indigo-500 text-slate-600 hover:text-white border border-slate-200 text-[10px] cursor-pointer shadow-2xs" title="Nghe chậm mệnh đề (0.72x)">🐢</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</td>';
+            html += '<td class="text-center py-2.5"><input type="radio" name="tf-' + q.id + '-' + prop.id + '" value="true" class="w-4 h-4 text-emerald-600"></td>';
+            html += '<td class="text-center py-2.5"><input type="radio" name="tf-' + q.id + '-' + prop.id + '" value="false" class="w-4 h-4 text-rose-600"></td>';
+            html += '</tr>';
+          });
+          html += '</tbody></table></div>';
+        } else if (q.type === 'short-answer') {
+          html += '<div class="my-4 max-w-sm">';
+          html += '<label class="block text-xs text-slate-600 mb-1.5 font-medium">Nhập đáp số (số thực / phân số):</label>';
+          html += '<input type="text" id="short-input-' + q.id + '" placeholder="Ví dụ: 3 hoặc 0.75..." class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 font-mono text-sm focus:border-indigo-500 focus:outline-none">';
+          html += '</div>';
+        }
+
+        // Solution box (hidden until graded)
+        const expSafe = escapeSpeechAttr(q.explanationEn);
+        html += '<div id="solution-' + q.id + '" class="hidden mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 space-y-1.5">';
+        html += '<div class="flex items-center justify-between">';
+        html += '<div class="font-bold text-indigo-700">💡 Giải thích chi tiết:</div>';
+        html += '<div class="flex items-center gap-1.5">';
+        html += '<button type="button" onclick="speakText(this)" data-speech="' + expSafe + '" class="p-1 px-2 rounded bg-white hover:bg-indigo-600 text-indigo-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe giải thích chi tiết">🔊 Nghe</button>';
+        html += '<button type="button" onclick="speakSlow(this)" data-speech="' + expSafe + '" class="p-1 px-1.5 rounded bg-white hover:bg-indigo-500 text-indigo-600 hover:text-white border border-slate-200 text-[10px] shrink-0 cursor-pointer shadow-2xs" title="Nghe giải thích chậm (0.72x)">🐢 Chậm</button>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div class="latex-box text-slate-900">' + (q.explanationEn || '') + '</div>';
+        if (q.explanationVi) html += '<div class="text-slate-600 vi-text italic">' + q.explanationVi + '</div>';
+        html += '</div>';
+
+        html += '</div>';
+      });
+
+      container.innerHTML = html;
+      triggerMathJax();
+    }
+
+    function gradeStandaloneQuiz() {
+      let earnedPoints = 0;
+      let totalMaxPoints = 0;
+      const questions = LESSON_DATA.quiz.questions;
+
+      questions.forEach(q => {
+        totalMaxPoints += q.points;
+        const card = document.getElementById('q-card-' + q.id);
+        const sol = document.getElementById('solution-' + q.id);
+        if (sol) sol.classList.remove('hidden');
+
+        if (q.type === 'multiple-choice') {
+          const selected = document.querySelector('input[name="ans-' + q.id + '"]:checked');
+          const correctOpt = q.options.find(o => o.isCorrect);
+          if (selected && selected.value === correctOpt.id) {
+            earnedPoints += q.points;
+            card.classList.add('border-emerald-400', 'bg-emerald-50/50');
+          } else {
+            card.classList.add('border-rose-400', 'bg-rose-50/50');
+          }
+        } else if (q.type === 'true-false-4') {
+          let correctCount = 0;
+          q.propositions.forEach(prop => {
+            const chosen = document.querySelector('input[name="tf-' + q.id + '-' + prop.id + '"]:checked');
+            if (chosen && ((chosen.value === 'true') === prop.isCorrect)) {
+              correctCount++;
+            }
+          });
+          let multiplier = 0;
+          if (correctCount === 1) multiplier = 0.1;
+          else if (correctCount === 2) multiplier = 0.25;
+          else if (correctCount === 3) multiplier = 0.5;
+          else if (correctCount === 4) multiplier = 1.0;
+          
+          earnedPoints += q.points * multiplier;
+          if (correctCount === 4) {
+            card.classList.add('border-emerald-400', 'bg-emerald-50/50');
+          } else if (correctCount >= 2) {
+            card.classList.add('border-amber-400', 'bg-amber-50/50');
+          } else {
+            card.classList.add('border-rose-400', 'bg-rose-50/50');
+          }
+        } else if (q.type === 'short-answer') {
+          const input = document.getElementById('short-input-' + q.id);
+          const val = input ? input.value.trim().toLowerCase() : '';
+          const correct = String(q.correctAnswer).trim().toLowerCase();
+          const acceptable = (q.acceptableAnswers || []).map(a => String(a).trim().toLowerCase());
+          
+          let isRight = (val === correct) || acceptable.includes(val);
+          if (!isRight && !isNaN(parseFloat(val)) && !isNaN(parseFloat(correct))) {
+            const tol = q.tolerance || 0.01;
+            if (Math.abs(parseFloat(val) - parseFloat(correct)) <= tol) {
+              isRight = true;
+            }
+          }
+
+          if (isRight) {
+            earnedPoints += q.points;
+            card.classList.add('border-emerald-400', 'bg-emerald-50/50');
+          } else {
+            card.classList.add('border-rose-400', 'bg-rose-50/50');
+          }
+        }
+      });
+
+      const scaledScore = totalMaxPoints > 0 ? (earnedPoints / totalMaxPoints) * 10 : 0;
+      const resultBanner = document.getElementById('standalone-quiz-result');
+      const scoreNum = document.getElementById('result-score-num');
+      const feedback = document.getElementById('result-feedback');
+
+      resultBanner.classList.remove('hidden');
+      scoreNum.innerText = scaledScore.toFixed(1);
+
+      if (scaledScore >= 8.5) {
+        feedback.innerText = 'Xuất sắc! Bạn đã nắm rất vững các kiến thức toán học song ngữ!';
+      } else if (scaledScore >= 6.5) {
+        feedback.innerText = 'Khá tốt! Hãy xem lại các bước giải chi tiết phía dưới để hoàn thiện kiến thức.';
+      } else {
+        feedback.innerText = 'Cần luyện tập thêm. Hãy đọc kỹ phần định lý và các bước giải mẫu!';
+      }
+
+      resultBanner.scrollIntoView({ behavior: 'smooth' });
+      triggerMathJax();
+    }
+
+    function resetStandaloneQuiz() {
+      const container = document.getElementById('standalone-questions-container');
+      container.innerHTML = '';
+      document.getElementById('standalone-quiz-result').classList.add('hidden');
+      renderStandaloneQuestions();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      triggerMathJax();
+    });
+  </script>
+</body>
+</html>

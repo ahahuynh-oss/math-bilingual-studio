@@ -1,6 +1,7 @@
 /**
  * User Guide & Interactive Step-by-Step Manual
  * Bilingual Math Scaffolding Studio - Dự án Sáng kiến Giáo dục 2026 - Tác giả: Huỳnh Thị Hà
+ * Phiên bản: 2026.2.0 (Cập nhật đồng bộ mới nhất)
  * Layout matching Edu SaaS standard: Breadcrumbs, Header Banner, Sticky Table of Contents, Numbered Step Cards
  */
 
@@ -12,57 +13,59 @@ const UserGuide = {
       id: 'general-workflow',
       num: 1,
       title: 'Quy trình chung',
-      shortTitle: 'Quy trình chung cho giáo viên mới dùng',
-      englishTitle: 'General Workflow for Teachers',
-      summary: 'Ba bước từ lúc soạn bài giảng, thiết lập giàn giáo sư phạm đến khi học sinh nhận link làm bài & luyện nói.',
+      shortTitle: 'Quy trình tổng quan cho giáo viên & học sinh',
+      englishTitle: 'General Workflow for Teachers & Students',
+      summary: 'Quy trình 4 bước khép kín từ lúc soạn bài giảng, kích hoạt giàn giáo ZPD, làm bài tương tác & luyện nói bản ngữ đến khi xuất bản đa kênh.',
       icon: '✈️',
       steps: [
         {
           num: 1,
-          title: 'Tạo bài giảng hoặc Nạp tài liệu Word/PDF',
-          englishTitle: 'Create Lesson or Import Curriculum',
-          desc: 'Thầy cô vào menu <strong>Soạn bài giảng</strong> hoặc bấm nút <strong>✨ Soạn tự động (AI Studio)</strong>.',
+          title: 'Soạn bài giảng hoặc Nhập tài liệu Word / PDF / Ảnh chụp',
+          englishTitle: 'Create Lesson or Import Word / PDF / Vision OCR',
+          desc: 'Thầy cô chọn mục <strong>Soạn bài giảng</strong> trên cây thư mục hoặc bấm <strong>✨ Soạn tự động (AI Studio)</strong>.',
           bullets: [
-            'Chọn một chủ đề chuẩn THPT (Khối 10, 11, 12) hoặc tải lên file Word (.docx), PDF giáo án sẵn có.',
-            'Hệ thống tự động đồng bộ hóa: Mục tiêu bài học (*Objectives*), Từ vựng chuyên ngành có phiên âm IPA, Công thức chuẩn LaTeX và các Ví dụ mẫu giải từng bước (*Step-by-step*).',
-            'Thầy cô có thể tùy ý bổ sung các ghi chú sư phạm (*Pedagogical Notes*) song ngữ cho học trò.'
+            '<strong>Chọn chủ đề chuẩn:</strong> Khởi tạo tức thì bài giảng Toán THPT (Khối 10, 11, 12) chuẩn GDPT 2018 với đầy đủ lý thuyết, từ vựng, ví dụ và đề thi.',
+            '<strong>Nạp file Word (.docx), PDF hoặc Markdown/LaTeX:</strong> Bộ phân tích thông minh (Smart Parser) tự động bóc tách từ vựng, công thức Toán $LaTeX$ và các câu hỏi trắc nghiệm.',
+            '<strong>Quét ảnh chụp đề thi (Gemini Vision OCR):</strong> Kéo thả hoặc dán ảnh (Ctrl + V) từ sách giáo khoa, tài liệu in để AI tự động chuyển thành đề thi song ngữ và phân loại 4 mức độ nhận thức.',
+            '<strong>Soạn bài bằng Gemini AI:</strong> Nhập câu lệnh tùy chỉnh (Prompt) để AI tạo nội dung theo yêu cầu sư phạm riêng.'
           ],
           actionBtn: { text: 'Mở Soạn bài giảng', tab: 'builder-lesson', icon: '📝' }
         },
         {
           num: 2,
-          title: 'Kích hoạt Giàn giáo Sư phạm (Scaffolding 3 nấc)',
-          englishTitle: 'Activate 3-Tier Cognitive Scaffolding',
-          desc: 'Chuyển sang mục <strong>Gia sư giàn giáo ZPD</strong> để thiết lập mức độ nâng đỡ nhận thức phù hợp với năng lực học sinh.',
+          title: 'Kích hoạt Gia sư Giàn giáo Nhận thức ZPD (6 nấc)',
+          englishTitle: 'Activate 6-Stage Cognitive Scaffolding (Vygotsky ZPD)',
+          desc: 'Chuyển sang nhánh <strong>Gia sư giàn giáo ZPD</strong> để thiết lập mức độ nâng đỡ sư phạm tối ưu cho từng đối tượng học sinh.',
           bullets: [
-            '<strong>Nấc 1 (Gợi mở tư duy):</strong> Mặc định luôn mở để kích hoạt kiến thức nền tảng và công thức then chốt (chưa tính toán).',
-            '<strong>Nấc 2 (Chia nhỏ nhiệm vụ):</strong> Phân rã bài toán thành các chặng vừa sức kèm ô kiểm đánh giá từng bước (mặc định ẩn để rèn tính tự lực).',
-            '<strong>Nấc 3 (Lời giải hoàn chỉnh):</strong> Cung cấp đáp án và lập luận chuẩn mực đối chiếu cuối cùng.',
-            'Cảnh báo các cạm bẫy học sinh yếu dễ mắc phải (*Common Pitfalls*) và cấp bài tập song hành (*Parallel Practice*).'
+            'Hệ thống triển khai <strong>6 tầng sư phạm hoàn chỉnh</strong>: Bóc tách đề bài & Trọng tâm kiến thức, Bảng thuật ngữ toán có phát âm IPA, Gợi ý Nấc 1 Socratic, Khung tư duy Nấc 2 có checklist từng chặng, Cạm bẫy học sinh cần tránh (Common Pitfalls), và Lời giải mẫu hoàn chỉnh.',
+            'Học sinh tự rèn luyện tính độc lập qua <strong>Bài tập song song (Parallel Exercise)</strong> có kiểm tra đáp số tự động theo nguyên lý rút dần giàn giáo (Scaffold Fading).',
+            'Giáo viên có thể bấm <strong>"✏️ Sửa bài tập này"</strong> để tùy biến nội dung giàn giáo và lưu trực tiếp vào kho <em>"Bài tập đã tạo"</em>.'
           ],
-          actionBtn: { text: 'Mở Gia sư Giàn giáo ZPD', tab: 'scaffolding-tutor', icon: '🪜' }
+          actionBtn: { text: 'Mở Không gian Giàn giáo ZPD', tab: 'scaffolding-tutor', icon: '🪜' }
         },
         {
           num: 3,
-          title: 'Tổ chức Luyện phát âm & Làm bài thi Tương tác',
-          englishTitle: 'Pronunciation Shadowing & Interactive Quiz',
-          desc: 'Cho học sinh làm bài trực tiếp trên máy tính hoặc điện thoại thông minh.',
+          title: 'Tổ chức Luyện phát âm Bản ngữ & Thi tương tác',
+          englishTitle: 'Pronunciation Shadowing & Interactive Assessment',
+          desc: 'Cho học sinh học tập và làm bài trực tiếp trên máy tính hoặc thiết bị di động.',
           bullets: [
-            'Tận dụng cụm nút <strong>🔊 Nghe</strong>, <strong>🐢 Nghe chậm</strong> và <strong>🎙️ Luyện theo</strong> ngay cạnh từng thuật ngữ và câu hỏi.',
-            'Học sinh có thể <strong>bôi đen bất kỳ từ hoặc câu tiếng Anh nào</strong> trên màn hình để nghe phát âm và dịch nghĩa tức thì.',
-            'Làm bài thi trắc nghiệm (ABCD, Đúng/Sai 4 mệnh đề, Điền số) và nhận kết quả, điểm số, nhận xét sư phạm ngay khi nộp bài.'
+            'Học sinh bấm cụm nút <strong>🔊 Nghe chuẩn (1.0x)</strong> và <strong>🐢 Nghe chậm (0.75x)</strong> cạnh từng thuật ngữ và câu hỏi để làm quen với ngữ điệu bản ngữ.',
+            'Bấm <strong>🎙️ Luyện theo</strong> để mở phòng thực hành phát âm Shadowing: thu âm qua micro và nhận phản hồi chấm điểm phát âm trực quan.',
+            '<strong>Tra cứu thông minh:</strong> Bôi đen bất kỳ từ hoặc câu tiếng Anh nào trên màn hình để nghe đọc và dịch nghĩa tức thì (Floating Tooltip).',
+            'Làm bài kiểm tra có đồng hồ đếm ngược, nộp bài nhận điểm số thang 10, phân loại năng lực và đối chiếu đáp án chi tiết.'
           ],
           actionBtn: { text: 'Mở Làm bài tương tác', tab: 'interactive-preview', icon: '🎯' }
         },
         {
           num: 4,
-          title: 'Xuất bản đề in A4, File Word hoặc Chia sẻ Link',
-          englishTitle: 'Export Word, Printable A4 & Share Link',
+          title: 'Xuất bản Đề in A4, File Word hoặc Web Độc Lập Offline',
+          englishTitle: 'Export to Word (.docx), Standalone HTML & Printable A4',
           desc: 'Linh hoạt triển khai trực tiếp trên lớp học hoặc giao bài tập về nhà.',
           bullets: [
-            'Bấm <strong>Xuất Word (.doc/.docx)</strong> để tải về: Phiếu bài tập học sinh (không có giải), Đề kèm đáp án chi tiết cho giáo viên, hoặc Phiếu giàn giáo ZPD.',
-            'Bấm <strong>Export Standalone HTML</strong> để tạo 1 file duy nhất chạy offline mọi lúc mọi nơi không cần cài đặt.',
-            'Mọi đề thi và bài giảng đã soạn đều tự động lưu vào <strong>Danh sách đã tạo</strong>.'
+            'Bấm <strong>Xuất Word (.doc/.docx)</strong> để tải về: Phiếu bài tập học sinh (chuẩn A4 Times New Roman 12pt), Đề thi kèm đáp án giáo viên, hoặc Phiếu giàn giáo ZPD.',
+            'Bấm <strong>Export Standalone HTML</strong> để tạo 1 file duy nhất chạy offline 100% không cần kết nối Internet.',
+            'Bấm <strong>In Worksheet A4</strong> để in photocopy trực tiếp chuẩn định dạng máy in trường học.',
+            'Mọi nội dung đều được tự động lưu trữ và phân loại trong <strong>Danh sách đã tạo</strong> và <strong>Kho bài tập đã tạo</strong>.'
           ],
           actionBtn: { text: 'Mở Danh sách đã tạo', tab: 'my-exams', icon: '📊' }
         }
@@ -72,43 +75,94 @@ const UserGuide = {
     {
       id: 'gemini-api',
       num: 2,
-      title: 'Cấu hình API Key Google',
-      shortTitle: 'Hướng dẫn cấu hình & sử dụng API Key Google Gemini',
-      englishTitle: 'Google Gemini AI Setup & Configuration',
-      summary: 'Khai thác tối đa trí tuệ nhân tạo Gemini 2.5 Flash hoàn toàn miễn phí để tự động soạn bài giảng và trích xuất câu hỏi.',
+      title: 'Cấu hình Trợ lý AI Google Gemini',
+      shortTitle: 'Hướng dẫn cấu hình & sử dụng AI Google Gemini (Hỗ trợ Gemini 3.8 Flash)',
+      englishTitle: 'Google Gemini AI Setup & Model Switching',
+      summary: 'Khai thác tối đa trí tuệ nhân tạo thế hệ mới (Gemini 3.8 Flash, 2.5 Flash, 2.0 Flash) hoàn toàn miễn phí để tự động sinh bài giảng và đề thi chuẩn GDPT 2018.',
       icon: '🔑',
       steps: [
         {
           num: 1,
-          title: 'Lấy khóa API Key Google miễn phí',
-          englishTitle: 'Get Free Gemini API Key',
-          desc: 'Google cung cấp gói miễn phí (Free Tier) với hàng triệu tokens mỗi ngày cho mục đích giáo dục.',
+          title: 'Lấy khóa API Key Google Gemini hoàn toàn miễn phí',
+          englishTitle: 'Get Free Google Gemini API Key',
+          desc: 'Google cung cấp gói miễn phí (Free Tier) với hạn mức hàng triệu tokens mỗi ngày cho mục đích giáo dục.',
           bullets: [
-            'Thầy cô truy cập trang Google AI Studio tại: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 font-bold underline">https://aistudio.google.com/app/apikey</a>.',
-            'Đăng nhập bằng tài khoản Google cá nhân hoặc tài khoản trường học.',
-            'Bấm nút <strong>Create API Key</strong> và sao chép chuỗi ký tự khóa được tạo (bắt đầu bằng <code>AIzaSy...</code>).'
+            'Thầy cô truy cập cổng Google AI Studio: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-600 font-bold underline">https://aistudio.google.com/app/apikey</a>.',
+            'Đăng nhập bằng tài khoản Google cá nhân hoặc tài khoản tổ chức giáo dục.',
+            'Bấm nút <strong>Create API Key</strong>, chọn dự án và sao chép chuỗi khóa (bắt đầu bằng <code>AIzaSy...</code>).'
           ]
         },
         {
           num: 2,
-          title: 'Dán API Key vào Bilingual Math Studio',
-          englishTitle: 'Save API Key in Studio Settings',
-          desc: 'Khóa được lưu mã hóa an toàn trên trình duyệt của riêng thầy cô (LocalStorage), không gửi về máy chủ bên ngoài.',
+          title: 'Lưu khóa API Key & Tùy chọn Mô hình Thế hệ Mới',
+          englishTitle: 'Save API Key & Select AI Model',
+          desc: 'Khóa được mã hóa và lưu an toàn trên trình duyệt của riêng thầy cô (LocalStorage), tuyệt đối không gửi về máy chủ bên thứ ba.',
           bullets: [
             'Bấm nút <strong>✨ Soạn tự động (AI Studio)</strong> trên thanh bên.',
-            'Chọn Tab số 3: <strong>🤖 Trợ Lý AI Trực Tuyến (Gemini)</strong>.',
-            'Dán khóa API Key vào ô nhập và bấm <strong>Lưu & Kiểm Tra Khóa</strong>.'
+            'Chọn Tab 3: <strong>🤖 Trợ Lý AI Trực Tuyến (Gemini)</strong>.',
+            'Dán khóa API Key vào ô nhập và chọn mô hình mong muốn:',
+            '• <strong>gemini-3.8-flash:</strong> Mô hình mới nhất, siêu nhanh, tối ưu hóa lập luận toán học song ngữ.',
+            '• <strong>gemini-2.5-flash:</strong> Đạt độ chính xác cao và hiểu biết sâu sắc ngữ cảnh toán học.',
+            '• <strong>gemini-1.5-pro:</strong> Tùy chọn chuyên sâu cho các bài toán phân hóa vận dụng cao.',
+            'Thầy cô có thể bấm nút <strong>🔍 Quét Model Khả Dụng</strong> để hệ thống tự động kiểm tra các mô hình được kích hoạt trong tài khoản.'
           ],
           actionBtn: { text: 'Mở Trợ lý AI để dán khóa', tab: 'open-ai-modal', icon: '✨' }
         },
         {
           num: 3,
           title: 'Ra lệnh sinh bài giảng & đề thi thông minh',
-          englishTitle: 'Prompting for Bilingual Content',
-          desc: 'Nhập câu lệnh bằng tiếng Việt hoặc tiếng Anh để AI tạo nội dung chuẩn GDPT 2018.',
+          englishTitle: 'Prompting for Bilingual Math Content',
+          desc: 'Nhập câu lệnh bằng tiếng Việt hoặc tiếng Anh để AI tạo nội dung theo đúng yêu cầu chuyên môn.',
           bullets: [
-            'Ví dụ: <em>"Soạn bài giảng và 5 câu trắc nghiệm song ngữ chủ đề Tích phân tính thể tích khối tròn xoay lớp 12"</em>.',
-            'Hệ thống tự động biên dịch, gắn thẻ LaTeX và tích hợp phiên âm IPA chuẩn xác.'
+            'Ví dụ Prompt mẫu: <em>"Soạn bài giảng và 10 câu trắc nghiệm song ngữ chủ đề 'Khoảng cách trong không gian Oxyz' Toán 12, có 4 câu ABCD, 4 câu Đúng/Sai và 2 câu điền số"</em>.',
+            'Hệ thống tự động biên dịch thuật ngữ Anh - Việt, tích hợp công thức $LaTeX$ chuẩn và tự động điền vào trình soạn thảo.'
+          ]
+        }
+      ]
+    },
+
+    {
+      id: 'vision-ocr',
+      num: 3,
+      title: 'Quét Đề Từ Ảnh Chụp (Gemini Vision OCR)',
+      shortTitle: 'Tính năng quét ảnh đề thi, trang SGK & dán trực tiếp (Ctrl + V)',
+      englishTitle: 'Gemini Vision OCR for Math Worksheets & Textbooks',
+      summary: 'Công nghệ AI Vision tự động đọc ảnh chụp đề thi giấy, SGK hoặc bảng viết, bóc tách công thức LaTeX, dịch song ngữ và phân loại 4 mức độ nhận thức.',
+      icon: '📸',
+      steps: [
+        {
+          num: 1,
+          title: 'Nạp ảnh chụp đề thi cực nhanh qua 3 cách',
+          englishTitle: 'Upload or Paste Image Instantly',
+          desc: 'Hỗ trợ định dạng ảnh PNG, JPG, JPEG, WebP từ mọi nguồn tài liệu.',
+          bullets: [
+            '<strong>Cách 1 (Dán trực tiếp - Tiện lợi nhất):</strong> Sử dụng tổ hợp phím <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 font-mono text-[10px]">Win + Shift + S</kbd> để chụp ảnh một phần màn hình hoặc trang sách, sau đó nhấn <kbd class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 font-mono text-[10px]">Ctrl + V</kbd> ngay tại màn hình Studio. Hệ thống sẽ tự động mở hộp thoại và tải ảnh vào.',
+            '<strong>Cách 2 (Kéo thả):</strong> Kéo tệp ảnh từ máy tính thả trực tiếp vào khung nét đứt màu xanh.',
+            '<strong>Cách 3 (Chọn tệp):</strong> Nhấp chuột vào khung nạp ảnh để duyệt tệp từ ổ đĩa.'
+          ],
+          actionBtn: { text: 'Mở Quét ảnh đề thi (OCR)', tab: 'open-ocr-modal', icon: '📸' }
+        },
+        {
+          num: 2,
+          title: 'Tùy chỉnh Mô hình Vision & Yêu cầu sư phạm',
+          englishTitle: 'Configure Vision Model & Custom Prompt',
+          desc: 'Tối ưu hóa khả năng nhận diện hình ảnh toán học phức tạp.',
+          bullets: [
+            'Chọn mô hình đề xuất: <strong>gemini-2.5-flash</strong> (chuyên biệt đọc ảnh công thức toán học) hoặc <strong>gemini-1.5-pro</strong> (đọc chữ viết tay khó).',
+            'Nhập yêu cầu bổ sung nếu cần (ví dụ: <em>"Chỉ trích xuất 5 câu trắc nghiệm hình học, gắn nhãn mức độ nhận thức theo chương 2"</em>).'
+          ]
+        },
+        {
+          num: 3,
+          title: 'Khởi chạy Quét & Tự động sinh Đề thi Song ngữ Chuẩn',
+          englishTitle: 'Run OCR & Auto-Generate Bilingual Quiz',
+          desc: 'Hệ thống tự động thực hiện đa nhiệm vụ chỉ trong vài giây.',
+          bullets: [
+            'Bấm nút <strong>📸 Quét Ảnh & Tự Động Sinh Đề Thi Chuẩn</strong>.',
+            'AI tự động bóc tách từng câu hỏi, chuyển đổi ký hiệu toán thành mã $LaTeX$ chuẩn ($...$ và $$...$$).',
+            'Tự động dịch song ngữ Anh - Việt đề bài và các phương án trả lời.',
+            '<strong>Gắn thẻ 4 mức độ nhận thức:</strong> Nhận biết (NB), Thông hiểu (TH), Vận dụng (VD), Vận dụng cao (VDC).',
+            'Tự động chuyển sang tab <strong>Làm bài tương tác</strong> để thầy cô kiểm tra và học sinh làm bài ngay.'
           ]
         }
       ]
@@ -116,54 +170,56 @@ const UserGuide = {
 
     {
       id: 'lesson-builder',
-      num: 3,
-      title: 'Soạn bài giảng Toán song ngữ',
-      shortTitle: 'Quy trình thiết kế bài giảng Toán song ngữ chuẩn GDPT 2018',
-      englishTitle: 'Designing Bilingual Math Lessons',
-      summary: 'Xây dựng bài giảng trực quan kết hợp thuật ngữ Anh - Việt, công thức LaTeX và ví dụ có lời giải mở từng bước.',
+      num: 4,
+      title: 'Thiết kế bài giảng Toán song ngữ',
+      shortTitle: 'Quy trình soạn thảo bài giảng tương tác chuẩn GDPT 2018',
+      englishTitle: 'Interactive Bilingual Lesson Builder',
+      summary: 'Xây dựng bài giảng toàn diện: Metadata, Bảng từ vựng có IPA & phát âm giọng Mỹ, Khái niệm định lý có LaTeX Toolbar, Ví dụ mở từng bước và Canvas Grapher.',
       icon: '📝',
       steps: [
         {
           num: 1,
-          title: 'Điền thông tin định danh bài học (Metadata)',
-          englishTitle: 'Fill Lesson Metadata',
-          desc: 'Thiết lập tiêu đề bài học song ngữ và các thông số cần thiết.',
+          title: 'Thiết lập Định danh & Mục tiêu bài học (Metadata & Objectives)',
+          englishTitle: 'Lesson Metadata & Learning Objectives',
+          desc: 'Khung thông tin chuẩn mực giúp học sinh định hình rõ yêu cầu cần đạt.',
           bullets: [
-            'Nhập tên bài học tiếng Anh và tiếng Việt (ví dụ: <em>Extrema of Functions - Cực trị của hàm số</em>).',
-            'Chọn Khối lớp (10, 11, 12), thời lượng mục tiêu (45 phút) và tên giáo viên phụ trách.',
-            'Viết tóm tắt mục tiêu bài học (*Learning Objectives*) song ngữ rõ ràng.'
+            'Nhập tiêu đề song ngữ Anh - Việt (ví dụ: <em>Derivatives and Extrema - Đạo hàm & Cực trị hàm số</em>).',
+            'Chọn Khối lớp (10, 11, 12), thời lượng giảng dạy (45 phút) và tên giáo viên phụ trách.',
+            'Điền mục tiêu bài học (*Learning Objectives*) song ngữ rõ ràng, phân định kiến thức toán và năng lực ngôn ngữ.'
           ],
-          actionBtn: { text: 'Đi tới Soạn bài giảng', tab: 'builder-lesson', icon: '📋' }
+          actionBtn: { text: 'Đi tới Soạn bài giảng', tab: 'builder-lesson', icon: '✍️' }
         },
         {
           num: 2,
           title: 'Xây dựng Bảng thuật ngữ cốt lõi (Bilingual Vocabulary)',
-          englishTitle: 'Curate Core Bilingual Math Vocabulary',
-          desc: 'Cung cấp cầu nối ngôn ngữ giúp học sinh không bị bỡ ngỡ với thuật ngữ học thuật.',
+          englishTitle: 'Core Math Vocabulary with IPA & Web Speech',
+          desc: 'Cầu nối ngôn ngữ giúp học sinh vượt qua rào cản từ vựng học thuật.',
           bullets: [
-            'Bấm <strong>➕ Thêm từ vựng</strong>.',
-            'Nhập từ tiếng Anh (ví dụ: <em>Critical point</em>), nghĩa tiếng Việt (<em>Điểm tới hạn</em>), phiên âm IPA và ví dụ ngữ cảnh toán học.',
-            'Tự động tích hợp nút nghe phát âm chuẩn và luyện đọc theo.'
+            'Bấm <strong>➕ Thêm từ vựng</strong> để bổ sung thuật ngữ mới.',
+            'Nhập từ tiếng Anh (ví dụ: <em>Critical point</em>), nghĩa tiếng Việt (<em>Điểm tới hạn</em>), phiên âm quốc tế IPA (<code>/ˈkrɪt.ɪ.kəl pɔɪnt/</code>) và câu ví dụ toán học.',
+            'Hệ thống tự động tích hợp nút nghe phát âm giọng bản ngữ và chế độ luyện đọc theo (Shadowing).'
           ]
         },
         {
           num: 3,
-          title: 'Nhập Khái niệm & Định lý then chốt (Key Concepts)',
-          englishTitle: 'Structure Key Concepts & Theorems',
-          desc: 'Trình bày định nghĩa toán học chuẩn mực với thanh công cụ chèn LaTeX nhanh.',
+          title: 'Soạn Khái niệm & Định lý với Thanh công cụ gõ nhanh LaTeX',
+          englishTitle: 'Theorems & Concepts with Quick LaTeX Toolbar',
+          desc: 'Trình bày định nghĩa toán học chuẩn mực với công thức sắc nét.',
           bullets: [
-            'Sử dụng thanh công cụ <strong>⚡ Chèn LaTeX</strong> ở đầu trang để chèn nhanh phân số, căn thức, đạo hàm, tích phân, giới hạn, vectơ.',
-            'Kèm theo lưu ý sư phạm (*Pedagogical Note*) chỉ rõ cách tránh nhầm lẫn lý thuyết.'
+            'Sử dụng thanh công cụ <strong>⚡ Chèn nhanh LaTeX</strong> ở đầu trang để chèn các ký hiệu: phân số $\\frac{a}{b}$, căn bậc hai $\\sqrt{x}$, tích phân $\\int$, đạo hàm $f\'(x)$, giới hạn $\\lim$, vectơ $\\vec{u}$, hệ phương trình $\\begin{cases}...\\end{cases}$.',
+            'Hỗ trợ khung xem trước công thức trực tiếp (Live Math Preview) thời gian thực.',
+            'Bổ sung ghi chú sư phạm (*Pedagogical Notes*) hướng dẫn học sinh phương pháp tư duy và cách tránh nhầm lẫn lý thuyết.'
           ]
         },
         {
           num: 4,
-          title: 'Biên soạn Ví dụ mẫu mở từng bước (Step-by-Step Examples)',
-          englishTitle: 'Scaffolded Step-by-Step Worked Examples',
-          desc: 'Mô hình hóa tư duy giải toán cho học sinh noi theo.',
+          title: 'Ví dụ mẫu mở từng bước & Đồ thị hàm số trực quan',
+          englishTitle: 'Step-by-Step Worked Examples & Canvas Grapher',
+          desc: 'Mô hình hóa đường hướng tư duy cho học sinh noi theo.',
           bullets: [
-            'Chia lời giải thành 3-4 bước rõ ràng: Bước 1 (Tìm TXĐ & Đạo hàm), Bước 2 (Lập bảng biến thiên), Bước 3 (Kết luận).',
-            'Khi học sinh học trên trang tương tác, các em có thể tự suy nghĩ rồi bấm <strong>➕ Mở bước này</strong> để tự kiểm tra tiến trình tư duy.'
+            '<strong>Ví dụ mẫu mở từng bước:</strong> Chia lời giải thành các chặng logic (Bước 1: Tìm TXĐ & Đạo hàm; Bước 2: Lập bảng biến thiên; Bước 3: Kết luận). Học sinh bấm <em>"➕ Mở bước này"</em> để tự kiểm tra tư duy.',
+            '<strong>Interactive Canvas Grapher:</strong> Kéo thanh trượt các hệ số $a, b, c$ của hàm số và quan sát tiếp tuyến tại điểm cực trị thay đổi theo thời gian thực.',
+            '<strong>Nhúng GeoGebra:</strong> Nhập mã GeoGebra Material ID để tích hợp mô hình hình học 3D tương tác trực tiếp.'
           ]
         }
       ]
@@ -171,75 +227,81 @@ const UserGuide = {
 
     {
       id: 'scaffolding-zpd',
-      num: 4,
-      title: 'Kích hoạt Giàn giáo ZPD (3 nấc)',
-      shortTitle: 'Phương pháp sư phạm giàn giáo nhận thức ZPD (3 nấc)',
-      englishTitle: '3-Tier Cognitive Scaffolding in Practice',
-      summary: 'Ứng dụng thuyết Vùng phát triển gần nhất (Vygotsky) giúp học sinh trung bình - yếu tự tin giải toán song ngữ.',
+      num: 5,
+      title: 'Gia sư Giàn giáo Nhận thức ZPD (6 nấc)',
+      shortTitle: 'Phương pháp sư phạm giàn giáo 6 nấc & Rút dần giàn giáo (Scaffold Fading)',
+      englishTitle: '6-Stage Cognitive Scaffolding in Practice',
+      summary: 'Hiện thực hóa Thuyết Kiến tạo Xã hội & Vùng phát triển gần nhất (Vygotsky) giúp học sinh trung bình - yếu tự tin giải toán song ngữ mà không bị ngợp.',
       icon: '🪜',
       steps: [
         {
           num: 1,
-          title: 'Hiểu đúng về triết lý Giàn giáo Sư phạm (Scaffolding)',
-          englishTitle: 'Scaffolding Philosophy',
-          desc: 'Giàn giáo không phải là làm hộ bài toán, mà là tạo các điểm tựa tư duy tạm thời.',
+          title: 'Bản chất Sư phạm của Phương pháp Giàn giáo (Scaffolding)',
+          englishTitle: 'Scaffolding Philosophy & ZPD Zone',
+          desc: 'Giàn giáo không phải là làm hộ bài toán, mà là tạo các điểm tựa nhận thức tạm thời.',
           bullets: [
-            'Nhà tâm lý học Lev Vygotsky chỉ ra rằng học sinh chỉ tiến bộ khi giải bài toán ở độ khó <em>vừa sức với sự hỗ trợ</em> (Vùng ZPD).',
-            'Hệ thống cung cấp 3 nấc giàn giáo với cơ chế <strong>Rút dần giàn giáo (Scaffold Fading)</strong> khi học sinh đã vững kiến thức.'
+            'Học sinh chỉ tiến bộ khi giải bài toán ở độ khó <em>vừa sức với sự hỗ trợ sư phạm</em> (Vùng ZPD - Zone of Proximal Development).',
+            'Khi năng lực học sinh tăng dần, các nấc hỗ trợ sẽ được thu gọn lại theo nguyên lý <strong>Rút dần giàn giáo (Scaffold Fading)</strong> để tiến tới tự lập hoàn toàn.'
           ]
         },
         {
           num: 2,
-          title: 'Khai thác Nấc 1: Gợi mở tư duy (Tier 1 Core Hint)',
-          englishTitle: 'Tier 1 Socratic Questioning',
-          desc: 'Được thiết kế để mặc định luôn mở, giúp học sinh bắt đầu bài toán mà không bị bế tắc.',
+          title: 'Cấu trúc 6 Nấc Thang Nâng đỡ Sư phạm Hoàn chỉnh',
+          englishTitle: '6 Pedagogy Scaffolding Layers Breakdown',
+          desc: 'Hệ thống thiết kế 6 phân tầng nhận thức logic cho mỗi bài toán:',
           bullets: [
-            'Hệ thống đặt câu hỏi gợi mở định hướng công thức cần dùng (ví dụ: <em>Muốn tìm tiệm cận đứng ta tìm nghiệm của mẫu số như thế nào?</em>).',
-            'Chưa đưa ra số liệu hay phép tính cụ thể, kích thích học sinh tự nhẩm hoặc viết ra giấy nháp.'
+            '<strong>1. Bóc tách đề bài & Trọng tâm kiến thức:</strong> Xác định giả thiết, kết luận và bản chất toán học của bài toán.',
+            '<strong>2. Bảng thuật ngữ toán song ngữ:</strong> Cung cấp danh sách từ khóa học thuật kèm phát âm để giải phóng rào cản ngôn ngữ.',
+            '<strong>3. Gợi ý Nấc 1 (Tier 1 Hint):</strong> Câu hỏi gợi mở Socratic đánh thức kiến thức nền tảng (mặc định luôn mở để tạo động lực ban đầu).',
+            '<strong>4. Khung tư duy Nấc 2 (Tier 2 Step Breakdown):</strong> Phân rã bài toán phức tạp thành các chặng nhỏ có ô kiểm (checkbox) để học sinh tự đánh dấu tiến độ (mặc định thu gọn để rèn tính tự lực).',
+            '<strong>5. Cạm bẫy & Sai lầm cần tránh (Common Pitfalls):</strong> Chỉ rõ các điểm học sinh hay nhầm lẫn dấu, điều kiện hoặc công thức.',
+            '<strong>6. Lời giải mẫu hoàn chỉnh:</strong> Trình bày bài giải chuẩn mực từng bước có $LaTeX$ để học sinh đối chiếu sau khi tự làm.'
           ],
-          actionBtn: { text: 'Trải nghiệm Nấc 1', tab: 'scaffolding-tutor', icon: '🪜' }
+          actionBtn: { text: 'Mở Không gian Giàn giáo ZPD', tab: 'scaffolding-tutor', icon: '🪜' }
         },
         {
           num: 3,
-          title: 'Khai thác Nấc 2: Chia nhỏ nhiệm vụ (Tier 2 Step Breakdown)',
-          englishTitle: 'Tier 2 Task Breakdown with Checklists',
-          desc: 'Mặc định ẩn/thu gọn để rèn tính tự lực; học sinh chỉ mở khi Nấc 1 chưa đủ giúp các em vượt khó.',
+          title: 'Rút dần giàn giáo với Bài tập song song (Parallel Practice)',
+          englishTitle: 'Independent Parallel Practice & Auto-Grading',
+          desc: 'Chặng cuối cùng để kiểm chứng năng lực làm chủ kiến thức độc lập của học sinh.',
           bullets: [
-            'Phân rã bài toán phức tạp thành 4 chặng nhiệm vụ nhỏ vừa sức.',
-            'Mỗi bước có ô kiểm (checkbox) để học sinh tự đánh dấu hoàn thành sau khi làm xong từng chặng.'
+            'Học sinh giải bài toán tương tự cùng cấu trúc nhưng thay đổi số liệu.',
+            'Nhập đáp số vào ô và bấm <strong>Kiểm tra đáp số</strong> để nhận phản hồi đúng/sai tức thì kèm phân tích kết quả.'
           ]
         },
         {
           num: 4,
-          title: 'Kiểm tra với Bài tập song hành (Parallel Practice)',
-          englishTitle: 'Independent Parallel Practice',
-          desc: 'Giai đoạn rút hoàn toàn giàn giáo để học sinh tự lập.',
+          title: 'Biên tập & Quản lý Kho bài tập giàn giáo đã tạo',
+          englishTitle: 'Edit & Save Custom Scaffolding Worksheets',
+          desc: 'Dễ dàng tùy biến bài toán theo tình hình thực tế lớp học.',
           bullets: [
-            'Học sinh tự giải một bài toán có cấu trúc tương tự (Parallel Exercise).',
-            'Nhập đáp số vào ô và bấm <strong>Kiểm tra đáp số</strong> để nhận xác nhận đúng/sai tức thì.'
-          ]
+            'Bấm nút <strong>✏️ Sửa bài tập này</strong> tại giao diện gia sư để mở Modal biên tập trực quan tất cả 6 tầng nội dung.',
+            'Bấm <strong>Lưu & Tích Hợp</strong> để tự động lưu vào kho <strong>Bài tập đã tạo</strong> (Scaffold Library).',
+            'Thầy cô có thể lọc bài tập theo Khối 10, Khối 11, Khối 12 hoặc xuất file Word giàn giáo chuyên biệt.'
+          ],
+          actionBtn: { text: 'Xem Kho bài tập đã tạo', tab: 'scaffold-library', icon: '📁' }
         }
       ]
     },
 
     {
       id: 'quiz-creator',
-      num: 5,
-      title: 'Soạn & Làm đề thi trắc nghiệm',
-      shortTitle: 'Quy trình tạo và tổ chức thi trắc nghiệm song ngữ 3 dạng câu hỏi',
-      englishTitle: 'Interactive Quiz Authoring & Assessment',
-      summary: 'Chuẩn hóa theo cấu trúc định dạng Đề thi Tốt nghiệp THPT 2025: Trắc nghiệm ABCD, Đúng/Sai 4 ý, Điền số ngắn.',
+      num: 6,
+      title: 'Soạn & Tổ chức Thi trắc nghiệm 3 dạng',
+      shortTitle: 'Quy trình tạo đề thi trắc nghiệm song ngữ 3 dạng câu hỏi chuẩn Bộ GD&ĐT 2025',
+      englishTitle: 'Assessment Builder: 3 Standard Question Formats',
+      summary: 'Thiết kế đề thi chuẩn hóa theo cấu trúc Đề thi Tốt nghiệp THPT 2025: Trắc nghiệm ABCD, Đúng/Sai 4 mệnh đề tính điểm lũy tiến, và Điền số thực/phân số.',
       icon: '🎯',
       steps: [
         {
           num: 1,
           title: 'Dạng 1: Trắc nghiệm khách quan nhiều lựa chọn (ABCD)',
-          englishTitle: 'Multiple-Choice (Single Best Answer)',
-          desc: 'Dạng bài tập kinh điển kiểm tra kiến thức nhận biết và thông hiểu.',
+          englishTitle: 'Multiple-Choice Questions (Single Best Answer)',
+          desc: 'Kiểm tra mức độ nhận biết và thông hiểu kiến thức cốt lõi.',
           bullets: [
-            'Mỗi câu có 4 phương án A, B, C, D; giáo viên tích chọn phương án đúng.',
-            'Cả đề bài và các phương án đều hỗ trợ công thức LaTeX chuẩn và nút nghe đọc tiếng Anh.',
-            'Mỗi câu đúng đạt trọn vẹn điểm số quy định (mặc định 0.25đ hoặc 1.0đ).'
+            'Mỗi câu hỏi có 4 phương án A, B, C, D; giáo viên tích chọn phương án đúng.',
+            'Cả đề bài và 4 phương án đều hỗ trợ công thức toán $LaTeX$, âm thanh phát âm tiếng Anh và lời giải chi tiết.',
+            'Học sinh chọn 1 phương án duy nhất; tính điểm chuẩn xác theo thang điểm quy định.'
           ],
           actionBtn: { text: 'Mở Soạn đề thi', tab: 'builder-quiz', icon: '🎯' }
         },
@@ -247,169 +309,236 @@ const UserGuide = {
           num: 2,
           title: 'Dạng 2: Trắc nghiệm Đúng / Sai 4 mệnh đề (True / False)',
           englishTitle: 'True / False 4 Propositions (THPT 2025 Format)',
-          desc: 'Dạng câu hỏi trọng tâm của kỳ thi tốt nghiệp THPT mới.',
+          desc: 'Định dạng câu hỏi trọng tâm phân hóa năng lực của kỳ thi tốt nghiệp mới.',
           bullets: [
-            'Một bài toán chung gồm 4 mệnh đề a), b), c), d) yêu cầu học sinh xác định tính Đúng/Sai của từng ý.',
-            'Thang điểm lũy tiến chuẩn Bộ GD&ĐT: Đúng 1 ý: 0.1đ; đúng 2 ý: 0.25đ; đúng 3 ý: 0.5đ; đúng cả 4 ý: 1.0đ.',
-            'Hệ thống tự động chấm điểm chính xác theo quy chuẩn này.'
+            'Một bài toán chung dẫn dắt 4 mệnh đề con a), b), c), d); học sinh chọn Đúng hoặc Sai cho từng ý.',
+            '<strong>Cách tính điểm lũy tiến chuẩn Bộ GD&ĐT:</strong>',
+            '• Đúng 1 ý: đạt <strong>0.1 điểm</strong>.',
+            '• Đúng 2 ý: đạt <strong>0.25 điểm</strong>.',
+            '• Đúng 3 ý: đạt <strong>0.50 điểm</strong>.',
+            '• Đúng cả 4 ý: đạt trọn vẹn <strong>1.00 điểm</strong>.',
+            'Hệ thống tự động chấm điểm và lập bảng đối chiếu kết quả từng mệnh đề chuẩn xác.'
           ]
         },
         {
           num: 3,
           title: 'Dạng 3: Điền đáp số ngắn (Short-Answer Math Question)',
-          englishTitle: 'Short-Answer Quantitative Questions',
-          desc: 'Kiểm tra khả năng tính toán độc lập không có gợi ý phương án.',
+          englishTitle: 'Short-Answer Numerical & Fraction Input',
+          desc: 'Đo lường năng lực tính toán và giải quyết vấn đề độc lập không có phương án gợi ý.',
           bullets: [
-            'Học sinh giải và nhập trực tiếp con số, phân số hoặc số thập phân.',
-            'Hệ thống hỗ trợ sai số cho phép (*Tolerance*) để chấp nhận cả dạng số nguyên và số thực (ví dụ: 0.75 và 3/4).'
+            'Học sinh tính toán và nhập trực tiếp con số, phân số (ví dụ: <code>3/4</code>, <code>-2/5</code>) hoặc số thập phân (<code>0.75</code>).',
+            'Hệ thống hỗ trợ cơ chế <strong>Dung sai sai số (Tolerance)</strong> để tự động chấp nhận các dạng biểu diễn tương đương hợp lệ.'
           ]
         },
         {
           num: 4,
-          title: 'Nộp bài & Bảng chấm điểm thông minh',
-          englishTitle: 'Instant Grading & Pedagogical Feedback',
-          desc: 'Khi học sinh hoàn thành, bấm <strong>Nộp bài (Submit)</strong>.',
+          title: 'Nộp bài & Bảng tổng kết năng lực sư phạm tự động',
+          englishTitle: 'Auto-Grading & Pedagogical Performance Summary',
+          desc: 'Phản hồi học tập tức thì ngay khi học sinh hoàn thành bài làm.',
           bullets: [
-            'Hiện bảng điểm thang 10, phân loại năng lực (Xuất sắc, Khá giỏi, Đạt, Cần cố gắng).',
-            'Tự động mở khóa toàn bộ khung hướng dẫn giải chi tiết (*Step-by-step Solution*) cho từng câu để học sinh đối chiếu.'
+            'Đồng hồ đếm ngược (Countdown Timer) và Bảng chọn câu hỏi nhanh (Question Palette) theo dõi tiến độ.',
+            'Khi học sinh nộp bài, hệ thống hiển thị điểm số thang 10, phân loại xếp hạng (Xuất sắc, Khá, Đạt, Cần cố gắng).',
+            'Tự động mở khóa toàn bộ khung hướng dẫn giải chi tiết (*Step-by-step Solution*) cho từng câu hỏi.'
           ]
+        }
+      ]
+    },
+
+    {
+      id: 'test-matrix',
+      num: 7,
+      title: 'Ma trận đề thi chuẩn Bộ GD&ĐT',
+      shortTitle: 'Bảng ma trận 4 mức độ nhận thức (NB • TH • VD • VDC)',
+      englishTitle: 'Test Matrix & Cognitive Level Distribution',
+      summary: 'Phân tích tự động cấu trúc đề thi theo 4 mức độ nhận thức của Bộ Giáo dục & Đào tạo, hỗ trợ giáo viên kiểm soát chất lượng chuyên môn đề kiểm tra.',
+      icon: '📊',
+      steps: [
+        {
+          num: 1,
+          title: '4 Mức độ nhận thức theo chuẩn đánh giá mới',
+          englishTitle: '4 Cognitive Levels Framework',
+          desc: 'Chuẩn hóa việc phân loại câu hỏi trong đề kiểm tra:',
+          bullets: [
+            '<strong>Nhận biết (NB - Recognition):</strong> Nhận diện định nghĩa, công thức, ký hiệu toán học cơ bản.',
+            '<strong>Thông hiểu (TH - Comprehension):</strong> Hiểu bản chất khái niệm, áp dụng trực tiếp 1 công thức vào bài toán đơn giản.',
+            '<strong>Vận dụng (VD - Application):</strong> Kết hợp nhiều bước lập luận, biến đổi đại số hoặc giải toán có ngữ cảnh.',
+            '<strong>Vận dụng cao (VDC - High Application):</strong> Giải quyết bài toán phân hóa, đòi hỏi tư duy sáng tạo hoặc mô hình hóa thực tế.'
+          ]
+        },
+        {
+          num: 2,
+          title: 'Xem & Xuất Bảng Ma Trận Đề Tự Động',
+          englishTitle: 'View & Analyze Auto-Generated Test Matrix',
+          desc: 'Công cụ đắc lực phục vụ hồ sơ chuyên môn và kế hoạch bài dạy của giáo viên.',
+          bullets: [
+            'Bấm nút <strong>📊 Ma trận đề (Bộ GD&ĐT)</strong> trên thanh công cụ bên trái.',
+            'Bảng ma trận tự động thống kê số lượng câu hỏi, số điểm và tỷ lệ phần trăm (%) theo từng phần thi (Phần I: ABCD, Phần II: Đúng/Sai, Phần III: Trả lời ngắn).',
+            'Giúp giáo viên cân đối tỷ lệ chuẩn (thông thường: 40% NB - 30% TH - 20% VD - 10% VDC) trước khi in ấn hoặc giao bài cho học sinh.'
+          ],
+          actionBtn: { text: 'Mở Ma trận đề thi', tab: 'open-matrix-modal', icon: '📊' }
         }
       ]
     },
 
     {
       id: 'speech-shadowing',
-      num: 6,
-      title: 'Luyện phát âm & Dịch trực tiếp',
-      shortTitle: 'Tính năng Nghe chuẩn, Luyện nói theo (Shadowing) & Dịch tức thì',
-      englishTitle: 'Pronunciation, Shadowing & Real-Time Translation',
-      summary: 'Trợ lý âm thanh thông minh đồng hành xuyên suốt toàn bộ từ vựng, tiêu đề, đề bài và bước giải.',
+      num: 8,
+      title: 'Luyện phát âm Bản ngữ & Dịch tức thì',
+      shortTitle: 'Tính năng Nghe chuẩn, Shadowing qua micro & Tra cứu bôi đen (Floating Tooltip)',
+      englishTitle: 'Native Audio, Voice Shadowing & Floating Lookup',
+      summary: 'Trợ lý âm thanh Web Speech API đồng hành cùng học sinh: nghe phát âm bản xứ, luyện đọc theo có chấm điểm bằng micro và bôi đen tra cứu tức thì.',
       icon: '🎙️',
       steps: [
         {
           num: 1,
           title: 'Nghe phát âm chuẩn (1.0x) và Nghe chậm (0.75x)',
-          englishTitle: 'Audio Playback Speeds',
-          desc: 'Sử dụng các nút bấm trực quan ngay cạnh bất kỳ văn bản tiếng Anh nào.',
+          englishTitle: 'Audio Playback with Dual Speeds',
+          desc: 'Sử dụng cụm nút trực quan ngay cạnh bất kỳ văn bản tiếng Anh nào.',
           bullets: [
-            'Bấm <strong>🔊</strong> để nghe phát âm tốc độ chuẩn bản xứ (Web Speech API).',
-            'Bấm <strong>🐢</strong> để nghe tốc độ chậm (0.75x), giúp nhận diện rõ trọng âm và phụ âm cuối.',
-            'Hệ thống tự động lọc ký hiệu LaTeX thành câu nói tự nhiên (ví dụ: $\\frac{a}{b}$ đọc là <em>"a over b"</em>).'
+            'Bấm <strong>🔊</strong> để nghe phát âm tốc độ chuẩn bản xứ (Web Speech API US/UK).',
+            'Bấm <strong>🐢</strong> để nghe tốc độ chậm (0.75x), giúp học sinh nghe rõ trọng âm từ, phụ âm cuối và ngữ điệu câu.',
+            'Hệ thống tự động lọc các ký hiệu công thức $LaTeX$ thành câu nói tự nhiên (ví dụ: $\\frac{a}{b}$ được đọc là <em>"a over b"</em>).'
           ]
         },
         {
           num: 2,
-          title: 'Bôi đen văn bản bất kỳ để Tra cứu & Nghe tức thì',
-          englishTitle: 'Floating Selection Tooltip',
-          desc: 'Thao tác cực kỳ thuận tiện trên cả trang bài giảng và đề thi.',
+          title: 'Bôi đen văn bản để Tra cứu & Nghe tức thì (Floating Tooltip)',
+          englishTitle: 'Highlight Selection Floating Tooltip',
+          desc: 'Thao tác cực kỳ thuận tiện trên cả trang bài giảng, đề thi và giàn giáo.',
           bullets: [
-            'Dùng chuột bôi đen (highlight) một từ hoặc một câu tiếng Anh bất kỳ trên màn hình.',
-            'Một thanh công cụ nổi tinh gọn sẽ xuất hiện ngay lập tức với 3 lựa chọn: <strong>🔊 Nghe</strong>, <strong>🐢 Chậm</strong>, <strong>🎙️ Luyện nói</strong>.',
-            'Thầy cô và học sinh không cần rời khỏi trang web để tra từ điển.'
+            'Dùng chuột bôi đen (highlight) một từ hoặc cụm từ tiếng Anh bất kỳ trên màn hình.',
+            'Thanh công cụ nổi tinh gọn lập tức xuất hiện với 3 tùy chọn nhanh: <strong>🔊 Nghe</strong>, <strong>🐢 Chậm</strong>, <strong>🎙️ Luyện nói</strong>.',
+            'Học sinh không cần rời khỏi trang web hoặc mở tab từ điển khác để tra cứu.'
           ]
         },
         {
           num: 3,
-          title: 'Phòng Luyện nói Shadowing với Micro',
-          englishTitle: 'Interactive Voice Recognition & Grading',
-          desc: 'Học sinh bấm nút <strong>🎙️ Luyện theo</strong> để mở phòng thực hành.',
+          title: 'Phòng Luyện nói Shadowing với Micro & Chấm điểm tương tác',
+          englishTitle: 'Interactive Voice Shadowing Studio',
+          desc: 'Rèn luyện sự tự tin khi nói toán học tiếng Anh.',
           bullets: [
-            'Hệ thống hiển thị phiên âm quốc tế IPA và nghĩa tiếng Việt chuẩn theo thuật ngữ toán học.',
-            'Học sinh nghe mẫu 2 lần, sau đó bấm <strong>Bắt đầu thu âm</strong> và đọc câu tiếng Anh vào micro.',
-            'Hệ thống đối chiếu giọng nói và tô màu phản hồi: <span class="text-emerald-600 font-bold">Màu xanh lá</span> (phát âm chuẩn), <span class="text-rose-600 font-bold">Màu đỏ</span> (cần cải thiện), kèm phần trăm độ chính xác.'
+            'Bấm nút <strong>🎙️ Luyện theo</strong> tại bất kỳ từ vựng hoặc câu hỏi nào để mở phòng thực hành.',
+            'Học sinh nghe mẫu bản xứ 2 lần, bấm <strong>Bắt đầu thu âm</strong> và đọc câu tiếng Anh vào micro thiết bị.',
+            'Hệ thống nhận diện giọng nói (Web Speech Recognition) và tô màu trực quan: <span class="text-emerald-600 font-bold">Màu xanh lá</span> (chính xác), <span class="text-rose-600 font-bold">Màu đỏ</span> (cần cải thiện), kèm phần trăm độ chuẩn xác.'
           ],
-          actionBtn: { text: 'Mở Làm bài tương tác để luyện nói', tab: 'interactive-preview', icon: '🎙️' }
+          actionBtn: { text: 'Mở Làm bài để trải nghiệm Shadowing', tab: 'interactive-preview', icon: '🎙️' }
+        },
+        {
+          num: 4,
+          title: 'Nút Bật / Tắt Hiển Thị Song Ngữ Nhanh Chóng',
+          englishTitle: 'Global Bilingual Display Toggle',
+          desc: 'Linh hoạt điều chỉnh mức độ hỗ trợ tiếng Việt trên thanh tiêu đề.',
+          bullets: [
+            'Bấm nút <strong>🇻🇳 Dịch: Bật / Tắt</strong> ở thanh điều hướng trên cùng.',
+            'Chế độ <em>Bật</em>: Hiển thị đầy đủ cả tiếng Anh và tiếng Việt cho học sinh mới làm quen.',
+            'Chế độ <em>Tắt</em>: Ẩn phần dịch tiếng Việt để thử thách học sinh đọc hiểu hoàn toàn bằng tiếng Anh chuyên ngành.'
+          ]
         }
       ]
     },
 
     {
       id: 'export-share',
-      num: 7,
-      title: 'Xuất bản Word & Standalone HTML',
-      shortTitle: 'Hướng dẫn xuất file Microsoft Word chuẩn in và file Web độc lập',
-      englishTitle: 'Export to Word (.docx) & Standalone HTML',
-      summary: 'Tạo tài liệu in ấn sắc nét và trang web độc lập chạy offline không cần máy chủ.',
+      num: 9,
+      title: 'Xuất bản Word, Standalone HTML & In A4',
+      shortTitle: 'Hướng dẫn xuất file Microsoft Word chuẩn in, file Web chạy offline và in ấn A4',
+      englishTitle: 'Export to Word (.docx), Standalone HTML & Print',
+      summary: 'Đa dạng hóa phương thức chuyển giao bài học: file Word tương thích 100%, trang web độc lập chạy không cần mạng, hoặc phiếu in photocopy A4.',
       icon: '📄',
       steps: [
         {
           num: 1,
-          title: 'Xuất file Microsoft Word (.doc/.docx)',
-          englishTitle: 'Export to Microsoft Word',
-          desc: 'Tương thích 100% với Office Word, Google Docs, LibreOffice.',
+          title: 'Xuất file Microsoft Word (.doc / .docx) cho 3 mục đích',
+          englishTitle: 'Export to Microsoft Word (.docx)',
+          desc: 'Tương thích 100% với MS Word mọi phiên bản, Office 365, Google Docs và LibreOffice.',
           bullets: [
-            'Bấm nút <strong>Xuất Word</strong> trên thanh công cụ bên trái.',
-            'Chọn 1 trong 3 định dạng: <em>1. Phiếu bài tập cho học sinh</em>, <em>2. Đề thi kèm đáp án chi tiết cho giáo viên</em>, hoặc <em>3. Phiếu giàn giáo sư phạm ZPD</em>.',
-            'File Word được định dạng sẵn khổ giấy A4 chuẩn, lề 2cm, phông chữ Times New Roman 12pt sắc nét.'
+            'Bấm nút <strong>Xuất Word (.doc / .docx)</strong> trên thanh bên.',
+            'Chọn 1 trong 3 định dạng chuyên biệt:',
+            '• <strong>1. Phiếu bài tập cho học sinh:</strong> Có khung thông tin, bảng điểm, bảng từ vựng song ngữ, các câu hỏi và dòng trống điền đáp án (KHÔNG có lời giải).',
+            '• <strong>2. Đề thi kèm đáp án chi tiết cho giáo viên:</strong> Đánh dấu đáp án đúng, bảng Đúng/Sai và toàn bộ hướng dẫn giải từng bước.',
+            '• <strong>3. Phiếu giàn giáo sư phạm ZPD:</strong> Xuất toàn bộ 6 tầng giàn giáo của bài toán để phát cho học sinh rèn luyện.',
+            'Tất cả file Word đều được thiết lập sẵn khổ A4, căn lề chuẩn 2cm, phông chữ Times New Roman 12pt và bảng biểu sắc nét.'
           ],
           actionBtn: { text: 'Mở Xuất Word (.doc / .docx)', tab: 'open-export-word', icon: '📄' }
         },
         {
           num: 2,
           title: 'Xuất file Web Độc Lập (Export Standalone HTML)',
-          englishTitle: 'Single-File Offline Web Deployment',
-          desc: 'Chỉ cần gửi 1 file HTML duy nhất cho học sinh qua Zalo/Email.',
+          englishTitle: 'Single-File Standalone HTML Deployment',
+          desc: 'Công nghệ đóng gói toàn bộ ứng dụng thành 1 file duy nhất gửi cho học sinh.',
           bullets: [
-            'Bấm nút <strong>Export Standalone HTML</strong> trên thanh bên.',
-            'Hệ thống nén toàn bộ bài giảng, đề thi, công cụ phát âm và MathJax vào một file duy nhất.',
-            'Học sinh có thể nhấp đúp để mở làm bài trên mọi trình duyệt (Chrome, Safari, Edge, Cốc Cốc) ngay cả khi không có mạng Internet.'
+            'Bấm nút <strong>Export Standalone HTML</strong> trên thanh công cụ bên trái.',
+            'Hệ thống nén toàn bộ nội dung bài giảng, từ vựng, hệ thống thi trắc nghiệm, công cụ âm thanh Web Speech và MathJax vào một tệp <code>.html</code> duy nhất.',
+            'Học sinh chỉ cần nhấp đúp chuột vào file tải về là có thể làm bài và học tập trên mọi trình duyệt (Chrome, Safari, Edge, Cốc Cốc) mà <strong>hoàn toàn không cần kết nối mạng Internet</strong>.'
           ],
           actionBtn: { text: 'Tạo File Standalone HTML', tab: 'export-html', icon: '🚀' }
         },
         {
           num: 3,
-          title: 'In trực tiếp ra giấy A4 (Worksheet)',
-          englishTitle: 'Print-Ready A4 Worksheets',
-          desc: 'Tối ưu hóa máy in trường học.',
+          title: 'In trực tiếp ra khổ giấy A4 (Worksheet Print)',
+          englishTitle: 'Print-Ready A4 Worksheets for Classroom',
+          desc: 'Tối ưu hóa máy in trường học không lo lỗi định dạng.',
           bullets: [
             'Bấm <strong>In Worksheet A4</strong>.',
-            'Tự động ẩn thanh công cụ web và căn chỉnh bố cục trang in 2 cột rõ nét, sẵn sàng in photocopy cho học sinh làm trên lớp.'
+            'Chọn in Đề thi học sinh hoặc Đề thi kèm đáp án giáo viên.',
+            'Hệ thống tự động ẩn thanh điều hướng web, căn chỉnh bố cục trang in rõ nét, chống tràn dòng và chống gãy trang công thức toán.'
           ],
-          actionBtn: { text: 'In Worksheet A4', tab: 'print-a4', icon: '🖨️' }
+          actionBtn: { text: 'Mở Hộp thoại In A4', tab: 'print-a4', icon: '🖨️' }
+        },
+        {
+          num: 4,
+          title: 'Lưu trữ & Chuyển giao dữ liệu JSON',
+          englishTitle: 'JSON Backup & Inter-Teacher Exchange',
+          desc: 'Bảo toàn dữ liệu soạn thảo lâu dài.',
+          bullets: [
+            'Bấm <strong>Tải JSON</strong> để lưu tệp cấu trúc bài giảng vào máy tính.',
+            'Bấm <strong>Nhập JSON</strong> khi muốn phục hồi hoặc chia sẻ bài giảng cho đồng nghiệp sử dụng.'
+          ]
         }
       ]
     },
 
     {
       id: 'library-management',
-      num: 8,
-      title: 'Quản lý "Danh sách đã tạo"',
-      shortTitle: 'Tính năng quản lý thư viện và tự động lưu trữ thông minh',
-      englishTitle: 'Created Library & Exam Management',
-      summary: 'Tự động lưu trữ bài giảng và đề thi, lọc theo khối lớp và chuyển đổi nhanh chóng.',
+      num: 10,
+      title: 'Quản lý Thư viện & Tùy biến giao diện',
+      shortTitle: 'Quản lý Cây thư mục, Danh sách đã tạo, Kho bài tập & Tùy biến không gian làm việc',
+      englishTitle: 'Library Management, Tree Navigation & Workspace Customization',
+      summary: 'Làm chủ hệ thống cây thư mục 2 nhánh, quản lý danh sách bài giảng và bài tập giàn giáo đã tạo, cùng các công cụ co giãn giao diện làm việc linh hoạt.',
       icon: '📊',
       steps: [
         {
           num: 1,
-          title: 'Tự động đồng bộ hóa vào Danh sách đã tạo',
-          englishTitle: 'Auto-Sync Created Library',
-          desc: 'Mọi bài giảng hoặc đề thi mới được tạo đều tự động xuất hiện tại đây.',
+          title: 'Hệ thống Cây thư mục điều hướng thông minh (Tree Navigation)',
+          englishTitle: 'Collapsible Tree Navigation System',
+          desc: 'Tổ chức khoa học 2 nhánh hoạt động cốt lõi của giáo viên:',
           bullets: [
-            'Khi thầy cô soạn bài mới, tải tài liệu Word hoặc sinh qua AI, hệ thống tự động lưu vào <strong>Danh sách đã tạo</strong>.',
-            'Mỗi đề có mã đề định danh duy nhất (ví dụ: <code>DH-126A</code>, <code>GH-110B</code>), tên bài học, ngày cập nhật và trạng thái kích hoạt.'
+            '<strong>Nhánh 1: Soạn bài giảng:</strong> Gồm <em>Danh sách đã tạo</em> (quản lý bài giảng & đề thi), <em>Soạn bài giảng mới</em>, và <em>Soạn đề thi (Quiz)</em>.',
+            '<strong>Nhánh 2: Gia sư giàn giáo ZPD:</strong> Gồm <em>Không gian giàn giáo ZPD</em> (giao diện tương tác 6 nấc), và <em>Bài tập đã tạo</em> (kho bài tập giàn giáo).',
+            'Cây thư mục hỗ trợ nhấp chuột mở/thu gọn và tự động mở đúng nhánh (Auto-expand) khi chuyển tab.'
+          ]
+        },
+        {
+          num: 2,
+          title: 'Quản lý "Danh sách đã tạo" & "Kho bài tập giàn giáo"',
+          englishTitle: 'Manage Created Lectures & Scaffolding Worksheets',
+          desc: 'Tự động đồng bộ hóa mọi bài giảng và đề thi đã tạo vào bộ nhớ LocalStorage.',
+          bullets: [
+            'Mỗi bài thi có mã định danh duy nhất (ví dụ: <code>P8DZW2</code>, <code>DH-126A</code>), tên bài học, ngày cập nhật và số lượng câu hỏi.',
+            '<strong>Lọc theo khối lớp:</strong> Bấm chọn Khối 12, Khối 11, hoặc Khối 10 ở cột bên trái để phân loại nhanh chóng.',
+            '<strong>Cụm thao tác nhanh trên mỗi hàng:</strong> Bấm <strong>🎯 Làm bài</strong> (mở làm bài tương tác), <strong>🪜 Giàn giáo</strong> (mở không gian ZPD), <strong>✏️ Sửa</strong> (chỉnh sửa nội dung), <strong>📄 Word</strong> (xuất file Word), hoặc <strong>🔗 Link</strong> (sao chép liên kết gửi cho học sinh).'
           ],
           actionBtn: { text: 'Mở Danh sách đã tạo', tab: 'my-exams', icon: '📊' }
         },
         {
-          num: 2,
-          title: 'Lọc nhanh theo Khối lớp',
-          englishTitle: 'Filter by Grade Level',
-          desc: 'Phân loại trực quan giúp quản lý hàng chục đề thi dễ dàng.',
-          bullets: [
-            'Bấm chọn <strong>Khối 12</strong>, <strong>Khối 11</strong>, hoặc <strong>Khối 10</strong> ở cột bên trái.',
-            'Bảng bên phải tự động lọc danh sách tương ứng cùng số lượng bài thi cập nhật thời gian thực.'
-          ]
-        },
-        {
           num: 3,
-          title: 'Thao tác nhanh: Làm bài, Xem Giàn giáo, Sửa hoặc Xóa',
-          englishTitle: 'Quick Actions on Exams',
-          desc: 'Mỗi hàng trong bảng cung cấp các nút thao tác tiện dụng.',
+          title: 'Tùy biến không gian làm việc linh hoạt (Zoom & Resize)',
+          englishTitle: 'Workspace Zoom Slider, Sidebar Collapse & Drag Resizer',
+          desc: 'Tối ưu hóa diện tích hiển thị trên mọi độ phân giải màn hình:',
           bullets: [
-            '<strong>🎯 Làm bài:</strong> Chuyển ngay sang chế độ thi tương tác của học sinh.',
-            '<strong>🪜 Giàn giáo:</strong> Mở ngay gia sư 3 nấc sư phạm ZPD.',
-            '<strong>✏️ Sửa:</strong> Mở bài trong tab Soạn bài giảng để biên tập nội dung.',
-            '<strong>🔗 Link:</strong> Sao chép đường link trực tiếp gửi cho học sinh.'
+            '<strong>Thu gọn thanh bên (Sidebar Collapse):</strong> Bấm nút biểu tượng hình chữ nhật ở góc trên bên trái để thu nhỏ thanh bên, tăng tối đa không gian hiển thị cho bài giảng.',
+            '<strong>Kéo co giãn thanh bên (Sidebar Resizer):</strong> Rê chuột vào vạch ranh giới giữa thanh bên và không gian làm việc để kéo giãn chiều rộng tùy ý (từ 180px đến 500px). Nhấp đúp chuột để trở về kích thước mặc định 260px.',
+            '<strong>Thanh trượt thu phóng giao diện (Workspace Zoom Slider):</strong> Kéo thanh trượt 🔍 trên thanh tiêu đề để phóng to hoặc thu nhỏ toàn bộ không gian làm việc từ <strong>75% đến 130%</strong> phù hợp với mắt nhìn hoặc máy chiếu trên lớp.'
           ]
         }
       ]
@@ -417,34 +546,35 @@ const UserGuide = {
 
     {
       id: 'feedback-support',
-      num: 9,
+      num: 11,
       title: 'Báo lỗi & Góp ý sáng kiến',
-      shortTitle: 'Kênh tiếp nhận đóng góp & Hỗ trợ kỹ thuật trực tiếp',
-      englishTitle: 'Feedback, Bug Reports & Direct Support',
-      summary: 'Đồng hành cùng giáo viên trong quá trình ứng dụng thực tế tại các trường THPT.',
+      shortTitle: 'Kênh tiếp nhận đóng góp chuyên môn sư phạm & Hỗ trợ kỹ thuật trực tiếp',
+      englishTitle: 'Pedagogical Feedback, Bug Reporting & Direct Support',
+      summary: 'Kênh kết nối trực tiếp với tác giả sáng kiến giáo dục nhằm liên tục hoàn thiện công cụ phục vụ giảng dạy môn Toán song ngữ tại các trường THPT.',
       icon: '💬',
       steps: [
         {
           num: 1,
           title: 'Gửi phản hồi đóng góp cho Dự án',
-          englishTitle: 'Send Feedback & Pedagogical Ideas',
-          desc: 'Dự án Sáng kiến Giáo dục 2026 luôn lắng nghe ý kiến từ quý thầy cô.',
+          englishTitle: 'Submit Feedback & Suggestions',
+          desc: 'Dự án Sáng kiến Giáo dục 2026 luôn trân trọng mọi ý kiến đóng góp từ quý thầy cô và các em học sinh.',
           bullets: [
-            'Bấm nút <strong>Báo lỗi & góp ý</strong> ở thanh bên trái.',
-            'Chọn loại phản hồi: Đóng góp phương pháp sư phạm, Góp ý từ vựng toán học, hoặc Báo cáo lỗi kỹ thuật.',
-            'Nhập nội dung và gửi trực tiếp đến tác giả đề tài.'
+            'Bấm nút <strong>Báo lỗi & góp ý</strong> ở nhóm HỖ TRỢ trên thanh bên trái.',
+            'Chọn loại phản hồi: Đóng góp phương pháp sư phạm, Góp ý chuẩn hóa thuật ngữ toán học, hoặc Báo cáo lỗi kỹ thuật.',
+            'Nhập nội dung chia sẻ và gửi trực tiếp đến tác giả đề tài.'
           ],
           actionBtn: { text: 'Gửi Góp ý / Báo lỗi', tab: 'open-feedback-modal', icon: '💬' }
         },
         {
           num: 2,
-          title: 'Kênh hỗ trợ kỹ thuật trực tiếp',
-          englishTitle: 'Direct Author & Tech Contacts',
-          desc: 'Liên hệ qua Email hoặc GitHub khi cần trao đổi chuyên môn & đóng góp sáng kiến.',
+          title: 'Kênh liên hệ trực tiếp Tác giả Đề tài',
+          englishTitle: 'Author Information & Open-Source Repository',
+          desc: 'Trao đổi chuyên môn và chuyển giao ứng dụng vào thực tế giảng dạy:',
           bullets: [
             '<strong>Tác giả:</strong> Cô Huỳnh Thị Hà - Giáo viên Toán THPT.',
-            '<strong>Email:</strong> <a href="mailto:ahahuynh@gmail.com" class="text-indigo-600 font-bold">ahahuynh@gmail.com</a>.',
-            '<strong>Mã nguồn mở GitHub:</strong> <a href="https://github.com/ahahuynh-oss/math-bilingual-studio" target="_blank" class="text-indigo-600 font-bold underline">ahahuynh-oss/math-bilingual-studio</a>.'
+            '<strong>Dự án:</strong> Sáng kiến Giáo dục 2026 - <em>Bilingual Math Scaffolding Studio</em>.',
+            '<strong>Email liên hệ:</strong> <a href="mailto:ahahuynh@gmail.com" class="text-indigo-600 font-bold">ahahuynh@gmail.com</a>.',
+            '<strong>Mã nguồn mở GitHub:</strong> <a href="https://github.com/ahahuynh-oss/math-bilingual-studio" target="_blank" class="text-indigo-600 font-bold underline">https://github.com/ahahuynh-oss/math-bilingual-studio</a>.'
           ]
         }
       ]
@@ -482,7 +612,7 @@ const UserGuide = {
 
     container.innerHTML = `
       <!-- ============================================================ -->
-      <!-- TOP BANNER CARD (MATCHING USER SAMPLE SCREENSHOT) -->
+      <!-- TOP BANNER CARD -->
       <!-- ============================================================ -->
       <div class="glass-card p-6 sm:p-8 rounded-3xl border border-indigo-100 bg-gradient-to-r from-white via-indigo-50/30 to-amber-50/20 shadow-xs space-y-3">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-xs font-bold shadow-2xs">
@@ -497,8 +627,8 @@ const UserGuide = {
             </h1>
             ${renderTitleSpeaker('Teacher and Student User Manual')}
           </div>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
-            Phiên bản 2026.2
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+            Phiên bản 2026.2.0 (Cập nhật mới nhất)
           </span>
         </div>
 
@@ -517,7 +647,7 @@ const UserGuide = {
           
           <div class="text-[11px] font-black uppercase tracking-wider text-slate-400 px-3 py-1 flex items-center justify-between">
             <span>MỤC LỤC</span>
-            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">9 chuyên đề</span>
+            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">${this.sections.length} chuyên đề</span>
           </div>
 
           <div class="space-y-1">
@@ -554,7 +684,7 @@ const UserGuide = {
             ${renderTitleSpeaker(currentSec.englishTitle)}
           </div>
 
-          <!-- Subcard Banner (Matching user sample with paperplane / icon) -->
+          <!-- Subcard Banner -->
           <div class="glass-card p-5 sm:p-6 rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/40 via-white to-slate-50 flex items-start gap-4 shadow-xs">
             <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-2xl font-black shadow-sm shrink-0">
               ${currentSec.icon || '✈️'}
@@ -572,7 +702,7 @@ const UserGuide = {
             </div>
           </div>
 
-          <!-- Step Cards with Numbered Badges (1, 2, 3...) matching screenshot -->
+          <!-- Step Cards with Numbered Badges (1, 2, 3...) -->
           <div class="space-y-4">
             ${currentSec.steps.map((st, sIdx) => `
               <div class="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 hover:border-indigo-200 shadow-xs transition-all space-y-3.5">
@@ -625,11 +755,11 @@ const UserGuide = {
           </div>
 
           <!-- Bottom Navigation (Previous / Next) -->
-          <div class="pt-4 flex items-center justify-between text-xs">
+          <div class="pt-4 flex items-center justify-between text-xs gap-3 flex-wrap">
             ${currentSec.num > 1 ? `
               <button 
                 onclick="UserGuide.switchSection('${this.sections[currentSec.num - 2].id}')" 
-                class="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold transition-all flex items-center gap-1.5">
+                class="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold transition-all flex items-center gap-1.5 cursor-pointer">
                 <span>←</span>
                 <span>Bài trước: ${this.sections[currentSec.num - 2].title}</span>
               </button>
@@ -664,8 +794,15 @@ const UserGuide = {
 
     if (target === 'open-ai-modal') {
       if (app.openAIGeneratorModal) {
-        app.openAIGeneratorModal();
-        if (app.switchAIGeneratorTab) app.switchAIGeneratorTab('gemini');
+        app.openAIGeneratorModal('gemini');
+      }
+    } else if (target === 'open-ocr-modal') {
+      if (app.openAIGeneratorModal) {
+        app.openAIGeneratorModal('ocr');
+      }
+    } else if (target === 'open-matrix-modal') {
+      if (app.openTestMatrixModal) {
+        app.openTestMatrixModal();
       }
     } else if (target === 'open-feedback-modal') {
       if (app.openFeedbackModal) {

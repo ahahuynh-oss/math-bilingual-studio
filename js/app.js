@@ -41,17 +41,41 @@ var App = window.App = {
     this.switchTab('scaffolding-tutor');
   },
 
+  sanitizeLatexString(str) {
+    if (typeof str !== 'string') return str;
+    return str
+      .replace(/\x0bec\b/g, '\\vec')
+      .replace(/\x0b/g, '\\')
+      .replace(/\text\{/g, '\\text{')
+      .replace(/\x0crac\b/g, '\\frac')
+      .replace(/\right\b/g, '\\right')
+      .replace(/\x08egin\b/g, '\\begin')
+      .replace(/\x08ar\b/g, '\\bar')
+      .replace(/\neq\b/g, '\\neq');
+  },
+
+  sanitizeLessonLatex(lesson) {
+    if (!lesson || typeof lesson !== 'object') return lesson;
+    try {
+      const jsonStr = JSON.stringify(lesson);
+      const cleaned = this.sanitizeLatexString(jsonStr);
+      return JSON.parse(cleaned);
+    } catch (e) {
+      return lesson;
+    }
+  },
+
   loadLessonFromStorage() {
     try {
       const saved = localStorage.getItem('math_bilingual_studio_active_lesson');
       if (saved) {
-        this.currentLesson = JSON.parse(saved);
+        this.currentLesson = this.sanitizeLessonLatex(JSON.parse(saved));
       } else {
-        this.currentLesson = getDefaultLesson();
+        this.currentLesson = this.sanitizeLessonLatex(getDefaultLesson());
       }
     } catch (e) {
       console.warn('Could not load saved lesson, loading default:', e);
-      this.currentLesson = getDefaultLesson();
+      this.currentLesson = this.sanitizeLessonLatex(getDefaultLesson());
     }
   },
 
