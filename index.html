@@ -1890,11 +1890,20 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Đường link trực tiếp (Đã bao gồm nội dung bài):</label>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-slate-700 uppercase">Đường link trực tiếp cho học sinh:</label>
+            <span id="share-link-length-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800"></span>
+          </div>
           <div class="flex items-center gap-2">
             <input type="text" id="share-modal-url" readonly class="w-full px-3.5 py-2.5 glass-input text-xs font-mono text-slate-800 select-all bg-amber-50/50 border-amber-300">
             <button onclick="App.copyShareLinkFromModal()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-xs hover:shadow-amber-500/25 transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
               <span>📋</span> <span>Sao Chép</span>
+            </button>
+          </div>
+          <div class="mt-2 flex items-center justify-between flex-wrap gap-2">
+            <span class="text-[11px] text-slate-500">Muốn đường link siêu ngắn 25 ký tự để gửi Zalo / SMS?</span>
+            <button id="btn-shorten-tinyurl" onclick="App.createTinyUrlForCurrentShare()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span>⚡</span> <span>Rút Gọn Link (TinyURL)</span>
             </button>
           </div>
         </div>

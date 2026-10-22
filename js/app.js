@@ -1225,6 +1225,17 @@ var App = window.App = {
       return;
     }
     this.hydrateScaffoldItemData(item);
+    const baseUrl = window.location.origin + window.location.pathname;
+
+    // 1. Nếu bài tập khớp với mã preset có sẵn -> Sử dụng LINK SIÊU NGẮN (chỉ ~65 ký tự)
+    const presetKey = item.scaffoldKey || (window.ScaffoldingTutor?.presets?.[item.id] ? item.id : null);
+    if (presetKey && window.ScaffoldingTutor?.presets?.[presetKey]) {
+      const shortUrl = `${baseUrl}#scaffold=${presetKey}`;
+      this.showShareModal(item.titleVi || item.title || 'Bài tập giàn giáo ZPD', shortUrl);
+      return;
+    }
+
+    // 2. Nếu là bài tự tạo tùy biến, tạo link đầy đủ
     const payload = {
       type: 'scaffold',
       id: item.id,
@@ -1235,9 +1246,7 @@ var App = window.App = {
     };
 
     const encoded = this.encodeUnicodeBase64(JSON.stringify(payload));
-    const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}#scaffold_share=${encoded}`;
-
     this.showShareModal(item.titleVi || item.title || 'Bài tập giàn giáo ZPD', shareUrl);
   },
 
@@ -1246,26 +1255,34 @@ var App = window.App = {
       this.showToast('Chưa có nội dung bài tập giàn giáo để chia sẻ!', 'warning');
       return;
     }
+    const baseUrl = window.location.origin + window.location.pathname;
+    const currentPresetKey = window.ScaffoldingTutor.currentPresetKey;
+    const currentPreset = currentPresetKey ? window.ScaffoldingTutor.presets?.[currentPresetKey] : null;
+
+    // 1. Nếu đang mở bài preset có sẵn -> Tạo ngay LINK SIÊU NGẮN (chỉ 68 ký tự!)
+    if (currentPresetKey && currentPreset) {
+      const shortUrl = `${baseUrl}#scaffold=${currentPresetKey}`;
+      this.showShareModal(currentPreset.title || 'Bài tập giàn giáo ZPD', shortUrl);
+      return;
+    }
+
+    // 2. Nếu là bài tự soạn, tạo link đầy đủ
     const currentData = window.ScaffoldingTutor.currentData;
-    const currentPreset = window.ScaffoldingTutor.presets?.[window.ScaffoldingTutor.currentPresetKey];
     const rawInputEl = document.getElementById('scaffold-problem-input');
-    const rawInput = (rawInputEl && rawInputEl.value.trim()) || currentPreset?.rawInput || '';
-    const title = currentPreset?.title || currentData.bilingual_vocabulary?.[0]?.vietnamese_term || 'Bài tập giàn giáo ZPD';
-    const grade = currentPreset?.grade || 'Toán THPT';
+    const rawInput = (rawInputEl && rawInputEl.value.trim()) || '';
+    const title = currentData.bilingual_vocabulary?.[0]?.vietnamese_term || 'Bài tập giàn giáo ZPD';
 
     const payload = {
       type: 'scaffold',
-      id: window.ScaffoldingTutor.currentPresetKey || ('scaffold-' + Date.now()),
+      id: 'scaffold-' + Date.now(),
       title: title,
-      grade: grade,
+      grade: 'Toán THPT',
       rawInput: rawInput,
       scaffoldData: currentData
     };
 
     const encoded = this.encodeUnicodeBase64(JSON.stringify(payload));
-    const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}#scaffold_share=${encoded}`;
-
     this.showShareModal(title, shareUrl);
   },
 
@@ -1275,10 +1292,17 @@ var App = window.App = {
       this.showToast('Không tìm thấy bài giảng để chia sẻ!', 'warning');
       return;
     }
-    let lessonData = item.lessonData;
-    if (!lessonData && item.presetKey && typeof SAMPLE_LESSONS !== 'undefined') {
-      lessonData = SAMPLE_LESSONS.find(l => l.id === item.presetKey);
+    const baseUrl = window.location.origin + window.location.pathname;
+
+    // 1. Nếu là bài mẫu có presetKey -> Tạo ngay LINK SIÊU NGẮN
+    const pKey = item.presetKey || item.id;
+    if (typeof SAMPLE_LESSONS !== 'undefined' && SAMPLE_LESSONS.some(l => l.id === pKey)) {
+      const shortUrl = `${baseUrl}#lesson=${pKey}`;
+      this.showShareModal(item.titleVi || item.title || 'Bài giảng song ngữ', shortUrl);
+      return;
     }
+
+    let lessonData = item.lessonData;
     if (!lessonData && this.currentLesson && this.currentLesson.id === item.id) {
       lessonData = this.currentLesson;
     }
@@ -1295,9 +1319,7 @@ var App = window.App = {
     };
 
     const encoded = this.encodeUnicodeBase64(JSON.stringify(payload));
-    const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}#lesson_share=${encoded}`;
-
     this.showShareModal(item.titleVi || item.title || 'Bài giảng song ngữ', shareUrl);
   },
 
@@ -1305,8 +1327,28 @@ var App = window.App = {
     const modal = document.getElementById('modal-share-link');
     const titleEl = document.getElementById('share-modal-title');
     const urlEl = document.getElementById('share-modal-url');
+    const badgeEl = document.getElementById('share-link-length-badge');
+    const btnTiny = document.getElementById('btn-shorten-tinyurl');
+
     if (titleEl) titleEl.textContent = title;
     if (urlEl) urlEl.value = url;
+
+    // Cập nhật nhãn độ dài ký tự
+    const len = url.length;
+    if (badgeEl) {
+      if (len <= 100) {
+        badgeEl.textContent = `✨ Siêu ngắn: ${len} ký tự`;
+        badgeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800';
+      } else {
+        badgeEl.textContent = `Đầy đủ: ${len} ký tự`;
+        badgeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800';
+      }
+    }
+
+    if (btnTiny) {
+      btnTiny.innerHTML = `<span>⚡</span> <span>Rút Gọn Link (TinyURL)</span>`;
+      btnTiny.disabled = false;
+    }
 
     // Tự động sao chép vào Clipboard
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1316,6 +1358,55 @@ var App = window.App = {
     }
 
     if (modal) modal.classList.remove('hidden');
+  },
+
+  async createTinyUrlForCurrentShare() {
+    const urlEl = document.getElementById('share-modal-url');
+    const badgeEl = document.getElementById('share-link-length-badge');
+    const btnTiny = document.getElementById('btn-shorten-tinyurl');
+    if (!urlEl || !urlEl.value) return;
+
+    const currentUrl = urlEl.value;
+    if (currentUrl.includes('tinyurl.com') || currentUrl.includes('is.gd')) {
+      this.showToast('Link này đã được rút gọn siêu ngắn rồi!');
+      return;
+    }
+
+    if (btnTiny) {
+      btnTiny.innerHTML = `<span>⏳</span> <span>Đang rút gọn...</span>`;
+      btnTiny.disabled = true;
+    }
+
+    try {
+      const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(currentUrl)}`);
+      if (res.ok) {
+        const shortUrl = await res.text();
+        if (shortUrl && shortUrl.startsWith('http')) {
+          urlEl.value = shortUrl.trim();
+          if (badgeEl) {
+            badgeEl.textContent = `⚡ Siêu ngắn: ${shortUrl.trim().length} ký tự`;
+            badgeEl.className = 'text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800';
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(shortUrl.trim());
+          }
+          this.showToast('🎉 Đã tạo và sao chép link rút gọn TinyURL siêu ngắn thành công!');
+          if (btnTiny) {
+            btnTiny.innerHTML = `<span>✅</span> <span>Đã Rút Gọn</span>`;
+          }
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Lỗi gọi API TinyURL:', e);
+    }
+
+    // Fallback: Nếu mạng offline hoặc bị chặn TinyURL
+    if (btnTiny) {
+      btnTiny.innerHTML = `<span>⚡</span> <span>Rút Gọn Link (TinyURL)</span>`;
+      btnTiny.disabled = false;
+    }
+    this.showToast('Đường link gốc vẫn mở trực tiếp mượt mà trên điện thoại!');
   },
 
   closeShareModal() {
@@ -1347,6 +1438,47 @@ var App = window.App = {
     const hash = window.location.hash || '';
     if (!hash) return false;
 
+    // 1. Link SIÊU NGẮN theo mã bài toán: #scaffold=grade-12-asymptotes (chỉ 68 ký tự)
+    if (hash.startsWith('#scaffold=')) {
+      const key = hash.replace('#scaffold=', '').trim();
+      if (key) {
+        setTimeout(() => {
+          if (window.ScaffoldingTutor && window.ScaffoldingTutor.presets && window.ScaffoldingTutor.presets[key]) {
+            window.ScaffoldingTutor.selectPresetAndRender(key);
+            this.switchTab('scaffolding-tutor');
+            this.showToast('🎉 Đã tải bài tập giàn giáo từ link chia sẻ!');
+          } else {
+            const item = this.createdLibrary.find(e => e.id === key || e.scaffoldKey === key);
+            if (item) {
+              this.openScaffoldItem(item.id);
+            }
+          }
+        }, 300);
+        return true;
+      }
+    }
+
+    // 2. Link SIÊU NGẮN cho bài giảng: #lesson=derivatives-extrema (chỉ 65 ký tự)
+    if (hash.startsWith('#lesson=')) {
+      const key = hash.replace('#lesson=', '').trim();
+      if (key) {
+        setTimeout(() => {
+          if (typeof SAMPLE_LESSONS !== 'undefined') {
+            const match = SAMPLE_LESSONS.find(l => l.id === key);
+            if (match) {
+              this.currentLesson = JSON.parse(JSON.stringify(match));
+              this.saveLessonToStorage(false);
+              this.renderAll();
+              this.switchTab('interactive-preview');
+              this.showToast('🎉 Đã nạp bài giảng song ngữ từ link chia sẻ!');
+            }
+          }
+        }, 300);
+        return true;
+      }
+    }
+
+    // 3. Link đầy đủ chứa payload: #scaffold_share=...
     if (hash.startsWith('#scaffold_share=')) {
       try {
         const raw = hash.replace('#scaffold_share=', '');
