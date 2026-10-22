@@ -98,6 +98,7 @@ const BilingualHelper = {
   currentTargetVi: '',
 
   init() {
+    this.initVoiceGender();
     this.createFloatingTooltip();
     this.createShadowingModal();
     this.setupSelectionListener();
@@ -392,6 +393,83 @@ const BilingualHelper = {
     return str.replace(/\s+/g, ' ').trim();
   },
 
+  // Voice Gender preference ('female' | 'male')
+  voiceGender: 'female',
+
+  initVoiceGender() {
+    try {
+      const saved = localStorage.getItem('math_studio_voice_gender');
+      if (saved === 'male' || saved === 'female') {
+        this.voiceGender = saved;
+      }
+    } catch (e) {
+      console.warn('Could not read voice gender from storage:', e);
+    }
+    this.updateVoiceGenderUI();
+  },
+
+  setVoiceGender(gender) {
+    this.voiceGender = (gender === 'male') ? 'male' : 'female';
+    try {
+      localStorage.setItem('math_studio_voice_gender', this.voiceGender);
+    } catch (e) {}
+    this.updateVoiceGenderUI();
+
+    const voiceDesc = this.voiceGender === 'female' 
+      ? 'Giọng Nữ 👩 (Trong trẻo, rõ chữ, chuẩn bản ngữ)' 
+      : 'Giọng Nam 👨 (Trầm ấm, rõ chữ, chuẩn bản ngữ)';
+    if (window.App && window.App.showToast) {
+      window.App.showToast(`🗣️ Đã chuyển sang ${voiceDesc}`);
+    }
+  },
+
+  toggleVoiceGender() {
+    this.setVoiceGender(this.voiceGender === 'female' ? 'male' : 'female');
+  },
+
+  updateVoiceGenderUI() {
+    const isFemale = this.voiceGender === 'female';
+    const icon = isFemale ? '👩' : '👨';
+    const label = isFemale ? 'Nữ' : 'Nam';
+
+    // Top header toggle button
+    const iconEl = document.getElementById('voice-gender-icon');
+    const labelEl = document.getElementById('voice-gender-label');
+    const btnEl = document.getElementById('btn-toggle-voice-gender');
+    if (iconEl) iconEl.innerText = icon;
+    if (labelEl) labelEl.innerText = label;
+    if (btnEl) {
+      btnEl.title = `Đang dùng: Giọng ${label} (Bấm để đổi sang Giọng ${isFemale ? 'Nam 👨' : 'Nữ 👩'})`;
+      if (isFemale) {
+        btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-50/90 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs';
+      } else {
+        btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-50/90 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs';
+      }
+    }
+
+    // Modal Shadowing selector buttons
+    const femaleBtn = document.getElementById('shadow-voice-female-btn');
+    const maleBtn = document.getElementById('shadow-voice-male-btn');
+    if (femaleBtn && maleBtn) {
+      if (isFemale) {
+        femaleBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 text-white shadow-xs border border-rose-600 transition-all cursor-pointer';
+        maleBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all cursor-pointer';
+      } else {
+        femaleBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all cursor-pointer';
+        maleBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-xs border border-blue-600 transition-all cursor-pointer';
+      }
+    }
+
+    // Floating Tooltip Voice Button
+    const tooltipVoiceBtn = document.getElementById('bilingual-tooltip-voice-toggle');
+    if (tooltipVoiceBtn) {
+      tooltipVoiceBtn.innerHTML = `<span>${icon}</span> <span>${label}</span>`;
+      tooltipVoiceBtn.className = isFemale 
+        ? 'px-2 py-1 rounded-lg bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 text-[11px] font-bold border border-rose-500/40 transition-colors' 
+        : 'px-2 py-1 rounded-lg bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 text-[11px] font-bold border border-blue-500/40 transition-colors';
+    }
+  },
+
   getBestVoice(isVi) {
     if (!('speechSynthesis' in window)) return null;
     const voices = window.speechSynthesis.getVoices() || [];
@@ -407,7 +485,12 @@ const BilingualHelper = {
       if (viVoice) return viVoice;
     }
 
-    // Default to best natural female English voice
+    // If English: select by gender preference
+    if (this.voiceGender === 'male') {
+      const maleVoice = this.getBestMaleVoice();
+      if (maleVoice) return maleVoice;
+    }
+
     return this.getBestFemaleVoice();
   },
 
@@ -420,15 +503,16 @@ const BilingualHelper = {
       const n = (name || '').toLowerCase();
       return n.includes('david') || n.includes('mark') || n.includes('george') || 
              n.includes('guy') || n.includes('james') || n.includes('richard') || 
-             n.includes('daniel') || (n.includes('male') && !n.includes('female'));
+             n.includes('daniel') || n.includes('christopher') || n.includes('roger') || 
+             n.includes('alex') || n.includes('fred') || n.includes('tom') || (n.includes('male') && !n.includes('female'));
     };
 
-    // 1. Top tier Natural / Neural American Female voices (Jenny, Aria, Michelle, Zira, Samantha)
+    // 1. Top tier Natural / Neural American Female voices (Jenny, Aria, Michelle, Zira, Samantha, Ava)
     const topTier = voices.find(v => {
       const n = (v.name || '').toLowerCase();
       const l = (v.lang || '').replace('_', '-').toLowerCase();
       return (l.startsWith('en-us') || l.startsWith('en-gb') || l.startsWith('en')) &&
-             (n.includes('jenny') || n.includes('aria') || n.includes('michelle') || n.includes('zira') || n.includes('samantha') || n.includes('ava') || n.includes('allison') || n.includes('susan') || n.includes('karen') || n.includes('victoria')) &&
+             (n.includes('jenny') || n.includes('aria') || n.includes('michelle') || n.includes('zira') || n.includes('samantha') || n.includes('ava') || n.includes('allison') || n.includes('susan') || n.includes('karen') || n.includes('victoria') || (n.includes('natural') && !isMale(v.name))) &&
              !isMale(v.name);
     });
     if (topTier) return topTier;
@@ -458,7 +542,114 @@ const BilingualHelper = {
     return voices[0];
   },
 
-  speak(text, rate = 1.0, forcedLang = null) {
+  getBestMaleVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices() || [];
+    if (!voices.length) return null;
+
+    const isMaleName = (name) => {
+      const n = (name || '').toLowerCase();
+      return n.includes('male') || n.includes('david') || n.includes('mark') || 
+             n.includes('george') || n.includes('guy') || n.includes('james') || 
+             n.includes('richard') || n.includes('daniel') || n.includes('christopher') || 
+             n.includes('roger') || n.includes('steffan') || n.includes('alex') || 
+             n.includes('fred') || n.includes('tom') || n.includes('eric');
+    };
+
+    // 1. Top tier Natural / Neural American Male voices (Guy, Christopher, Eric, David)
+    const topTier = voices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      const l = (v.lang || '').replace('_', '-').toLowerCase();
+      return (l.startsWith('en-us') || l.startsWith('en-gb') || l.startsWith('en')) &&
+             (n.includes('guy') || n.includes('natural') || n.includes('neural') || n.includes('online') || n.includes('christopher') || n.includes('eric')) &&
+             isMaleName(v.name);
+    });
+    if (topTier) return topTier;
+
+    // 2. Google UK English Male or Google US English Male
+    const googleMale = voices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      const l = (v.lang || '').replace('_', '-').toLowerCase();
+      return l.startsWith('en') && (n.includes('male') || isMaleName(v.name));
+    });
+    if (googleMale) return googleMale;
+
+    // 3. Microsoft David / Mark / George (Windows standard male voices)
+    const msMale = voices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      return isMaleName(v.name);
+    });
+    if (msMale) return msMale;
+
+    // 4. Any English voice that is male
+    const anyEnMale = voices.find(v => {
+      const l = (v.lang || '').replace('_', '-').toLowerCase();
+      return l.startsWith('en') && isMaleName(v.name);
+    });
+    if (anyEnMale) return anyEnMale;
+
+    return null;
+  },
+
+  /**
+   * Tinh chỉnh văn bản đọc: Chèn nhịp ngắt và nhấn nhá sư phạm (Prosody & Clear Articulation)
+   * Giúp người chưa biết đọc tiếng Anh nghe rõ mồn một từng từ, từng âm vị và dễ dàng nhại theo (Shadowing)
+   */
+  enhanceProsodyForLearning(cleanText, isSlow = false) {
+    if (!cleanText) return '';
+    let s = ' ' + cleanText.trim() + ' ';
+
+    // 1. Chèn ngắt nghỉ tự nhiên sau các từ dẫn dắt và cấu trúc mệnh đề
+    s = s.replace(/\b(Given that|Given)\b/gi, ' Given that, ')
+         .replace(/\b(Suppose that|Suppose)\b/gi, ' Suppose that, ')
+         .replace(/\b(Let)\b/gi, ' Let, ')
+         .replace(/\b(Find the value of|Find the|Find)\b/gi, ' Find, ')
+         .replace(/\b(Determine whether|Determine)\b/gi, ' Determine, ')
+         .replace(/\b(Calculate the|Calculate)\b/gi, ' Calculate, ')
+         .replace(/\b(Which of the following)\b/gi, ' Which of the following, ')
+         .replace(/\b(Therefore|Hence|Thus)\b/gi, ' Therefore, ')
+         .replace(/\b(For all|For every)\b/gi, ' For all, ')
+         .replace(/\b(Such that)\b/gi, ' such that, ')
+         .replace(/\b(Where|where)\b/gi, ' where, ')
+         .replace(/\b(If and only if)\b/gi, ' if and only if, ')
+         .replace(/\b(In other words)\b/gi, ' in other words, ');
+
+    // 2. Tách rõ các phép toán và từ khóa toán học để không bị đọc lí nhí
+    s = s.replace(/\b(is equal to|equals)\b/gi, ' , equals, ')
+         .replace(/\b(is less than or equal to)\b/gi, ' , is less than or equal to, ')
+         .replace(/\b(is greater than or equal to)\b/gi, ' , is greater than or equal to, ')
+         .replace(/\b(is not equal to)\b/gi, ' , is not equal to, ')
+         .replace(/\b(plus or minus)\b/gi, ' plus or minus, ')
+         .replace(/\b(square root of)\b/gi, ' square root of, ')
+         .replace(/\b(derivative of)\b/gi, ' derivative of, ')
+         .replace(/\b(definite integral of|integral of)\b/gi, ' integral of, ')
+         .replace(/\b(limit as)\b/gi, ' limit, as ')
+         .replace(/\b(approaches)\b/gi, ' approaches, ')
+         .replace(/\b(magnitude of)\b/gi, ' magnitude of, ')
+         .replace(/\b(dot product of)\b/gi, ' dot product of, ')
+         .replace(/\b(critical point)\b/gi, ' critical point, ')
+         .replace(/\b(asymptote)\b/gi, ' asymptote, ')
+         .replace(/\b(vector)\b/gi, ' vector, ');
+
+    // 3. Nếu ở chế độ đọc Chậm (Slow 🐢) và câu ngắn (từ vựng / cụm từ dưới 5 từ):
+    // Chèn ngắt nhẹ giữa các từ để người học nghe rõ từng phụ âm đầu và phụ âm cuối
+    if (isSlow) {
+      const words = s.trim().split(/\s+/);
+      if (words.length <= 5) {
+        s = words.map(w => w.replace(/[.,!?;:]*$/, '')).join(', ') + '.';
+      }
+    }
+
+    // Làm sạch khoảng trắng và các dấu phẩy dư thừa
+    s = s.replace(/,\s*,+/g, ',')
+         .replace(/\s+/g, ' ')
+         .replace(/\s+([.,!?;:])/g, '$1')
+         .trim();
+
+    return s;
+  },
+
+  speak(text, rate = 0.88, forcedLang = null) {
     if (!('speechSynthesis' in window)) {
       alert('Trình duyệt hiện tại không hỗ trợ Web Speech API.');
       return;
@@ -466,15 +657,31 @@ const BilingualHelper = {
     const isVi = (forcedLang === 'vi' || forcedLang === 'vi-VN') || 
                  (/[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(text));
 
-    const clean = this.cleanLatexForSpeech(text, isVi ? 'vi' : 'en');
+    let clean = this.cleanLatexForSpeech(text, isVi ? 'vi' : 'en');
     if (!clean) return;
+
+    const isSlow = (rate <= 0.75);
+    // Tinh chỉnh ngắt nghỉ sư phạm cho tiếng Anh
+    if (!isVi) {
+      clean = this.enhanceProsodyForLearning(clean, isSlow);
+    }
 
     window.speechSynthesis.cancel();
     const utter = new SpeechSynthesisUtterance(clean);
     utter.lang = isVi ? 'vi-VN' : 'en-US';
-    utter.rate = rate; // 1.0 is standard, 0.72 is slow practice
 
-    // Select standard natural voice matching language
+    // Tốc độ chuẩn sư phạm cho người học: 0.88x (chuẩn rõ chữ) hoặc 0.68x (chậm tách âm)
+    utter.rate = isSlow ? 0.68 : (rate === 1.0 ? 0.88 : rate);
+
+    // Cao độ pitch: Nữ hơi cao trong trẻo, Nam hơi trầm ấm rõ chữ
+    if (!isVi) {
+      utter.pitch = (this.voiceGender === 'female') ? 1.03 : 0.94;
+    } else {
+      utter.pitch = 1.0;
+    }
+    utter.volume = 1.0;
+
+    // Chọn giọng tối ưu theo giới tính và ngôn ngữ
     const voice = this.getBestVoice(isVi);
     if (voice) utter.voice = voice;
 
@@ -482,7 +689,7 @@ const BilingualHelper = {
   },
 
   speakSlow(text, forcedLang = null) {
-    this.speak(text, 0.72, forcedLang);
+    this.speak(text, 0.68, forcedLang);
   },
 
   async translate(text) {
@@ -553,14 +760,17 @@ const BilingualHelper = {
       </div>
 
       <div class="flex items-center gap-1.5 flex-wrap">
-        <button onclick="BilingualHelper.speakCurrentSelection(1.0)" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold flex items-center gap-1 shadow-xs transition-colors" title="Nghe đọc chuẩn">
+        <button onclick="BilingualHelper.speakCurrentSelection(0.88)" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold flex items-center gap-1 shadow-xs transition-colors" title="Nghe đọc chuẩn, rõ chữ">
           <span>🔊</span> <span>Nghe</span>
         </button>
-        <button onclick="BilingualHelper.speakCurrentSelection(0.75)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium flex items-center gap-1 transition-colors" title="Nghe tốc độ chậm để luyện phát âm">
+        <button onclick="BilingualHelper.speakCurrentSelection(0.68)" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 text-[11px] font-bold flex items-center gap-1 transition-colors" title="Nghe tốc độ chậm, nhấn nhá rõ từng từ">
           <span>🐢</span> <span>Chậm</span>
         </button>
-        <button onclick="BilingualHelper.openShadowingForSelection()" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 text-[11px] font-bold flex items-center gap-1 transition-colors" title="Mở phòng luyện đọc theo & chấm điểm">
-          <span>🎙️</span> <span>Luyện đọc theo</span>
+        <button id="bilingual-tooltip-voice-toggle" onclick="BilingualHelper.toggleVoiceGender(); BilingualHelper.speakCurrentSelection(0.88);" class="px-2 py-1 rounded-lg bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 text-[11px] font-bold border border-rose-500/40 transition-colors" title="Đổi giọng đọc Nữ / Nam">
+          <span>👩</span> <span>Nữ</span>
+        </button>
+        <button onclick="BilingualHelper.openShadowingForSelection()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold flex items-center gap-1 transition-colors shadow-2xs" title="Mở phòng luyện đọc theo & chấm điểm">
+          <span>🎙️</span> <span>Luyện theo</span>
         </button>
       </div>
     `;
@@ -622,6 +832,16 @@ const BilingualHelper = {
     tooltip.classList.remove('hidden');
     tooltip.style.opacity = '1';
 
+    // Cập nhật trạng thái nút Voice trên tooltip
+    const isFemale = this.voiceGender === 'female';
+    const tooltipVoiceBtn = document.getElementById('bilingual-tooltip-voice-toggle');
+    if (tooltipVoiceBtn) {
+      tooltipVoiceBtn.innerHTML = `<span>${isFemale ? '👩' : '👨'}</span> <span>${isFemale ? 'Nữ' : 'Nam'}</span>`;
+      tooltipVoiceBtn.className = isFemale 
+        ? 'px-2 py-1 rounded-lg bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 text-[11px] font-bold border border-rose-500/40 transition-colors cursor-pointer' 
+        : 'px-2 py-1 rounded-lg bg-blue-950/60 hover:bg-blue-900/80 text-blue-300 text-[11px] font-bold border border-blue-500/40 transition-colors cursor-pointer';
+    }
+
     const topPos = window.scrollY + rect.top - tooltip.offsetHeight - 10;
     const leftPos = Math.max(10, Math.min(window.innerWidth - 320, window.scrollX + rect.left + (rect.width / 2) - 140));
 
@@ -651,7 +871,7 @@ const BilingualHelper = {
     }
   },
 
-  speakCurrentSelection(rate = 1.0) {
+  speakCurrentSelection(rate = 0.88) {
     if (this.currentSelectedText) {
       this.speak(this.currentSelectedText, rate);
     }
@@ -673,10 +893,10 @@ const BilingualHelper = {
     const safeVi = (vietnameseText || '').replace(/"/g, '&quot;').replace(/'/g, "\\'");
     return `
       <span class="inline-bilingual-helper inline-flex items-center gap-1 align-middle ml-1.5 select-none" onclick="event.stopPropagation()">
-        <button onclick="BilingualHelper.speak('${safeEn}', 1.0)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-indigo-200/80 cursor-pointer" title="Nghe đọc chuẩn tiếng Anh (Web Speech)">
+        <button onclick="BilingualHelper.speak('${safeEn}', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-indigo-200/80 cursor-pointer" title="Nghe đọc chuẩn, rõ chữ (Web Speech)">
           🔊
         </button>
-        <button onclick="BilingualHelper.speak('${safeEn}', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe tốc độ chậm (0.75x) để luyện theo">
+        <button onclick="BilingualHelper.speak('${safeEn}', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-colors shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe tốc độ chậm, nhấn nhá rõ từng từ">
           🐢
         </button>
         <button onclick="BilingualHelper.openShadowingPractice('${safeEn}', '${safeVi}')" class="px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white flex items-center gap-1 text-[11px] font-bold transition-colors shadow-2xs border border-emerald-200/80 cursor-pointer" title="Xem dịch nghĩa, phiên âm và luyện đọc theo với micro">
@@ -692,10 +912,10 @@ const BilingualHelper = {
     const safeEn = (englishTitle || '').replace(/"/g, '&quot;').replace(/'/g, "\\'");
     return `
       <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
-        <button onclick="BilingualHelper.speak('${safeEn}', 1.0)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh: ${safeEn}">
+        <button onclick="BilingualHelper.speak('${safeEn}', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: ${safeEn}">
           🔊
         </button>
-        <button onclick="BilingualHelper.speak('${safeEn}', 0.75)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.75x)">
+        <button onclick="BilingualHelper.speak('${safeEn}', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
           🐢
         </button>
       </span>
@@ -724,10 +944,10 @@ const BilingualHelper = {
               <h3 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">
                 Luyện Đọc Phát Âm & Dịch Nghĩa Song Ngữ
               </h3>
-              <p class="text-[11px] text-slate-500">Kỹ thuật Shadowing: Nghe chuẩn, luyện nói theo và nhận phản hồi tức thì</p>
+              <p class="text-[11px] text-slate-500">Kỹ thuật Shadowing: Nghe giọng chuẩn bản ngữ, luyện nói theo và nhận phản hồi tức thì</p>
             </div>
           </div>
-          <button onclick="BilingualHelper.closeShadowingModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm transition-all">✕</button>
+          <button onclick="BilingualHelper.closeShadowingModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-sm transition-all cursor-pointer">✕</button>
         </div>
 
         <!-- Target English Text Card -->
@@ -748,13 +968,28 @@ const BilingualHelper = {
           </div>
         </div>
 
+        <!-- Voice Gender Selector (Nữ / Nam) inside Shadowing Modal -->
+        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-700 flex items-center gap-1.5">
+            <span>🗣️</span> <span>Chọn Giọng Đọc Mẫu:</span>
+          </span>
+          <div class="flex items-center gap-1.5">
+            <button id="shadow-voice-female-btn" onclick="BilingualHelper.setVoiceGender('female'); BilingualHelper.speakTarget(0.88);" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 text-white shadow-xs border border-rose-600 transition-all cursor-pointer">
+              👩 Giọng Nữ
+            </button>
+            <button id="shadow-voice-male-btn" onclick="BilingualHelper.setVoiceGender('male'); BilingualHelper.speakTarget(0.88);" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 transition-all cursor-pointer">
+              👨 Giọng Nam
+            </button>
+          </div>
+        </div>
+
         <!-- Speech Controls -->
         <div class="flex flex-wrap items-center justify-center gap-2.5 py-1">
-          <button onclick="BilingualHelper.speakTarget(1.0)" class="px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer">
-            <span>🔊</span> <span>Nghe Chuẩn (1.0x)</span>
+          <button onclick="BilingualHelper.speakTarget(0.88)" class="px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer" title="Nghe giọng chuẩn, rõ chữ có nhấn nhá">
+            <span>🔊</span> <span>Nghe Chuẩn (Rõ Chữ)</span>
           </button>
-          <button onclick="BilingualHelper.speakTarget(0.75)" class="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer">
-            <span>🐢</span> <span>Nghe Chậm (0.75x)</span>
+          <button onclick="BilingualHelper.speakTarget(0.68)" class="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer" title="Nghe tốc độ chậm, tách bạch từng âm">
+            <span>🐢</span> <span>Nghe Chậm (Từng Âm)</span>
           </button>
           <button id="btn-start-record" onclick="BilingualHelper.toggleSpeechRecognition()" class="px-5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 text-xs font-bold flex items-center gap-2 shadow-2xs transition-all cursor-pointer">
             <span id="record-icon">🎙️</span> <span id="record-label">Bấm Để Thu Âm & Luyện Đọc</span>

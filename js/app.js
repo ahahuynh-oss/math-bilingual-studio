@@ -32,6 +32,9 @@ var App = window.App = {
     this.setupEventListeners();
     this.initWorkspaceResizer();
     this.setupSpeechVoices();
+    if (window.BilingualHelper && window.BilingualHelper.initVoiceGender) {
+      window.BilingualHelper.initVoiceGender();
+    }
     this.renderAll();
     this.initCanvasGrapher();
     this.renderMyExamsTable('all');
@@ -214,7 +217,7 @@ var App = window.App = {
     }
   },
 
-  speakText(text, rate = 1.0, forcedLang = null) {
+  speakText(text, rate = 0.88, forcedLang = null) {
     if (window.BilingualHelper && window.BilingualHelper.speak) {
       window.BilingualHelper.speak(text, rate, forcedLang);
       return;
@@ -235,7 +238,23 @@ var App = window.App = {
   },
 
   speakSlow(text, forcedLang = null) {
-    this.speakText(text, 0.72, forcedLang);
+    if (window.BilingualHelper && window.BilingualHelper.speakSlow) {
+      window.BilingualHelper.speakSlow(text, forcedLang);
+      return;
+    }
+    this.speakText(text, 0.68, forcedLang);
+  },
+
+  toggleVoiceGender() {
+    if (window.BilingualHelper && window.BilingualHelper.toggleVoiceGender) {
+      window.BilingualHelper.toggleVoiceGender();
+    }
+  },
+
+  setVoiceGender(gender) {
+    if (window.BilingualHelper && window.BilingualHelper.setVoiceGender) {
+      window.BilingualHelper.setVoiceGender(gender);
+    }
   },
 
   insertLatex(snippet) {

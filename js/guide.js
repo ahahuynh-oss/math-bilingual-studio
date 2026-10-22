@@ -391,40 +391,51 @@ const UserGuide = {
       steps: [
         {
           num: 1,
-          title: 'Nghe phát âm chuẩn (1.0x) và Nghe chậm (0.75x)',
-          englishTitle: 'Audio Playback with Dual Speeds',
-          desc: 'Sử dụng cụm nút trực quan ngay cạnh bất kỳ văn bản tiếng Anh nào.',
+          title: 'Tùy chọn Giọng Nữ 👩 / Giọng Nam 👨 theo sở thích',
+          englishTitle: 'Female & Male Voice Selection',
+          desc: 'Dễ dàng chuyển đổi linh hoạt giữa Giọng Nữ trong trẻo hoặc Giọng Nam trầm ấm.',
           bullets: [
-            'Bấm <strong>🔊</strong> để nghe phát âm tốc độ chuẩn bản xứ (Web Speech API US/UK).',
-            'Bấm <strong>🐢</strong> để nghe tốc độ chậm (0.75x), giúp học sinh nghe rõ trọng âm từ, phụ âm cuối và ngữ điệu câu.',
-            'Hệ thống tự động lọc các ký hiệu công thức $LaTeX$ thành câu nói tự nhiên (ví dụ: $\\frac{a}{b}$ được đọc là <em>"a over b"</em>).'
+            'Bấm nút <strong>👩/👨 Giọng: Nữ / Nam</strong> trên thanh điều hướng trên cùng để chuyển đổi nhanh.',
+            'Hệ thống tự động ưu tiên các giọng đọc cao cấp chuẩn bản ngữ tự nhiên (Microsoft Jenny/Guy Neural, Google US English, Apple Samantha/Alex).',
+            'Cài đặt giọng đọc được lưu tự động và áp dụng đồng bộ cho toàn bộ bài học, từ vựng, đề thi và phòng Shadowing.'
           ]
         },
         {
           num: 2,
-          title: 'Bôi đen văn bản để Tra cứu & Nghe tức thì (Floating Tooltip)',
-          englishTitle: 'Highlight Selection Floating Tooltip',
-          desc: 'Thao tác cực kỳ thuận tiện trên cả trang bài giảng, đề thi và giàn giáo.',
+          title: 'Phát âm chậm, rõ chữ & Ngắt nghỉ nhấn nhá tự nhiên (Prosody)',
+          englishTitle: 'Clear Articulation & Prosodic Pauses for Learners',
+          desc: 'Tối ưu hóa đặc biệt cho người mới bắt đầu học tiếng Anh chuyên ngành Toán.',
           bullets: [
-            'Dùng chuột bôi đen (highlight) một từ hoặc cụm từ tiếng Anh bất kỳ trên màn hình.',
-            'Thanh công cụ nổi tinh gọn lập tức xuất hiện với 3 tùy chọn nhanh: <strong>🔊 Nghe</strong>, <strong>🐢 Chậm</strong>, <strong>🎙️ Luyện nói</strong>.',
-            'Học sinh không cần rời khỏi trang web hoặc mở tab từ điển khác để tra cứu.'
+            '<strong>Tốc độ chuẩn sư phạm (0.88x):</strong> Chậm rãi hơn tốc độ máy thông thường, đọc rõ từng phụ âm cuối (/s/, /ks/, /t/, /d/) và trọng âm từ.',
+            '<strong>Tốc độ chậm luyện âm (0.68x 🐢):</strong> Tách bạch từng âm vị, tự động chèn nhịp ngắt vi mô (micro-pause) giữa các từ khó để người nghe kịp thẩm thấu và bắt chước.',
+            '<strong>Nhấn nhá tự nhiên:</strong> Tự động ngắt hơi sau các liên từ và vế toán học (<em>"Let, ", "Given that, ", "equals, ", "vector, ", "over, "</em>).'
           ]
         },
         {
           num: 3,
+          title: 'Bôi đen văn bản để Tra cứu & Nghe tức thì (Floating Tooltip)',
+          englishTitle: 'Highlight Selection Floating Tooltip with Voice Toggle',
+          desc: 'Thao tác cực kỳ thuận tiện trên cả trang bài giảng, đề thi và giàn giáo.',
+          bullets: [
+            'Dùng chuột bôi đen (highlight) một từ hoặc cụm từ tiếng Anh bất kỳ trên màn hình.',
+            'Thanh công cụ nổi tinh gọn lập tức xuất hiện với các tùy chọn: <strong>🔊 Nghe</strong>, <strong>🐢 Chậm</strong>, nút <strong>👩/👨 Đổi Giọng</strong> và <strong>🎙️ Luyện nói</strong>.',
+            'Học sinh không cần rời khỏi trang web hoặc mở tab từ điển khác để tra cứu.'
+          ]
+        },
+        {
+          num: 4,
           title: 'Phòng Luyện nói Shadowing với Micro & Chấm điểm tương tác',
-          englishTitle: 'Interactive Voice Shadowing Studio',
+          englishTitle: 'Interactive Voice Shadowing Studio with Dual Voices',
           desc: 'Rèn luyện sự tự tin khi nói toán học tiếng Anh.',
           bullets: [
             'Bấm nút <strong>🎙️ Luyện theo</strong> tại bất kỳ từ vựng hoặc câu hỏi nào để mở phòng thực hành.',
-            'Học sinh nghe mẫu bản xứ 2 lần, bấm <strong>Bắt đầu thu âm</strong> và đọc câu tiếng Anh vào micro thiết bị.',
+            'Chủ động chọn nghe mẫu bằng <strong>👩 Giọng Nữ</strong> hoặc <strong>👨 Giọng Nam</strong>, bấm <strong>Bắt đầu thu âm</strong> và đọc câu tiếng Anh vào micro thiết bị.',
             'Hệ thống nhận diện giọng nói (Web Speech Recognition) và tô màu trực quan: <span class="text-emerald-600 font-bold">Màu xanh lá</span> (chính xác), <span class="text-rose-600 font-bold">Màu đỏ</span> (cần cải thiện), kèm phần trăm độ chuẩn xác.'
           ],
           actionBtn: { text: 'Mở Làm bài để trải nghiệm Shadowing', tab: 'interactive-preview', icon: '🎙️' }
         },
         {
-          num: 4,
+          num: 5,
           title: 'Nút Bật / Tắt Hiển Thị Song Ngữ Nhanh Chóng',
           englishTitle: 'Global Bilingual Display Toggle',
           desc: 'Linh hoạt điều chỉnh mức độ hỗ trợ tiếng Việt trên thanh tiêu đề.',
