@@ -297,8 +297,13 @@ const Exporter = {
       .glass-card { background: white !important; border: 1px solid #ddd !important; }
     }
   </style>
-</head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Zalo / In-app browser helpful hint -->
+  <div style="background: linear-gradient(135deg, #fef3c7 0%, #ffedd5 100%); border-bottom: 2px solid #f59e0b; padding: 10px 16px; font-size: 13px; color: #92400e; display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center;">
+    <span>📱</span>
+    <span><strong>Dành cho học sinh mở trên Zalo / Điện thoại:</strong> Nếu file đang mở trong Zalo preview, hãy bấm <strong>[Chia sẻ] ↗</strong> hoặc dấu <strong>⋯</strong> ở góc trên và chọn <strong>"Mở bằng trình duyệt" (Safari / Chrome)</strong> để kích hoạt đầy đủ <strong>giọng đọc tiếng Anh Nữ / Nam</strong> và <strong>làm bài kiểm tra tương tác</strong>!</span>
+  </div>
 
   <!-- Header -->
   <header class="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-2xs">
@@ -1923,12 +1928,84 @@ const Exporter = {
   },
 
   /**
+   * Helper format công thức Toán cho hiển thị HTML tĩnh ngay cả khi trình duyệt chặn JS (No-JS Fallback)
+   * Tương thích 100% với iOS QuickLook, Zalo In-App Preview, Safari & Android Chrome
+   */
+  formatMathForDisplay(text) {
+    if (!text) return '';
+    let s = String(text);
+
+    // 1. Phân số \frac{A}{B} hoặc \dfrac{A}{B}
+    s = s.replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, '<span class="inline-frac"><span class="frac-num">$1</span><span class="frac-den">$2</span></span>');
+
+    // 2. Giới hạn lim
+    s = s.replace(/\\lim_\{([^}]+)\}/g, 'lim($1)');
+
+    // 3. Ký hiệu toán học phổ biến
+    s = s.replace(/\\neq/g, ' ≠ ')
+         .replace(/\\leq|\\le/g, ' ≤ ')
+         .replace(/\\geq|\\ge/g, ' ≥ ')
+         .replace(/\\approx/g, ' ≈ ')
+         .replace(/\\to/g, ' → ')
+         .replace(/\\pm/g, ' ± ')
+         .replace(/\\mp/g, ' ∓ ')
+         .replace(/\\infty/g, ' ∞ ')
+         .replace(/\\cdot/g, ' · ')
+         .replace(/\\times/g, ' × ')
+         .replace(/\\perp/g, ' ⊥ ')
+         .replace(/\\parallel/g, ' ∥ ')
+         .replace(/\\mathbb\{R\}/g, 'ℝ')
+         .replace(/\\mathbb\{Z\}/g, 'ℤ')
+         .replace(/\\mathbb\{N\}/g, 'ℕ')
+         .replace(/\\mathbb\{Q\}/g, 'ℚ')
+         .replace(/\\mathbb\{C\}/g, 'ℂ')
+         .replace(/\\vec\{([a-zA-Z0-9]+)\}/g, '$1⃗')
+         .replace(/\\overrightarrow\{([a-zA-Z0-9]+)\}/g, '$1⃗')
+         .replace(/\\sqrt\[([^{}]+)\]\{([^{}]+)\}/g, '$1√($2)')
+         .replace(/\\sqrt\{([^{}]+)\}/g, '√($1)')
+         .replace(/\\Delta/g, 'Δ')
+         .replace(/\\alpha/g, 'α')
+         .replace(/\\beta/g, 'β')
+         .replace(/\\pi/g, 'π')
+         .replace(/\\in/g, ' ∈ ')
+         .replace(/\\notin/g, ' ∉ ')
+         .replace(/\\subset/g, ' ⊂ ')
+         .replace(/\\cup/g, ' ∪ ')
+         .replace(/\\cap/g, ' ∩ ')
+         .replace(/\\emptyset/g, '∅')
+         .replace(/\\angle/g, '∠');
+
+    // 4. Chỉ số dưới subscript: x_0 -> x₀, y_0 -> y₀...
+    const subMap = { '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉', 'i':'ᵢ', 'n':'ₙ', 'm':'ₘ' };
+    s = s.replace(/_([0-9inm])\b/g, (m, c) => subMap[c] || ('_' + c));
+    s = s.replace(/_\{([0-9inm]+)\}/g, (m, c) => c.split('').map(ch => subMap[ch] || ch).join(''));
+
+    // 5. Số mũ superscript: ^2 -> ², ^3 -> ³...
+    const supMap = { '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹', '+':'⁺', '-':'⁻', 'n':'ⁿ' };
+    s = s.replace(/\^([0-9n\+\-])\b/g, (m, c) => supMap[c] || ('^' + c));
+    s = s.replace(/\^\{([0-9n\+\-]+)\}/g, (m, c) => c.split('').map(ch => supMap[ch] || ch).join(''));
+
+    // 6. Xử lý macro định dạng
+    s = s.replace(/\\text\{([^}]+)\}/g, '$1')
+         .replace(/\\mathrm\{([^}]+)\}/g, '$1')
+         .replace(/\\mathbf\{([^}]+)\}/g, '<strong>$1</strong>')
+         .replace(/\\left|\\right/g, '')
+         .replace(/\\quad|\\qquad|\\,|\\;|\\!/g, ' ');
+
+    // 7. Loại bỏ các dấu $ bao quanh công thức
+    s = s.replace(/\$+/g, '');
+
+    return s;
+  },
+
+  /**
    * Generates and downloads a Standalone Self-Contained HTML document
    * specifically for a Scaffolding Tutor Exercise (100% Offline with MathJax, Audio & Auto-Grading)
+   * Tương thích 100% với iOS Safari, Android Chrome, Zalo WebView và QuickLook Preview
    */
   exportScaffoldStandaloneHTML(item) {
     if (!item) return;
-    const title = item.title || item.titleVi || 'Bài tập giàn giáo ZPD';
+    const title = item.titleVi || item.title || 'Bài tập giàn giáo ZPD';
     const grade = item.grade || 'Toán THPT';
     const data = item.scaffoldData || {};
     const rawInput = item.rawInput || '';
@@ -1939,22 +2016,25 @@ const Exporter = {
     };
 
     const vocabCards = (data.bilingual_vocabulary || []).map((v, i) => `
-      <div class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition-all space-y-1.5 shadow-xs">
-        <div class="flex items-start justify-between gap-2">
+      <div class="vocab-card">
+        <div class="vocab-top">
           <div>
-            <div class="font-bold text-slate-900 text-sm">${v.english_term || ''}</div>
-            <div class="text-xs font-bold text-emerald-700 mt-0.5">👉 ${v.vietnamese_term || ''}</div>
+            <div class="vocab-en">${v.english_term || ''}</div>
+            <div class="vocab-vi">👉 ${v.vietnamese_term || ''}</div>
           </div>
-          <button type="button" onclick="speakText('${(v.english_term || '').replace(/'/g, "\\'")}', 1.0)" class="p-1 px-2 rounded-md bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs cursor-pointer shadow-2xs" title="Phát âm tiếng Anh">🔊</button>
+          <div class="vocab-actions">
+            <button type="button" onclick="speakText('${(v.english_term || '').replace(/'/g, "\\'")}', 0.88)" class="speak-btn" title="Nghe phát âm chuẩn (rõ chữ)">🔊</button>
+            <button type="button" onclick="speakText('${(v.english_term || '').replace(/'/g, "\\'")}', 0.68)" class="speak-btn speak-slow" title="Nghe chậm luyện âm">🐢</button>
+          </div>
         </div>
-        ${v.context_note ? `<div class="text-[11px] text-slate-500 italic border-t border-slate-100 pt-1.5 leading-snug">${v.context_note}</div>` : ''}
+        ${v.context_note ? `<div class="vocab-note">${this.formatMathForDisplay(v.context_note)}</div>` : ''}
       </div>
     `).join('');
 
     const breakdownItems = (data.tier_2_breakdown || []).map((b, i) => `
-      <div class="p-3.5 rounded-xl bg-white border border-slate-200 flex items-start gap-3 shadow-2xs">
-        <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">${i + 1}</span>
-        <div class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">${b}</div>
+      <div class="step-item">
+        <span class="step-num">${i + 1}</span>
+        <div class="step-text">${this.formatMathForDisplay(b)}</div>
       </div>
     `).join('');
 
@@ -1962,175 +2042,601 @@ const Exporter = {
     const cleanEscapedAnswer = (parallel.short_answer || '').replace(/"/g, '\\"');
 
     const html = `<!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>${title} | Phiếu Giàn Giáo Sư Phạm ZPD</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- MathJax Configuration with SVG Render for Sharp Display -->
   <script>
     window.MathJax = {
-      tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']], processEscapes: true },
-      svg: { fontCache: 'global' }
+      tex: {
+        inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+        displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']],
+        processEscapes: true
+      },
+      svg: { fontCache: 'global' },
+      startup: {
+        ready: function() {
+          MathJax.startup.defaultReady();
+          document.body.classList.add('mathjax-ready');
+        }
+      }
     };
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- PURE EMBEDDED CSS (100% Standalone - Hoàn toàn không phụ thuộc CDN Tailwind, mở trên điện thoại cực đẹp) -->
   <style>
-    body { font-family: 'Outfit', sans-serif; background-color: #f8fafc; color: #0f172a; }
-    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      line-height: 1.6;
+      padding: 14px 10px 60px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .standalone-container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* Zalo / In-app browser helpful hint */
+    .zalo-hint-banner {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #92400e;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.08);
+      line-height: 1.45;
+    }
+    .zalo-hint-banner strong { color: #78350f; }
+
+    /* Top Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 50%, #4f46e5 100%);
+      color: #ffffff;
+      padding: 22px 18px;
+      border-radius: 22px;
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.18);
+      margin-bottom: 18px;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.22);
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .hero-title {
+      font-size: 20px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    .hero-meta {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.95);
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Cards */
+    .scaffold-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 18px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Voice Switcher Bar */
+    .voice-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+    .voice-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-voice {
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-voice.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #4f46e5;
+    }
+
+    /* Vocabulary Grid */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .vocab-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .vocab-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .vocab-en { font-size: 15px; font-weight: 800; color: #0f172a; }
+    .vocab-vi { font-size: 13px; font-weight: 700; color: #047857; margin-top: 2px; }
+    .vocab-note {
+      font-size: 12px;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 6px;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+    .vocab-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* Buttons */
+    .speak-btn {
+      background: #eef2ff;
+      color: #4338ca;
+      border: 1px solid #c7d2fe;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      min-height: 34px;
+      touch-action: manipulation;
+    }
+    .speak-btn:active { background: #4338ca; color: #fff; }
+    .speak-btn.speak-slow {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .speak-btn.speak-slow:active { background: #b45309; color: #fff; }
+
+    .btn-toggle {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #475569;
+    }
+
+    /* Breakdown Steps */
+    .step-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e0e7ff;
+      color: #4338ca;
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-text {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    /* Content Boxes */
+    .hint-box {
+      background: #f0f9ff;
+      border: 1.5px solid #bae6fd;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 13.5px;
+      color: #0369a1;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+    .pitfall-box {
+      background: #fff1f2;
+      border: 1.5px solid #fecdd3;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 13px;
+      color: #9f1239;
+      line-height: 1.55;
+    }
+    .solution-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 13px;
+      color: #0f172a;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    /* Parallel Exercise Box */
+    .parallel-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #f5f3ff 100%);
+      border: 1.5px solid #fde68a;
+      border-radius: 20px;
+      padding: 18px 16px;
+      margin-bottom: 16px;
+    }
+    .parallel-input-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    @media (min-width: 540px) {
+      .parallel-input-box { flex-direction: row; }
+    }
+    .parallel-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+      background: #fff;
+    }
+    .parallel-input:focus { border-color: #4f46e5; }
+    .btn-check-ans {
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    .result-alert {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      display: none;
+    }
+    .result-alert.correct {
+      display: block;
+      background: #ecfdf5;
+      border: 1.5px solid #6ee7b7;
+      color: #065f46;
+    }
+    .result-alert.wrong {
+      display: block;
+      background: #fef2f2;
+      border: 1.5px solid #fca5a5;
+      color: #991b1b;
+    }
+
+    /* Fallback Math Fraction (No-JS) */
+    .inline-frac {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      padding: 0 4px;
+      font-size: 0.9em;
+      line-height: 1.1;
+    }
+    .frac-num {
+      border-bottom: 1.5px solid currentColor;
+      padding-bottom: 1px;
+    }
+    .frac-den {
+      padding-top: 1px;
+    }
+    .mathjax-ready .inline-frac {
+      display: inline;
+    }
   </style>
 </head>
-<body class="p-4 sm:p-8 min-h-screen">
-  <div class="max-w-4xl mx-auto space-y-6">
-    
-    <!-- Top Header Banner -->
-    <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-amber-500 via-amber-600 to-indigo-700 text-white shadow-xl space-y-3">
-      <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-amber-200">
-        <span>🪜 Mô Hình Giàn Giáo Nhận Thức ZPD (Vygotsky)</span>
-        <span class="bg-white/20 px-3 py-0.5 rounded-full text-white font-bold">${grade}</span>
+<body>
+  <div class="standalone-container">
+
+    <!-- Zalo / QuickLook Hint Banner -->
+    <div class="zalo-hint-banner">
+      <span style="font-size: 20px; line-height: 1;">💡</span>
+      <div>
+        <strong>Dành cho học sinh mở trên Zalo / Điện thoại:</strong><br>
+        Nếu đang xem trong Zalo hoặc trình xem trước tệp, hãy bấm nút <strong>[Chia sẻ] ↗</strong> (ở góc dưới màn hình iPhone) hoặc dấu ba chấm <strong>(⋯)</strong> và chọn <strong>"Mở bằng trình duyệt" (Safari / Chrome)</strong> để kích hoạt <strong>nghe phát âm giọng bản ngữ</strong> và <strong>chấm điểm tự động</strong>!
       </div>
-      <h1 class="text-xl sm:text-2xl font-black tracking-tight leading-snug">${title}</h1>
-      <div class="text-xs text-amber-100 flex items-center gap-3 pt-1 border-t border-white/20">
+    </div>
+
+    <!-- Top Header Banner -->
+    <div class="hero-banner">
+      <div class="hero-tag">
+        <span>🪜 Giàn Giáo Nhận Thức ZPD</span>
+        <span>•</span>
+        <span>${grade}</span>
+      </div>
+      <h1 class="hero-title">${title}</h1>
+      <div class="hero-meta">
         <span>Dự án Sáng kiến Giáo dục 2026</span>
         <span>•</span>
         <span>Tác giả: <strong>${branding.teacherName || 'Huỳnh Thị Hà'}</strong></span>
       </div>
     </div>
 
+    <!-- Voice Gender Bar -->
+    <div class="voice-bar">
+      <span>🗣️ <strong>Giọng đọc tiếng Anh:</strong></span>
+      <div class="voice-btn-group">
+        <button type="button" id="btn-voice-female" onclick="setVoiceGender('female')" class="btn-voice active">👩 Giọng Nữ (Rõ chữ)</button>
+        <button type="button" id="btn-voice-male" onclick="setVoiceGender('male')" class="btn-voice">👨 Giọng Nam (Trầm ấm)</button>
+      </div>
+    </div>
+
     <!-- Target Problem Card -->
-    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
-      <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold uppercase tracking-wide text-indigo-700 flex items-center gap-1.5">
+    <div class="scaffold-card">
+      <div class="card-header">
+        <h2 class="card-title">
           <span>🎯</span> <span>Bài Toán Mục Tiêu Cần Giải Quyết:</span>
         </h2>
-        <div class="flex items-center gap-1.5">
-          <button type="button" onclick="speakText(document.getElementById('scaffold-raw-problem').innerText, 1.0)" class="p-1 px-2.5 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 text-xs font-semibold cursor-pointer">🔊 Đọc</button>
-          <button type="button" onclick="speakText(document.getElementById('scaffold-raw-problem').innerText, 0.72)" class="p-1 px-2 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white border border-amber-300 text-xs font-semibold cursor-pointer">🐢 Chậm</button>
+        <div style="display: flex; gap: 6px;">
+          <button type="button" onclick="speakText(document.getElementById('scaffold-raw-problem').innerText, 0.88)" class="speak-btn">🔊 Đọc</button>
+          <button type="button" onclick="speakText(document.getElementById('scaffold-raw-problem').innerText, 0.68)" class="speak-btn speak-slow">🐢 Chậm</button>
         </div>
       </div>
-      <div id="scaffold-raw-problem" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold text-sm sm:text-base leading-relaxed">
-        ${rawInput || title}
+      <div id="scaffold-raw-problem" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; font-weight: 600; font-size: 15px; color: #0f172a; margin-bottom: 8px;">
+        ${this.formatMathForDisplay(rawInput || title)}
       </div>
       ${data.problem_analysis ? `
-        <div class="text-xs text-slate-600 border-l-2 border-indigo-400 pl-3 leading-relaxed">
-          <strong class="text-indigo-900">Bản chất toán học:</strong> ${data.problem_analysis}
+        <div style="font-size: 12.5px; color: #475569; border-left: 3px solid #6366f1; padding-left: 10px; line-height: 1.5;">
+          <strong style="color: #312e81;">Bản chất toán học:</strong> ${this.formatMathForDisplay(data.problem_analysis)}
         </div>
       ` : ''}
     </div>
 
     <!-- Tier 0: Vocabulary -->
     ${vocabCards ? `
-    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
-      <h3 class="text-sm font-bold uppercase tracking-wide text-slate-800 flex items-center gap-1.5">
-        <span>🗣️</span> <span>Cầu Nối Thuật Ngữ Toán Học Song Ngữ (Bilingual Vocabulary):</span>
-      </h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${vocabCards}</div>
+    <div class="scaffold-card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <span>🗣️</span> <span>Cầu Nối Thuật Ngữ Toán Học Song Ngữ (Vocabulary):</span>
+        </h3>
+      </div>
+      <div class="vocab-grid">${vocabCards}</div>
     </div>
     ` : ''}
 
     <!-- Tier 1: Hint -->
     ${data.tier_1_hint ? `
-    <div class="p-5 sm:p-6 rounded-2xl bg-sky-50/70 border border-sky-200 shadow-xs space-y-2">
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm font-bold uppercase tracking-wide text-sky-900 flex items-center gap-1.5">
+    <div class="scaffold-card" style="background: #f0f9ff; border-color: #bae6fd;">
+      <div class="card-header">
+        <h3 class="card-title" style="color: #0369a1;">
           <span>💡</span> <span>Gợi Ý Nấc 1 (Tier 1 Hint - Khơi gợi tư duy):</span>
         </h3>
-        <button type="button" onclick="document.getElementById('tier-1-content').classList.toggle('hidden')" class="text-xs text-sky-700 font-bold hover:underline cursor-pointer">Đóng/Mở</button>
+        <button type="button" onclick="toggleElement('tier-1-content')" class="btn-toggle">Đóng / Mở</button>
       </div>
-      <div id="tier-1-content" class="text-xs sm:text-sm text-sky-950 font-medium leading-relaxed bg-white/80 p-3.5 rounded-xl border border-sky-200/80">
-        ${data.tier_1_hint}
+      <div id="tier-1-content" class="hint-box">
+        ${this.formatMathForDisplay(data.tier_1_hint)}
       </div>
     </div>
     ` : ''}
 
     <!-- Tier 2: Breakdown Steps -->
     ${breakdownItems ? `
-    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm font-bold uppercase tracking-wide text-slate-800 flex items-center gap-1.5">
+    <div class="scaffold-card">
+      <div class="card-header">
+        <h3 class="card-title">
           <span>🪜</span> <span>Khung Tư Duy Nấc 2 (Tier 2 Breakdown - Chia nhỏ các bước giải):</span>
         </h3>
-        <button type="button" onclick="document.getElementById('tier-2-content').classList.toggle('hidden')" class="text-xs text-indigo-700 font-bold hover:underline cursor-pointer">Đóng/Mở</button>
+        <button type="button" onclick="toggleElement('tier-2-content')" class="btn-toggle">Đóng / Mở</button>
       </div>
-      <div id="tier-2-content" class="space-y-2.5">${breakdownItems}</div>
+      <div id="tier-2-content">${breakdownItems}</div>
     </div>
     ` : ''}
 
     <!-- Pitfalls -->
     ${data.common_pitfall ? `
-    <div class="p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 text-xs sm:text-sm space-y-1">
-      <div class="font-bold text-rose-800 flex items-center gap-1.5">
-        <span>⚠️</span> <span>Cạm bẫy & Sai lầm học sinh cần tránh:</span>
+    <div class="scaffold-card" style="background: #fff1f2; border-color: #fecdd3;">
+      <div class="card-header">
+        <h3 class="card-title" style="color: #9f1239;">
+          <span>⚠️</span> <span>Cạm bẫy & Sai lầm học sinh cần tránh:</span>
+        </h3>
       </div>
-      <p class="leading-relaxed font-medium text-rose-900">${data.common_pitfall}</p>
+      <div class="pitfall-box">
+        ${this.formatMathForDisplay(data.common_pitfall)}
+      </div>
     </div>
     ` : ''}
 
     <!-- Tier 3: Full Solution -->
     ${data.full_solution ? `
-    <div class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm font-bold uppercase tracking-wide text-emerald-800 flex items-center gap-1.5">
+    <div class="scaffold-card">
+      <div class="card-header">
+        <h3 class="card-title" style="color: #065f46;">
           <span>🏆</span> <span>Lời Giải Mẫu Hoàn Chỉnh (Exemplary Solution):</span>
         </h3>
-        <button type="button" onclick="document.getElementById('tier-3-content').classList.toggle('hidden')" class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 cursor-pointer">👁️ Xem lời giải</button>
+        <button type="button" onclick="toggleElement('tier-3-content')" class="btn-toggle" style="background: #ecfdf5; color: #065f46; border-color: #a7f3d0;">👁️ Xem Lời Giải</button>
       </div>
-      <div id="tier-3-content" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-mono whitespace-pre-wrap">
-        ${data.full_solution}
+      <div id="tier-3-content" class="solution-box" style="display: none;">
+${this.formatMathForDisplay(data.full_solution)}
       </div>
     </div>
     ` : ''}
 
     <!-- Parallel Exercise with Interactive Auto-Grading -->
     ${parallel.question_vi || parallel.question_en ? `
-    <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-50/80 to-indigo-50/60 border border-amber-200 shadow-xs space-y-3">
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm font-bold uppercase tracking-wide text-amber-950 flex items-center gap-1.5">
+    <div class="parallel-card">
+      <div class="card-header">
+        <h3 class="card-title" style="color: #78350f;">
           <span>🎯</span> <span>Bài Tập Song Song Tự Luyện (Parallel Exercise):</span>
         </h3>
-        <span class="text-[11px] font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-indigo-200">Chấm điểm tự động</span>
+        <span style="font-size: 11px; font-weight: 800; background: #fff; padding: 4px 10px; border-radius: 8px; border: 1px solid #fde68a; color: #4338ca;">Tự chấm điểm</span>
       </div>
-      <div class="space-y-1.5 text-xs sm:text-sm font-semibold text-slate-800 bg-white p-4 rounded-xl border border-slate-200">
-        <div>${parallel.question_vi || ''}</div>
-        ${parallel.question_en ? `<div class="text-slate-500 italic text-xs">${parallel.question_en}</div>` : ''}
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 10px; font-weight: 600; font-size: 14px;">
+        <div>${this.formatMathForDisplay(parallel.question_vi || '')}</div>
+        ${parallel.question_en ? `<div style="color: #64748b; font-style: italic; font-size: 12.5px; margin-top: 4px;">${this.formatMathForDisplay(parallel.question_en)}</div>` : ''}
       </div>
-      <div class="flex flex-col sm:flex-row gap-2 pt-1">
-        <input type="text" id="parallel-user-ans" placeholder="Điền đáp số ngắn của em..." class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-xs sm:text-sm font-bold flex-1">
-        <button type="button" onclick="checkParallelAnswer()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold cursor-pointer">Kiểm tra kết quả</button>
+      <div class="parallel-input-box">
+        <input type="text" id="parallel-user-ans" placeholder="Điền đáp số ngắn của em (ví dụ: 2, 4/3, 0)..." class="parallel-input">
+        <button type="button" onclick="checkParallelAnswer()" class="btn-check-ans">Kiểm Tra Kết Quả</button>
       </div>
-      <div id="parallel-result-box" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+      <div id="parallel-result-box" class="result-alert"></div>
     </div>
     ` : ''}
 
   </div>
 
   <script>
-    function speakText(text, rate = 1.0) {
+    var currentVoiceGender = 'female';
+
+    function setVoiceGender(g) {
+      currentVoiceGender = g;
+      var fb = document.getElementById('btn-voice-female');
+      var mb = document.getElementById('btn-voice-male');
+      if (fb && mb) {
+        if (g === 'female') {
+          fb.className = 'btn-voice active';
+          mb.className = 'btn-voice';
+        } else {
+          fb.className = 'btn-voice';
+          mb.className = 'btn-voice active';
+        }
+      }
+    }
+
+    function toggleElement(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+    }
+
+    function speakText(text, rate) {
       if (!window.speechSynthesis || !text) return;
       window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
+      var clean = text.replace(/<[^>]*>/g, ' ').replace(/[\\$]/g, '').trim();
+      var u = new SpeechSynthesisUtterance(clean);
       u.lang = 'en-US';
-      u.rate = rate;
+      u.rate = rate || (currentVoiceGender === 'female' ? 0.88 : 0.85);
+      u.pitch = (currentVoiceGender === 'female') ? 1.03 : 0.94;
+
+      var voices = window.speechSynthesis.getVoices() || [];
+      if (voices.length > 0) {
+        var isMale = function(n) {
+          var name = (n || '').toLowerCase();
+          return name.includes('david') || name.includes('mark') || name.includes('george') || 
+                 name.includes('guy') || name.includes('james') || name.includes('male');
+        };
+        var targetVoice = null;
+        if (currentVoiceGender === 'male') {
+          targetVoice = voices.find(function(v) { return (v.lang||'').toLowerCase().startsWith('en') && isMale(v.name); });
+        } else {
+          targetVoice = voices.find(function(v) { return (v.lang||'').toLowerCase().startsWith('en') && !isMale(v.name); });
+        }
+        if (targetVoice) u.voice = targetVoice;
+      }
       window.speechSynthesis.speak(u);
     }
 
-    const expectedAnswer = "${cleanEscapedAnswer}";
+    var expectedAnswer = "${cleanEscapedAnswer}";
     function checkParallelAnswer() {
-      const inp = document.getElementById('parallel-user-ans');
-      const box = document.getElementById('parallel-result-box');
+      var inp = document.getElementById('parallel-user-ans');
+      var box = document.getElementById('parallel-result-box');
       if (!inp || !box) return;
-      const val = inp.value.trim().toLowerCase().replace(/\\s+/g, '').replace(/\\$/g, '');
-      const expected = expectedAnswer.trim().toLowerCase().replace(/\\s+/g, '').replace(/\\$/g, '');
-      box.classList.remove('hidden');
+      var val = inp.value.trim().toLowerCase().replace(/\\s+/g, '').replace(/\\$/g, '');
+      var expected = expectedAnswer.trim().toLowerCase().replace(/\\s+/g, '').replace(/\\$/g, '');
+      
+      if (!val) {
+        box.className = 'result-alert wrong';
+        box.innerHTML = '⚠️ Vui lòng điền đáp số trước khi kiểm tra!';
+        return;
+      }
+
       if (val === expected) {
-        box.className = 'p-3.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-950 text-xs font-bold flex items-center gap-2';
-        box.innerHTML = '🎉 <span>Chính xác tuyệt đối! Em đã nắm vững giàn giáo nhận thức của dạng toán này!</span>';
+        box.className = 'result-alert correct';
+        box.innerHTML = '🎉 <strong>Chính xác tuyệt đối!</strong> Em đã nắm vững giàn giáo nhận thức của dạng toán này!';
       } else {
-        box.className = 'p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-semibold flex items-center gap-2';
-        box.innerHTML = '❌ <span>Chưa chính xác rồi. Em hãy đọc lại gợi ý Nấc 1 và các bước ở Nấc 2 để thử lại nhé!</span>';
+        box.className = 'result-alert wrong';
+        box.innerHTML = '❌ <strong>Chưa chính xác rồi.</strong> Em hãy đọc lại gợi ý Nấc 1 và các bước ở Nấc 2 để thử lại nhé!';
       }
     }
   </script>

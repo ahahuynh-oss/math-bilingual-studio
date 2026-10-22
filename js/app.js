@@ -41,7 +41,16 @@ var App = window.App = {
     this.renderScaffoldLibraryTable('all');
     this.updateTreeMenuUI();
     if (window.UserGuide) window.UserGuide.init();
-    this.switchTab('scaffolding-tutor');
+
+    // Tự động giải mã và nạp bài học nếu mở qua link chia sẻ có hash (#scaffold_share=...)
+    const handledShare = this.checkUrlShareHash();
+    if (!handledShare) {
+      this.switchTab('scaffolding-tutor');
+    }
+
+    window.addEventListener('hashchange', () => {
+      this.checkUrlShareHash();
+    });
   },
 
   sanitizeLatexString(str) {
@@ -1002,7 +1011,10 @@ var App = window.App = {
           </td>
 
           <td class="py-3.5 px-4 text-right whitespace-nowrap">
-            <div class="flex items-center justify-end gap-1.5">
+            <div class="flex items-center justify-end gap-1.5 flex-wrap">
+              <button onclick="App.shareExamLink('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-white hover:bg-amber-600 shadow-2xs flex items-center gap-1 transition-all cursor-pointer" title="Sao chép link gửi cho học sinh làm bài trên điện thoại">
+                🔗 <span>Gửi Link</span>
+              </button>
               <button onclick="App.editExamFromList('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all cursor-pointer" title="Chỉnh sửa bài giảng & đề thi">
                 ✏️ <span>Sửa</span>
               </button>
@@ -1121,11 +1133,14 @@ var App = window.App = {
 
           <td class="py-3.5 px-4 text-right whitespace-nowrap">
             <div class="flex items-center justify-end gap-1.5 flex-wrap">
-              <button onclick="App.editScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 flex items-center gap-1 transition-all cursor-pointer shadow-2xs" title="Chỉnh sửa bài tập giàn giáo này">
-                ✏️ <span>Sửa</span>
+              <button onclick="App.shareScaffoldItemLink('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-white hover:bg-amber-600 shadow-2xs flex items-center gap-1 transition-all cursor-pointer" title="Sao chép link gửi cho học sinh mở trên mọi điện thoại (iPhone Safari, Android Chrome)">
+                🔗 <span>Gửi Link</span>
               </button>
               <button onclick="App.exportHtmlForScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1 transition-all cursor-pointer shadow-2xs" title="Xuất ra file HTML độc lập cho bài tập này">
                 🚀 <span>HTML</span>
+              </button>
+              <button onclick="App.editScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 flex items-center gap-1 transition-all cursor-pointer shadow-2xs" title="Chỉnh sửa bài tập giàn giáo này">
+                ✏️ <span>Sửa</span>
               </button>
               <button onclick="App.exportWordForScaffoldItem('${item.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all cursor-pointer" title="Xuất file Word (.doc) giàn giáo">
                 📄 <span>Word</span>
@@ -1177,6 +1192,221 @@ var App = window.App = {
       window.Exporter.exportScaffoldStandaloneHTML(item);
       this.showToast('🚀 Đã xuất file HTML độc lập cho bài tập giàn giáo: ' + (item.titleVi || item.title));
     }
+  },
+
+  encodeUnicodeBase64(str) {
+    try {
+      return window.btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+      }));
+    } catch (e) {
+      return encodeURIComponent(str);
+    }
+  },
+
+  decodeUnicodeBase64(str) {
+    try {
+      return decodeURIComponent(Array.prototype.map.call(window.atob(str), function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+    } catch (e) {
+      try {
+        return decodeURIComponent(str);
+      } catch (err) {
+        return str;
+      }
+    }
+  },
+
+  shareScaffoldItemLink(id) {
+    const item = this.createdLibrary.find(e => e.id === id);
+    if (!item) {
+      this.showToast('Không tìm thấy bài tập cần chia sẻ!', 'warning');
+      return;
+    }
+    this.hydrateScaffoldItemData(item);
+    const payload = {
+      type: 'scaffold',
+      id: item.id,
+      title: item.titleVi || item.title || 'Bài tập giàn giáo ZPD',
+      grade: item.grade || 'Toán THPT',
+      rawInput: item.rawInput || '',
+      scaffoldData: item.scaffoldData
+    };
+
+    const encoded = this.encodeUnicodeBase64(JSON.stringify(payload));
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}#scaffold_share=${encoded}`;
+
+    this.showShareModal(item.titleVi || item.title || 'Bài tập giàn giáo ZPD', shareUrl);
+  },
+
+  shareCurrentScaffoldLink() {
+    if (!window.ScaffoldingTutor || !window.ScaffoldingTutor.currentData) {
+      this.showToast('Chưa có nội dung bài tập giàn giáo để chia sẻ!', 'warning');
+      return;
+    }
+    const currentData = window.ScaffoldingTutor.currentData;
+    const currentPreset = window.ScaffoldingTutor.presets?.[window.ScaffoldingTutor.currentPresetKey];
+    const rawInputEl = document.getElementById('scaffold-problem-input');
+    const rawInput = (rawInputEl && rawInputEl.value.trim()) || currentPreset?.rawInput || '';
+    const title = currentPreset?.title || currentData.bilingual_vocabulary?.[0]?.vietnamese_term || 'Bài tập giàn giáo ZPD';
+    const grade = currentPreset?.grade || 'Toán THPT';
+
+    const payload = {
+      type: 'scaffold',
+      id: window.ScaffoldingTutor.currentPresetKey || ('scaffold-' + Date.now()),
+      title: title,
+      grade: grade,
+      rawInput: rawInput,
+      scaffoldData: currentData
+    };
+
+    const encoded = this.encodeUnicodeBase64(JSON.stringify(payload));
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}#scaffold_share=${encoded}`;
+
+    this.showShareModal(title, shareUrl);
+  },
+
+  shareExamLink(id) {
+    const item = this.createdLibrary.find(e => e.id === id);
+    if (!item) {
+      this.showToast('Không tìm thấy bài giảng để chia sẻ!', 'warning');
+      return;
+    }
+    let lessonData = item.lessonData;
+    if (!lessonData && item.presetKey && typeof SAMPLE_LESSONS !== 'undefined') {
+      lessonData = SAMPLE_LESSONS.find(l => l.id === item.presetKey);
+    }
+    if (!lessonData && this.currentLesson && this.currentLesson.id === item.id) {
+      lessonData = this.currentLesson;
+    }
+    if (!lessonData) {
+      this.showToast('Không có dữ liệu bài giảng để chia sẻ!', 'warning');
+      return;
+    }
+
+    const payload = {
+      type: 'lesson',
+      id: item.id,
+      title: item.titleVi || item.title || 'Bài giảng song ngữ',
+      lessonData: lessonData
+    };
+
+    const encoded = this.encodeUnicodeBase64(JSON.stringify(payload));
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}#lesson_share=${encoded}`;
+
+    this.showShareModal(item.titleVi || item.title || 'Bài giảng song ngữ', shareUrl);
+  },
+
+  showShareModal(title, url) {
+    const modal = document.getElementById('modal-share-link');
+    const titleEl = document.getElementById('share-modal-title');
+    const urlEl = document.getElementById('share-modal-url');
+    if (titleEl) titleEl.textContent = title;
+    if (urlEl) urlEl.value = url;
+
+    // Tự động sao chép vào Clipboard
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => {
+        this.showToast('🎉 Đã tự động sao chép link học sinh vào bộ nhớ tạm!');
+      }).catch(() => {});
+    }
+
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  closeShareModal() {
+    const modal = document.getElementById('modal-share-link');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  copyShareLinkFromModal() {
+    const urlEl = document.getElementById('share-modal-url');
+    if (!urlEl) return;
+    urlEl.select();
+    urlEl.setSelectionRange(0, 99999);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(urlEl.value);
+    } else {
+      document.execCommand('copy');
+    }
+    this.showToast('📋 Đã sao chép link thành công! Dán gửi cho học sinh ngay.');
+  },
+
+  openShareLinkInNewTab() {
+    const urlEl = document.getElementById('share-modal-url');
+    if (urlEl && urlEl.value) {
+      window.open(urlEl.value, '_blank');
+    }
+  },
+
+  checkUrlShareHash() {
+    const hash = window.location.hash || '';
+    if (!hash) return false;
+
+    if (hash.startsWith('#scaffold_share=')) {
+      try {
+        const raw = hash.replace('#scaffold_share=', '');
+        const json = this.decodeUnicodeBase64(raw);
+        const payload = JSON.parse(json);
+        if (payload && payload.scaffoldData) {
+          // Tự động thêm vào createdLibrary nếu chưa có
+          const exists = this.createdLibrary.find(e => e.id === payload.id);
+          if (!exists) {
+            this.createdLibrary.unshift({
+              id: payload.id || ('scaffold-' + Date.now()),
+              category: 'scaffolding',
+              title: payload.title || 'Bài tập giàn giáo ZPD',
+              titleVi: payload.title || 'Bài tập giàn giáo ZPD',
+              grade: payload.grade || 'Toán THPT',
+              rawInput: payload.rawInput || '',
+              scaffoldData: payload.scaffoldData,
+              updatedAt: 'Vừa xong'
+            });
+            this.saveCreatedLibrary();
+            this.renderScaffoldLibraryTable('all');
+          }
+
+          // Kích hoạt hiển thị Scaffolding Tutor
+          setTimeout(() => {
+            if (window.ScaffoldingTutor) {
+              window.ScaffoldingTutor.currentData = payload.scaffoldData;
+              const input = document.getElementById('scaffold-problem-input');
+              if (input && payload.rawInput) input.value = payload.rawInput;
+              window.ScaffoldingTutor.switchInputMode('custom');
+              window.ScaffoldingTutor.render();
+            }
+            this.switchTab('scaffolding-tutor');
+            this.showToast('🎉 Đã tải bài tập giàn giáo từ link chia sẻ! Hãy bấm 🔊 để nghe phát âm và tự luyện đáp án bên dưới.');
+          }, 350);
+          return true;
+        }
+      } catch (e) {
+        console.warn('Lỗi phân tích hash scaffold_share:', e);
+      }
+    } else if (hash.startsWith('#lesson_share=')) {
+      try {
+        const raw = hash.replace('#lesson_share=', '');
+        const json = this.decodeUnicodeBase64(raw);
+        const payload = JSON.parse(json);
+        if (payload && payload.lessonData) {
+          this.currentLesson = payload.lessonData;
+          this.saveLessonToStorage(false);
+          this.renderAll();
+          setTimeout(() => {
+            this.switchTab('interactive-preview');
+            this.showToast('🎉 Đã nạp bài giảng song ngữ từ link chia sẻ!');
+          }, 350);
+          return true;
+        }
+      } catch (e) {
+        console.warn('Lỗi phân tích hash lesson_share:', e);
+      }
+    }
+    return false;
   },
 
   editScaffoldItem(id) {

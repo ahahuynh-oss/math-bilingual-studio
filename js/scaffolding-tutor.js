@@ -1058,6 +1058,36 @@ NGUYÊN TẮC BẮT BUỘC:
     }
   },
 
+  exportStandaloneHTML() {
+    if (!this.currentData) {
+      if (window.App && window.App.showToast) {
+        window.App.showToast('Chưa có dữ liệu bài toán giàn giáo để xuất HTML!');
+      }
+      return;
+    }
+    const preset = this.presets[this.currentPresetKey];
+    const rawInputEl = document.getElementById('scaffold-problem-input');
+    const rawInput = (rawInputEl && rawInputEl.value.trim()) || preset?.rawInput || '';
+    const title = preset ? (preset.title || preset.grade || 'Bài tập giàn giáo ZPD') : 'Bài tập giàn giáo ZPD';
+    const grade = preset ? preset.grade : 'Toán THPT';
+
+    const item = {
+      id: this.currentPresetKey || ('scaffold-' + Date.now()),
+      title: title,
+      titleVi: title,
+      grade: grade,
+      rawInput: rawInput,
+      scaffoldData: this.currentData
+    };
+
+    if (window.Exporter && window.Exporter.exportScaffoldStandaloneHTML) {
+      window.Exporter.exportScaffoldStandaloneHTML(item);
+      if (window.App && window.App.showToast) {
+        window.App.showToast('🚀 Đã xuất file HTML độc lập tương thích 100% điện thoại di động!');
+      }
+    }
+  },
+
   exportWord() {
     if (!this.currentData) {
       if (window.App && window.App.showToast) {
