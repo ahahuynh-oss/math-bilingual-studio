@@ -1028,7 +1028,465 @@
       <!-- TAB 5: HƯỚNG DẪN CHO GIÁO VIÊN & HỌC SINH (USER GUIDE PANEL) -->
       <!-- ============================================================ -->
       <div id="panel-user-guide" class="space-y-6 hidden">
-        <!-- Rendered dynamically by js/guide.js -->
+
+      <!-- ============================================================ -->
+      <!-- TOP BANNER CARD -->
+      <!-- ============================================================ -->
+      <div class="glass-card p-6 sm:p-8 rounded-3xl border border-indigo-100 bg-gradient-to-r from-white via-indigo-50/30 to-amber-50/20 shadow-xs space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-700 text-xs font-bold shadow-2xs">
+          <span>📖</span>
+          <span>Cẩm nang sử dụng Studio</span>
+        </div>
+        
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center flex-wrap gap-2">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              Hướng dẫn cho giáo viên &amp; học sinh
+            </h1>
+            
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('Teacher and Student User Manual', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: Teacher and Student User Manual">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('Teacher and Student User Manual', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
+          🐢
+        </button>
+      </span>
+    
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+            Phiên bản 2026.2.0 (Cập nhật mới nhất)
+          </span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed max-w-3xl">
+          Thầy cô và các em bấm chọn <strong>"Mục lục"</strong> ở cột bên trái để chọn nội dung cần hướng dẫn và xem các bước thực hành chi tiết.
+        </p>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- 2-COLUMN LAYOUT: MỤC LỤC (LEFT) & NỘI DUNG TỪNG BƯỚC (RIGHT) -->
+      <!-- ============================================================ -->
+      <div class="flex flex-col lg:flex-row gap-6 items-start">
+        
+        <!-- LEFT COLUMN: MỤC LỤC (TABLE OF CONTENTS) -->
+        <div class="w-full lg:w-72 glass-card p-4 rounded-3xl border border-slate-200/90 shadow-xs shrink-0 lg:sticky lg:top-20 space-y-2">
+          
+          <div class="text-[11px] font-black uppercase tracking-wider text-slate-400 px-3 py-1 flex items-center justify-between">
+            <span>MỤC LỤC</span>
+            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">11 chuyên đề</span>
+          </div>
+
+          <div class="space-y-1">
+            
+                <button onclick="UserGuide.switchSection('general-workflow')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer bg-indigo-50 text-indigo-700 font-bold border border-indigo-200 shadow-2xs">
+                  <span class="w-5 text-center text-xs text-indigo-600 font-black">1</span>
+                  <span class="truncate flex-1">Quy trình chung</span>
+                  <span class="text-indigo-600 text-xs font-bold">›</span>
+                </button>
+              
+                <button onclick="UserGuide.switchSection('gemini-api')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">2</span>
+                  <span class="truncate flex-1">Cấu hình Trợ lý AI Google Gemini</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('vision-ocr')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">3</span>
+                  <span class="truncate flex-1">Quét Đề Từ Ảnh Chụp (Gemini Vision OCR)</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('lesson-builder')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">4</span>
+                  <span class="truncate flex-1">Thiết kế bài giảng Toán song ngữ</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('scaffolding-zpd')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">5</span>
+                  <span class="truncate flex-1">Gia sư Giàn giáo Nhận thức ZPD (6 nấc)</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('quiz-creator')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">6</span>
+                  <span class="truncate flex-1">Soạn &amp; Tổ chức Thi trắc nghiệm 3 dạng</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('test-matrix')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">7</span>
+                  <span class="truncate flex-1">Ma trận đề thi chuẩn Bộ GD&amp;ĐT</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('speech-shadowing')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">8</span>
+                  <span class="truncate flex-1">Luyện phát âm Bản ngữ &amp; Dịch tức thì</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('export-share')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">9</span>
+                  <span class="truncate flex-1">Xuất bản Word, Standalone HTML &amp; In A4</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('library-management')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">10</span>
+                  <span class="truncate flex-1">Quản lý Thư viện &amp; Tùy biến giao diện</span>
+                  
+                </button>
+              
+                <button onclick="UserGuide.switchSection('feedback-support')" class="w-full px-3.5 py-2.5 rounded-2xl text-left text-xs sm:text-[13px] flex items-center gap-3 transition-all cursor-pointer text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium">
+                  <span class="w-5 text-center text-xs text-slate-400 font-semibold">11</span>
+                  <span class="truncate flex-1">Báo lỗi &amp; Góp ý sáng kiến</span>
+                  
+                </button>
+              
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: DETAILED STEP-BY-STEP CARDS -->
+        <div id="guide-detail-column" class="flex-1 min-w-0 w-full space-y-5">
+          
+          <!-- Section Heading -->
+          <div class="flex items-center flex-wrap gap-2">
+            <h2 class="text-lg sm:text-xl font-black text-slate-900">
+              1. Quy trình tổng quan cho giáo viên &amp; học sinh
+            </h2>
+            
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('General Workflow for Teachers &amp; Students', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: General Workflow for Teachers &amp; Students">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('General Workflow for Teachers &amp; Students', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
+          🐢
+        </button>
+      </span>
+    
+          </div>
+
+          <!-- Subcard Banner -->
+          <div class="glass-card p-5 sm:p-6 rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/40 via-white to-slate-50 flex items-start gap-4 shadow-xs">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-2xl font-black shadow-sm shrink-0">
+              ✈️
+            </div>
+            <div class="space-y-1 min-w-0 flex-1">
+              <div class="flex items-center flex-wrap gap-2">
+                <h3 class="text-base sm:text-lg font-black text-slate-900">
+                  Quy trình chung
+                </h3>
+                
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('General Workflow for Teachers &amp; Students', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: General Workflow for Teachers &amp; Students">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('General Workflow for Teachers &amp; Students', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
+          🐢
+        </button>
+      </span>
+    
+              </div>
+              <p class="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium">
+                Quy trình 4 bước khép kín từ lúc soạn bài giảng, kích hoạt giàn giáo ZPD, làm bài tương tác &amp; luyện nói bản ngữ đến khi xuất bản đa kênh.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step Cards with Numbered Badges (1, 2, 3...) -->
+          <div class="space-y-4">
+            
+              <div class="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 hover:border-indigo-200 shadow-xs transition-all space-y-3.5">
+                
+                <!-- Step Header -->
+                <div class="flex items-start gap-3.5">
+                  <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-2xs">
+                    1
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center flex-wrap gap-2">
+                      <h4 class="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                        Soạn bài giảng hoặc Nhập tài liệu Word / PDF / Ảnh chụp
+                      </h4>
+                      
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('Create Lesson or Import Word / PDF / Vision OCR', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: Create Lesson or Import Word / PDF / Vision OCR">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('Create Lesson or Import Word / PDF / Vision OCR', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
+          🐢
+        </button>
+      </span>
+    
+                    </div>
+                    
+                      <p class="text-xs text-slate-600 font-normal mt-0.5">Thầy cô chọn mục <strong>Soạn bài giảng</strong> trên cây thư mục hoặc bấm <strong>✨ Soạn tự động (AI Studio)</strong>.</p>
+                    
+                  </div>
+                </div>
+
+                <!-- Step Bullets -->
+                
+                  <div class="pl-11 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1"><strong>Chọn chủ đề chuẩn:</strong> Khởi tạo tức thì bài giảng Toán THPT (Khối 10, 11, 12) chuẩn GDPT 2018 với đầy đủ lý thuyết, từ vựng, ví dụ và đề thi.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1"><strong>Nạp file Word (.docx), PDF hoặc Markdown/LaTeX:</strong> Bộ phân tích thông minh (Smart Parser) tự động bóc tách từ vựng, công thức Toán $LaTeX$ và các câu hỏi trắc nghiệm.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1"><strong>Quét ảnh chụp đề thi (Gemini Vision OCR):</strong> Kéo thả hoặc dán ảnh (Ctrl + V) từ sách giáo khoa, tài liệu in để AI tự động chuyển thành đề thi song ngữ và phân loại 4 mức độ nhận thức.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1"><strong>Soạn bài bằng Gemini AI:</strong> Nhập câu lệnh tùy chỉnh (Prompt) để AI tạo nội dung theo yêu cầu sư phạm riêng.</div>
+                      </div>
+                    
+                  </div>
+                
+
+                <!-- Quick Action Button if present -->
+                
+                  <div class="pl-11 pt-1">
+                    <button onclick="UserGuide.handleActionClick('builder-lesson')" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                      <span>📝</span>
+                      <span>Mở Soạn bài giảng</span>
+                      <span>➔</span>
+                    </button>
+                  </div>
+                
+
+              </div>
+            
+              <div class="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 hover:border-indigo-200 shadow-xs transition-all space-y-3.5">
+                
+                <!-- Step Header -->
+                <div class="flex items-start gap-3.5">
+                  <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-2xs">
+                    2
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center flex-wrap gap-2">
+                      <h4 class="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                        Kích hoạt Gia sư Giàn giáo Nhận thức ZPD (6 nấc)
+                      </h4>
+                      
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('Activate 6-Stage Cognitive Scaffolding (Vygotsky ZPD)', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: Activate 6-Stage Cognitive Scaffolding (Vygotsky ZPD)">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('Activate 6-Stage Cognitive Scaffolding (Vygotsky ZPD)', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
+          🐢
+        </button>
+      </span>
+    
+                    </div>
+                    
+                      <p class="text-xs text-slate-600 font-normal mt-0.5">Chuyển sang nhánh <strong>Gia sư giàn giáo ZPD</strong> để thiết lập mức độ nâng đỡ sư phạm tối ưu cho từng đối tượng học sinh.</p>
+                    
+                  </div>
+                </div>
+
+                <!-- Step Bullets -->
+                
+                  <div class="pl-11 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Hệ thống triển khai <strong>6 tầng sư phạm hoàn chỉnh</strong>: Bóc tách đề bài &amp; Trọng tâm kiến thức, Bảng thuật ngữ toán có phát âm IPA, Gợi ý Nấc 1 Socratic, Khung tư duy Nấc 2 có checklist từng chặng, Cạm bẫy học sinh cần tránh (Common Pitfalls), và Lời giải mẫu hoàn chỉnh.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Học sinh tự rèn luyện tính độc lập qua <strong>Bài tập song song (Parallel Exercise)</strong> có kiểm tra đáp số tự động theo nguyên lý rút dần giàn giáo (Scaffold Fading).</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Giáo viên có thể bấm <strong>"✏️ Sửa bài tập này"</strong> để tùy biến nội dung giàn giáo và lưu trực tiếp vào kho <em>"Bài tập đã tạo"</em>.</div>
+                      </div>
+                    
+                  </div>
+                
+
+                <!-- Quick Action Button if present -->
+                
+                  <div class="pl-11 pt-1">
+                    <button onclick="UserGuide.handleActionClick('scaffolding-tutor')" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                      <span>🪜</span>
+                      <span>Mở Không gian Giàn giáo ZPD</span>
+                      <span>➔</span>
+                    </button>
+                  </div>
+                
+
+              </div>
+            
+              <div class="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 hover:border-indigo-200 shadow-xs transition-all space-y-3.5">
+                
+                <!-- Step Header -->
+                <div class="flex items-start gap-3.5">
+                  <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-2xs">
+                    3
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center flex-wrap gap-2">
+                      <h4 class="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                        Tổ chức Luyện phát âm Bản ngữ &amp; Thi tương tác
+                      </h4>
+                      
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('Pronunciation Shadowing &amp; Interactive Assessment', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: Pronunciation Shadowing &amp; Interactive Assessment">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('Pronunciation Shadowing &amp; Interactive Assessment', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
+          🐢
+        </button>
+      </span>
+    
+                    </div>
+                    
+                      <p class="text-xs text-slate-600 font-normal mt-0.5">Cho học sinh học tập và làm bài trực tiếp trên máy tính hoặc thiết bị di động.</p>
+                    
+                  </div>
+                </div>
+
+                <!-- Step Bullets -->
+                
+                  <div class="pl-11 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Học sinh bấm cụm nút <strong>🔊 Nghe chuẩn (1.0x)</strong> và <strong>🐢 Nghe chậm (0.75x)</strong> cạnh từng thuật ngữ và câu hỏi để làm quen với ngữ điệu bản ngữ.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Bấm <strong>🎙️ Luyện theo</strong> để mở phòng thực hành phát âm Shadowing: thu âm qua micro và nhận phản hồi chấm điểm phát âm trực quan.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1"><strong>Tra cứu thông minh:</strong> Bôi đen bất kỳ từ hoặc câu tiếng Anh nào trên màn hình để nghe đọc và dịch nghĩa tức thì (Floating Tooltip).</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Làm bài kiểm tra có đồng hồ đếm ngược, nộp bài nhận điểm số thang 10, phân loại năng lực và đối chiếu đáp án chi tiết.</div>
+                      </div>
+                    
+                  </div>
+                
+
+                <!-- Quick Action Button if present -->
+                
+                  <div class="pl-11 pt-1">
+                    <button onclick="UserGuide.handleActionClick('interactive-preview')" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                      <span>🎯</span>
+                      <span>Mở Làm bài tương tác</span>
+                      <span>➔</span>
+                    </button>
+                  </div>
+                
+
+              </div>
+            
+              <div class="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 hover:border-indigo-200 shadow-xs transition-all space-y-3.5">
+                
+                <!-- Step Header -->
+                <div class="flex items-start gap-3.5">
+                  <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-2xs">
+                    4
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center flex-wrap gap-2">
+                      <h4 class="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                        Xuất bản Đề in A4, File Word hoặc Web Độc Lập Offline
+                      </h4>
+                      
+      <span class="inline-title-speaker inline-flex items-center gap-1 ml-2 align-middle select-none" onclick="event.stopPropagation()">
+        <button onclick="BilingualHelper.speak('Export to Word (.docx), Standalone HTML &amp; Printable A4', 0.88)" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-indigo-200/80 cursor-pointer" title="Phát âm tiếng Anh chuẩn, rõ chữ: Export to Word (.docx), Standalone HTML &amp; Printable A4">
+          🔊
+        </button>
+        <button onclick="BilingualHelper.speak('Export to Word (.docx), Standalone HTML &amp; Printable A4', 0.68)" class="w-6 h-6 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white flex items-center justify-center text-xs transition-all shadow-2xs border border-amber-200/80 cursor-pointer" title="Nghe chậm (0.68x) rõ từng âm">
+          🐢
+        </button>
+      </span>
+    
+                    </div>
+                    
+                      <p class="text-xs text-slate-600 font-normal mt-0.5">Linh hoạt triển khai trực tiếp trên lớp học hoặc giao bài tập về nhà.</p>
+                    
+                  </div>
+                </div>
+
+                <!-- Step Bullets -->
+                
+                  <div class="pl-11 space-y-2 text-xs sm:text-[13px] text-slate-600 leading-relaxed">
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Bấm <strong>Xuất Word (.doc/.docx)</strong> để tải về: Phiếu bài tập học sinh (chuẩn A4 Times New Roman 12pt), Đề thi kèm đáp án giáo viên, hoặc Phiếu giàn giáo ZPD.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Bấm <strong>Export Standalone HTML</strong> để tạo 1 file duy nhất chạy offline 100% không cần kết nối Internet.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Bấm <strong>In Worksheet A4</strong> để in photocopy trực tiếp chuẩn định dạng máy in trường học.</div>
+                      </div>
+                    
+                      <div class="flex items-start gap-2">
+                        <span class="text-indigo-500 font-bold select-none">•</span>
+                        <div class="flex-1">Mọi nội dung đều được tự động lưu trữ và phân loại trong <strong>Danh sách đã tạo</strong> và <strong>Kho bài tập đã tạo</strong>.</div>
+                      </div>
+                    
+                  </div>
+                
+
+                <!-- Quick Action Button if present -->
+                
+                  <div class="pl-11 pt-1">
+                    <button onclick="UserGuide.handleActionClick('my-exams')" class="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white border border-indigo-200 transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                      <span>📊</span>
+                      <span>Mở Danh sách đã tạo</span>
+                      <span>➔</span>
+                    </button>
+                  </div>
+                
+
+              </div>
+            
+          </div>
+
+          <!-- Bottom Navigation (Previous / Next) -->
+          <div class="pt-4 flex items-center justify-between text-xs gap-3 flex-wrap">
+            <div></div>
+
+            
+              <button onclick="UserGuide.switchSection('gemini-api')" class="px-4 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 hover:border-indigo-300 font-bold transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                <span>Bài tiếp theo: Cấu hình Trợ lý AI Google Gemini</span>
+                <span>→</span>
+              </button>
+            
+          </div>
+
+        </div>
+
+      </div>
+    
       </div>
 
     </main>
@@ -1930,13 +2388,13 @@
   <div id="app-toast" class="fixed bottom-6 right-6 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-2xl transition-all duration-300 z-50 opacity-0 translate-y-3 pointer-events-none"></div>
 
   <!-- Scripts with cache buster -->
-  <script src="js/data.js?v=20261023_0035"></script>
-  <script src="js/ai-generator.js?v=20261023_0035"></script>
-  <script src="js/exporter.js?v=20261023_0035"></script>
-  <script src="js/quiz.js?v=20261023_0035"></script>
-  <script src="js/scaffolding-tutor.js?v=20261023_0035"></script>
-  <script src="js/bilingual-helper.js?v=20261023_0035"></script>
-  <script src="js/guide.js?v=20261023_0035"></script>
-  <script src="js/app.js?v=20261023_0035"></script>
+  <script src="js/data.js?v=20261023_1537"></script>
+  <script src="js/ai-generator.js?v=20261023_1537"></script>
+  <script src="js/exporter.js?v=20261023_1537"></script>
+  <script src="js/quiz.js?v=20261023_1537"></script>
+  <script src="js/scaffolding-tutor.js?v=20261023_1537"></script>
+  <script src="js/bilingual-helper.js?v=20261023_1537"></script>
+  <script src="js/guide.js?v=20261023_1537"></script>
+  <script src="js/app.js?v=20261023_1537"></script>
 </body>
 </html>

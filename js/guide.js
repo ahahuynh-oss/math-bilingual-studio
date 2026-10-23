@@ -114,7 +114,7 @@ const UserGuide = {
           englishTitle: 'Prompting for Bilingual Math Content',
           desc: 'Nhập câu lệnh bằng tiếng Việt hoặc tiếng Anh để AI tạo nội dung theo đúng yêu cầu chuyên môn.',
           bullets: [
-            'Ví dụ Prompt mẫu: <em>"Soạn bài giảng và 10 câu trắc nghiệm song ngữ chủ đề 'Khoảng cách trong không gian Oxyz' Toán 12, có 4 câu ABCD, 4 câu Đúng/Sai và 2 câu điền số"</em>.',
+            'Ví dụ Prompt mẫu: <em>"Soạn bài giảng và 10 câu trắc nghiệm song ngữ chủ đề \'Khoảng cách trong không gian Oxyz\' Toán 12, có 4 câu ABCD, 4 câu Đúng/Sai và 2 câu điền số"</em>.',
             'Hệ thống tự động biên dịch thuật ngữ Anh - Việt, tích hợp công thức $LaTeX$ chuẩn và tự động điền vào trình soạn thảo.'
           ]
         }

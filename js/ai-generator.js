@@ -1198,6 +1198,42 @@ var AIGenerator = window.AIGenerator = {
     }
   },
 
+  safeParseAiJson(rawJSON) {
+    if (!rawJSON || typeof rawJSON !== 'string') return null;
+    let clean = rawJSON.trim();
+    if (clean.startsWith('```json')) clean = clean.substring(7);
+    else if (clean.startsWith('```')) clean = clean.substring(3);
+    if (clean.endsWith('```')) clean = clean.substring(0, clean.length - 3);
+    clean = clean.trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (jsonMatch) clean = jsonMatch[0];
+
+    // Try direct parse first
+    try {
+      return JSON.parse(clean);
+    } catch (e1) {
+      // Fix unescaped backslashes before LaTeX commands in JSON strings
+      try {
+        const latexFixed = clean.replace(/\\([a-zA-Z]+)/g, (match, cmd) => {
+          return '\\\\' + cmd;
+        });
+        return JSON.parse(latexFixed);
+      } catch (e2) {
+        // Fallback: fix control chars created by single backslashes in JSON (\x0b, \t, \f, etc.)
+        const sanitized = clean
+          .replace(/\x0bec\b/g, '\\\\vec')
+          .replace(/\x0b/g, '\\\\')
+          .replace(/\text\{/g, '\\\\text{')
+          .replace(/\x0crac\b/g, '\\\\frac')
+          .replace(/\right\b/g, '\\\\right')
+          .replace(/\x08egin\b/g, '\\\\begin')
+          .replace(/\x08ar\b/g, '\\\\bar')
+          .replace(/\neq\b/g, '\\\\neq');
+        return JSON.parse(sanitized);
+      }
+    }
+  },
+
   /**
    * Call Google Gemini API with smart adaptive model fallback
    */
@@ -1319,41 +1355,6 @@ JSON Schema:
     if (cleanJSON.endsWith('```')) {
       cleanJSON = cleanJSON.substring(0, cleanJSON.length - 3);
     }
-  safeParseAiJson(rawJSON) {
-    if (!rawJSON || typeof rawJSON !== 'string') return null;
-    let clean = rawJSON.trim();
-    if (clean.startsWith('```json')) clean = clean.substring(7);
-    else if (clean.startsWith('```')) clean = clean.substring(3);
-    if (clean.endsWith('```')) clean = clean.substring(0, clean.length - 3);
-    clean = clean.trim();
-    const jsonMatch = clean.match(/\{[\s\S]*\}/);
-    if (jsonMatch) clean = jsonMatch[0];
-
-    // Try direct parse first
-    try {
-      return JSON.parse(clean);
-    } catch (e1) {
-      // Fix unescaped backslashes before LaTeX commands in JSON strings
-      try {
-        const latexFixed = clean.replace(/\\([a-zA-Z]+)/g, (match, cmd) => {
-          return '\\\\' + cmd;
-        });
-        return JSON.parse(latexFixed);
-      } catch (e2) {
-        // Fallback: fix control chars created by single backslashes in JSON (\x0b, \t, \f, etc.)
-        const sanitized = clean
-          .replace(/\x0bec\b/g, '\\\\vec')
-          .replace(/\x0b/g, '\\\\')
-          .replace(/\text\{/g, '\\\\text{')
-          .replace(/\x0crac\b/g, '\\\\frac')
-          .replace(/\right\b/g, '\\\\right')
-          .replace(/\x08egin\b/g, '\\\\begin')
-          .replace(/\x08ar\b/g, '\\\\bar')
-          .replace(/\neq\b/g, '\\\\neq');
-        return JSON.parse(sanitized);
-      }
-    }
-  },
 
     const lessonData = this.safeParseAiJson(cleanJSON);
     lessonData.id = `lesson-ai-${Date.now()}`;
